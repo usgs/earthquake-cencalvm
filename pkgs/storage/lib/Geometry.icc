@@ -1,0 +1,38 @@
+// -*- C++ -*-
+//
+// ======================================================================
+//
+//                           Brad T. Aagaard
+//                        U.S. Geological Survey
+//
+// {LicenseText}
+//
+// ======================================================================
+//
+
+#if !defined(cencalvm_storage_geometry_h)
+#error "Geometry.icc must only be included from Geometry.h"
+#endif
+
+// Get length of octant edge.
+inline
+double
+cencalvm::storage::Geometry::edgeLen(const etree_addr_t& addr)
+{ return _ROOTLEN / ((etree_tick_t) 1 << addr.level); }
+
+// Get level in etree corresponding to resolution.
+inline
+int
+cencalvm::storage::Geometry::level(const double res)
+{ return int(0.5 + log(_ROOTLEN / res) / log(2.0)); }
+
+// Get vertical exaggeration.
+inline
+double
+cencalvm::storage::Geometry::vertExag(void)
+{ return _VERTEXAG; }
+
+// version
+// $Id$
+
+// End of file 

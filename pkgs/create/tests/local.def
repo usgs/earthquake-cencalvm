@@ -1,0 +1,37 @@
+# -*- Makefile -*-
+#
+# ----------------------------------------------------------------------
+#
+#                           Brad T. Aagaard
+#                        U.S. Geological Survey
+#
+# {LicenseText}
+#
+# ----------------------------------------------------------------------
+#
+
+PROJ_TMPDIR = $(BLD_TMPDIR)/$(PROJECT)/$(PACKAGE)
+PROJ_CLEAN += $(PROJ_BIN)
+
+PROJ_CXX_INCLUDES += $(BUILD_INCDIR)
+
+# CPPUNIT
+PROJ_CXX_INCLUDES += ${CPPUNIT_INCDIR}
+ifdef CPPUNIT_LIBDIR
+PROJ_LCXX_FLAGS += -L$(CPPUNIT_LIBDIR)
+endif
+PROJ_LCXX_FLAGS += -lcppunit -ldl
+
+# ETREE
+PROJ_CXX_INCLUDES += $(ETREE_INCDIR)
+ifdef ETREE_LIBDIR
+PROJ_LCXX_FLAGS += -L$(ETREE_LIBDIR)
+endif
+PROJ_LCXX_FLAGS += -letree
+
+PROJ_LCXX_FLAGS += -lcencalvmstorage -lcencalvmcreate
+
+# version
+# $Id$
+
+# End of file 

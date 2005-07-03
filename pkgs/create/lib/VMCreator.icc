@@ -1,0 +1,38 @@
+// -*- C++ -*-
+//
+// ======================================================================
+//
+//                           Brad T. Aagaard
+//                        U.S. Geological Survey
+//
+// {LicenseText}
+//
+// ======================================================================
+//
+
+#if !defined(cencalvm_create_vmcreator_h)
+#error "VMCreator.icc must only be included from VMCreator.h"
+#endif
+
+// Set filename for parameter file.
+inline
+void
+cencalvm::create::VMCreator::filenameParams(const char* filename)
+{ _filenameParams = filename; }
+
+// Set filename for output file.
+inline
+void
+cencalvm::create::VMCreator::filenameOut(const char* filename)
+{ _filenameOut = filename; }
+
+// Set filename for temporary (scratch) file.
+inline
+void
+cencalvm::create::VMCreator::filenameTmp(const char* filename)
+{ _filenameTmp = filename; }
+
+// version
+// $Id$
+
+// End of file 
