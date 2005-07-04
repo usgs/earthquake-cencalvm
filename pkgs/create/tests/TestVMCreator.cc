@@ -13,6 +13,14 @@
 #include "TestVMCreator.h" // Implementation of class methods
 
 #include "cencalvm/create/VMCreator.h" // USES VMCreator
+#include "cencalvm/storage/Geometry.h" // USES Geometry
+
+extern "C" {
+#include "etree.h"
+}
+
+#include <stdexcept> // USES std::runtime_error
+#include <sstream> // USES std::ostringstream
 
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::create::TestVMCreator );
@@ -64,6 +72,7 @@ cencalvm::create::TestVMCreator::testFilenameTmp(void)
   CPPUNIT_ASSERT(0 == strcmp(filename, creator._filenameTmp));
 } // testFilenameTmp
 
+#include <iostream>
 // ----------------------------------------------------------------------
 // Test run()
 void 
@@ -79,7 +88,46 @@ cencalvm::create::TestVMCreator::testRun(void)
   creator.filenameTmp(filenameTmp);
   creator.run();
 
-  CPPUNIT_ASSERT(false);
+
+  const double p = 409600.1;
+  const double q = 204800.1;
+  const double r = 1625600.1;
+  const etree_tick_t level = 3;
+  const double res = cencalvm::storage::Geometry::edgeLen(level);
+  const etree_tick_t tickLen = 0x80000000 >> level;
+  etree_addr_t addr;
+  addr.x = tickLen*int(p / res);
+  addr.y = tickLen*int(q / res);
+  addr.z = tickLen*int(r / res);
+  addr.level = level;
+
+  etree_t* db = etree_open(filenameOut, O_RDONLY, 0, 0, 0);
+  if (0 == db) {
+    std::ostringstream msg;
+    msg << "Could not open etree database '" << filenameOut << "'.";
+    throw std::runtime_error(msg.str());
+  } // if
+  etree_addr_t resaddr;
+  cencalvm::storage::PayloadStruct payload;
+  if (0 != etree_search(db, addr, &resaddr, "*", &payload))
+    throw std::runtime_error(etree_strerror(etree_errno(db)));
+  CPPUNIT_ASSERT_EQUAL(addr.x, resaddr.x);
+  CPPUNIT_ASSERT_EQUAL(addr.y, resaddr.y);
+  CPPUNIT_ASSERT_EQUAL(addr.z, resaddr.z);
+  CPPUNIT_ASSERT_EQUAL(addr.level, resaddr.level);
+
+  const double tolerance = 1.0e-06;
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, _PAYLOAD.Vp/payload.Vp, tolerance);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, _PAYLOAD.Vs/payload.Vs, tolerance);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, _PAYLOAD.Density/payload.Density, 
+			       tolerance);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, _PAYLOAD.Qp/payload.Qp, tolerance);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, _PAYLOAD.Qs/payload.Qs, tolerance);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, 
+			       _PAYLOAD.DepthFreeSurf/payload.DepthFreeSurf,
+			       tolerance);
+  CPPUNIT_ASSERT_EQUAL(_PAYLOAD.FaultBlock, payload.FaultBlock);
+  CPPUNIT_ASSERT_EQUAL(_PAYLOAD.Zone, payload.Zone);
 } // testRun
 
 // version
