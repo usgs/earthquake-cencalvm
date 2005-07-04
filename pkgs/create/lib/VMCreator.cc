@@ -140,11 +140,23 @@ cencalvm::create::VMCreator::_createDB(void) const
   std::cout
     << "Finished preparing database. Starting processing of " << numGrids
     << " files." << std::endl;
-  for (int iGrid=0; iGrid < numGrids; ++iGrid)
-    GridIngester::addGrid(&etreedb, pGridFilenames[iGrid].c_str());
-	     
+  try {
+    for (int iGrid=0; iGrid < numGrids; ++iGrid)
+      GridIngester::addGrid(&etreedb, pGridFilenames[iGrid].c_str());
+  } // try
+  catch (std::exception& err) {
+    if (0 != etree_close(etreedb))
+      throw std::runtime_error("Could not close etree database.");
+    throw err;
+  } // catch
+  catch (...) {
+    if (0 != etree_close(etreedb))
+      throw std::runtime_error("Could not close etree database.");
+    throw;
+  } // catch
+
   if (0 != etree_close(etreedb))
-    throw std::runtime_error("Could not close etree database.");  
+    throw std::runtime_error("Could not close etree database.");       
 } // _createDB
 
 // ----------------------------------------------------------------------

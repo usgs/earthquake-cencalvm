@@ -67,38 +67,68 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
     throw std::runtime_error(msg.str());
   } // if
 
+  const etree_tick_t level = vmgeom.level(resHoriz);
+  const double edgeLen = vmgeom.edgeLen(level);
+  if ( fabs(1.0 - resHoriz/edgeLen) > tolerance) {
+    std::ostringstream msg;
+    msg << "Horizontal resolution of " << resHoriz << " in '" << filename
+	<< "' does not fit resolution of nearest level in database of "
+	<< edgeLen << ".";
+    throw std::runtime_error(msg.str());
+  } // if    
+
   int numAdded = 0;
   int numIgnored = 0;
-  while (!fin.eof()) {
-    double lon = 0.0;
-    double lat = 0.0;
-    double elev = 0.0;
-    cencalvm::storage::PayloadStruct payload;
-    fin
-      >> lon
-      >> lat
-      >> elev
-      >> payload.Vp
-      >> payload.Vs
-      >> payload.Density
-      >> payload.Qp
-      >> payload.Qs
-      >> payload.DepthFreeSurf
-      >> payload.FaultBlock
-      >> payload.Zone;
-    if (!fin.good())
-      break;
-    if (payload.FaultBlock > 0 && payload.Zone > 0) {
-      etree_addr_t addr;
-      addr.level = vmgeom.level(resHoriz);
-      addr.type = ETREE_LEAF;
-      vmgeom.lonLatElevToAddr(&addr, lon, lat, elev);
-      if (0 != etree_insert(*pDB, addr, &payload))
-	throw std::runtime_error(etree_strerror(etree_errno(*pDB)));
-      numAdded++;
-    } else
-      numIgnored++;
-  } // while
+  try {
+    while (!fin.eof()) {
+      double lon = 0.0;
+      double lat = 0.0;
+      double elev = 0.0;
+      cencalvm::storage::PayloadStruct payload;
+      fin
+	>> lon
+	>> lat
+	>> elev
+	>> payload.Vp
+	>> payload.Vs
+	>> payload.Density
+	>> payload.Qp
+	>> payload.Qs
+	>> payload.DepthFreeSurf
+	>> payload.FaultBlock
+	>> payload.Zone;
+      if (fin.eof())
+	break;
+      if (!fin.good())
+	throw std::runtime_error("Couldn't parse line.");
+      if (payload.FaultBlock > 0 && payload.Zone > 0) {
+	etree_addr_t addr;
+	addr.level = level;
+	addr.type = ETREE_LEAF;
+	vmgeom.lonLatElevToAddr(&addr, lon, lat, elev);
+	if (0 != etree_insert(*pDB, addr, &payload))
+	  throw std::runtime_error(etree_strerror(etree_errno(*pDB)));
+	numAdded++;
+      } else
+	numIgnored++;
+    } // while
+  }
+  catch (std::exception& err) {
+    std::ostringstream msg;
+    msg << "Caught exception while reading grid from '" << filename << "'.\n"
+	<< "Successfully added " << numAdded << " points and ignore "
+	<< numIgnored << " others.\n"
+	<< err.what();
+    throw std::runtime_error(msg.str());
+  } // catch
+  catch (...) {
+    std::ostringstream msg;
+    msg << "Caught exception while reading grid from '" << filename << "'.\n"
+	<< "Successfully added " << numAdded << " points and ignore "
+	<< numIgnored << " others.\n";
+    throw std::runtime_error(msg.str());
+  } // catch
+   
   fin.close();
 
   std::cout << "Done procesing '" << filename << "'."
