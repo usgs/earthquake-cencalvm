@@ -17,8 +17,8 @@
 // Get length of octant edge.
 inline
 double
-cencalvm::storage::Geometry::edgeLen(const etree_addr_t& addr)
-{ return _ROOTLEN / ((etree_tick_t) 1 << addr.level); }
+cencalvm::storage::Geometry::edgeLen(const etree_tick_t level)
+{ return _ROOTLEN / ((etree_tick_t) 1 << level); }
 
 // Get level in etree corresponding to resolution.
 inline

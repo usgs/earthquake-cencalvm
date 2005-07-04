@@ -14,6 +14,10 @@
 
 #include "cencalvm/storage/Geometry.h" // USES Projector
 
+extern "C" {
+#include "etree.h"
+}
+
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::storage::TestGeometry );
 
@@ -44,17 +48,17 @@ cencalvm::storage::TestGeometry::testAddress(void)
     const double res = Geometry::_ROOTLEN / ((etree_tick_t) 1 << iLevel);
     const etree_tick_t tickLen = 0x80000000 >> iLevel;
 
-    int x = tickLen*int(p / res);
-    int y = tickLen*int(q / res);
-    int z = tickLen*int(r / res);
+    etree_tick_t x = tickLen*int(p / res);
+    etree_tick_t y = tickLen*int(q / res);
+    etree_tick_t z = tickLen*int(r / res);
     
     etree_addr_t addr;
     addr.level = iLevel;
     geom.lonLatElevToAddr(&addr, lon, lat, elev);
 
-    CPPUNIT_ASSERT_EQUAL(x, (int) addr.x);
-    CPPUNIT_ASSERT_EQUAL(y, (int) addr.y);
-    CPPUNIT_ASSERT_EQUAL(z, (int) addr.z);
+    CPPUNIT_ASSERT_EQUAL(x, addr.x);
+    CPPUNIT_ASSERT_EQUAL(y, addr.y);
+    CPPUNIT_ASSERT_EQUAL(z, addr.z);
   } // for
 } // testAddress
 
@@ -66,11 +70,8 @@ cencalvm::storage::TestGeometry::testEdgeLen(void)
   const double rootLen = Geometry::_ROOTLEN;
   const int numLevels = 19;
   double len = rootLen;
-  for (int iLevel=0; iLevel < numLevels; ++iLevel, len /= 2.0) {
-    etree_addr_t addr;
-    addr.level = iLevel;
-    CPPUNIT_ASSERT_EQUAL(len, Geometry::edgeLen(addr));
-  } // for
+  for (int iLevel=0; iLevel < numLevels; ++iLevel, len /= 2.0)
+    CPPUNIT_ASSERT_EQUAL(len, Geometry::edgeLen(iLevel));
 } // testEdgeLen
 
 // ----------------------------------------------------------------------

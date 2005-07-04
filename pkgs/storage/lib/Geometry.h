@@ -13,9 +13,7 @@
 #if !defined(cencalvm_storage_geometry_h)
 #define cencalvm_storage_geometry_h
 
-extern "C" {
-#include "etree.h" // USES etree
-}
+#include "etreefwd.h" // USES etree types
 
 #include <math.h> // USES log()
 
@@ -56,9 +54,9 @@ public :
   
   /** Get length of octant edge.
    *
-   * @param addr Address of etree octant
+   * @param level Level in etree
    */
-  static double edgeLen(const etree_addr_t& addr);
+  static double edgeLen(const etree_tick_t level);
 
   /** Get level in etree corresponding to resolution.
    *
