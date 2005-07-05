@@ -1,0 +1,58 @@
+======================================================================
+
+                           Brad T. Aagaard
+                        U.S. Geological Survey
+
+ {LicenseText}
+
+======================================================================
+
+Brad Aagaard
+2006/07/05
+
+----------------------------------------------------------------------
+INSTALL SOFTWARE PREREQUISITES
+----------------------------------------------------------------------
+
+* Euclid
+  Etree database library
+  http://www-2.cs.cmu.edu/~euclid/
+
+* proj4
+  Cartographic projections library
+  http://proj.maptools.org/
+  version 4.4.9 is known to work
+
+----------------------------------------------------------------------
+INSTALL OPTIONAL SOFTWARE
+----------------------------------------------------------------------
+
+* cppunit
+  C++ unit testing library
+
+  This library is used in the unit testing of the code. It is only
+  used for testing and not the actual functioning of the velocity
+  model software.
+
+----------------------------------------------------------------------
+INSTALL SOFTWARE
+----------------------------------------------------------------------
+
+(1) Set architecture, compiler and directory variables in
+config/Makefile.config
+
+(2) If necessary, create file with compiler flags.
+
+(3) If necessary, create file with architecture flags.
+
+(4) run 'make' in top level directory
+
+  Note: make will fail in the tests directories if the optional
+  software is not installed. You can safely ignore the compilation
+  errors. If you want to run the tests and have the optional software
+  installed simply run 'make test' in the tests directories.
+
+version
+$Id$
+
+End of file

@@ -1,0 +1,56 @@
+// -*- C++ -*-
+//
+// ----------------------------------------------------------------------
+//
+//                           Brad T. Aagaard
+//                        U.S. Geological Survey
+//
+// <LicenseText>
+//
+// ----------------------------------------------------------------------
+//
+
+/** @mainpage
+ *
+ * @author Brad Aagaard
+ * @date 2007/07/05
+ * @version 0.1
+ *
+ * @section summary Summary
+ *
+ * This directory tree contains the software used to create and query
+ * the central California velocity model developed by the United
+ * States Geological Survey. The current version is 0.1.
+ *
+ * @section install Installation
+ *
+ * For installation instructions, see INSTALL.
+ *
+ * @section dirs Directories
+ * @li \b doc Documentation
+ * @li \b pkgs Packages comprising cencalvm
+ *
+ * @subsection create Package 'create'
+ *
+ * This package is used to create the etree database from Earth Vision
+ * files. In general, it is for internal use only.
+ *
+ * @subsection query Package 'query'
+ *
+ * This package is used to query the etree database holding the
+ * velocity model.
+ *
+ * @subsection storage Package 'storage'
+ *
+ * This package defines the geometry of the velocity model and
+ * performs transformation of geographic coordinates to the etree
+ * ticks. This package is used by the 'create' and 'query'
+ * packages. You should never need to call the routines in this
+ * library directly.
+ *
+ */
+
+// version
+// $Id$
+
+// End of file 
