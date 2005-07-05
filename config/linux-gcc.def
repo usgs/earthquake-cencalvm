@@ -1,0 +1,33 @@
+# -*- Makefile -*-
+#
+# ======================================================================
+#
+#                           Brad T. Aagaard
+#                        U.S. Geological Survey
+#
+# {LicenseText}
+#
+# ======================================================================
+#
+
+CXX = g++
+CC = gcc
+F77 = f77
+
+COMPILER_CXX_DEPENDS = $(CXX) -MMD
+COMPILER_CC_DEPENDS = $(CC) -MMD
+
+COMPILER_CXX_FLAGS = -fPIC -Wall
+COMPILER_CC_FLAGS = -fPIC -Wall
+
+COMPILER_CXX_INCLUDES = 
+
+COMPILER_LCXX_SARFLAGS = -shared
+COMPILER_LCC_SARFLAGS = -shared
+
+COMPILER_LCXX_FLAGS =
+
+# version
+# $Id$
+
+# End of file 

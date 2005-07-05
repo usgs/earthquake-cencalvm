@@ -1,0 +1,31 @@
+show-configuration:
+	@echo " "
+	@echo "  Environment"
+	@echo "  -----------"
+	@echo "              build tree : $(BLD_ROOT)"
+	@echo "        operating system : $(ARCH)"
+	@echo "               C compiler: $(CC)"
+	@echo "             C++ compiler: $(CXX)"
+	@echo "         FORTRAN compiler: $(F77)"
+	@echo " "
+
+show-project:
+	@echo "  Project settings"
+	@echo "  ----------------"
+	@echo "                    name : $(PROJECT)"
+	@echo "     temporary directory : $(PROJ_TMPDIR)"
+	@echo "                 library : $(PROJ_SAR)"
+	@echo "                 sources : $(PROJ_SRCS)"
+	@echo "                 objects : $(PROJ_OBJS)"
+	@echo "            dependencies : $(PROJ_DEPENDENCIES)"
+	@echo " "
+
+show-build:
+	@echo "  Build settings"
+	@echo "  ----------------"
+	@echo "                    root : $(BLD_ROOT)"
+	@echo "     temporary directory : $(BLD_TMPDIR)"
+	@echo "                 library : $(BLD_LIBDIR)"
+	@echo "                includes : $(BLD_INCDIR)"
+	@echo "                binaries : $(BLD_BINDIR)"
+	@echo " "

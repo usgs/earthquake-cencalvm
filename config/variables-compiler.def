@@ -1,0 +1,20 @@
+# -*- Makefile -*-
+#
+# ======================================================================
+#
+#                           Brad T. Aagaard
+#                        U.S. Geological Survey
+#
+# {LicenseText}
+#
+# ======================================================================
+#
+
+CC_BUILD_INCLUDES = ${addprefix -I, $(CC_INCLUDES)}
+CXX_BUILD_INCLUDES = ${addprefix -I, $(CXX_INCLUDES)}
+F77_BUILD_INCLUDES = ${addprefix -I, $(F77_INCLUDES)}
+
+# version
+# $Id$
+
+# End of file

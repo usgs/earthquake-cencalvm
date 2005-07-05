@@ -1,0 +1,24 @@
+# -*- Makefile -*-
+#
+# ======================================================================
+#
+#                           Brad T. Aagaard
+#                        U.S. Geological Survey
+#
+# {LicenseText}
+#
+# ======================================================================
+#
+
+PROJ_OBJS = ${addprefix ${PROJ_TMPDIR}/, ${addsuffix .${EXT_OBJ}, ${basename ${PROJ_SRCS}}}}
+
+PROJ_DEPENDENCIES = empty.def
+PROJ_DEPENDENCIES += ${addprefix ${PROJ_TMPDIR}/, ${addsuffix .${EXT_DEPEND}, ${basename ${PROJ_SRCS}}}}
+
+LCXX_SARFLAGS = $(COMPILER_LCXX_SARFLAGS) $(EXTERNAL_SARFLAGS)
+LCXXFLAGS = $(LCXX_FLAGS) $(LCXX_LIBPATH)
+
+# version
+# $Id$
+
+# End of file 
