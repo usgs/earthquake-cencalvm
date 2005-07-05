@@ -104,10 +104,11 @@ main(int argc,
     creator.filenameTmp(filenameTmp.c_str());
     creator.run();
   } // try
-  catch (std::exception& err) {
-    std::cerr << "Error occurred while generating etree database."
+  catch (const std::exception& err) {
+    std::cerr << "Error occurred while generating etree database.\n"
 	      << "Error message:\n"
-	      << err.what();
+	      << err.what()
+	      << std::endl;
     return -1;
   } // catch
   catch (...) {

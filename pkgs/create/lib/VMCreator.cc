@@ -147,7 +147,7 @@ cencalvm::create::VMCreator::_createDB(void) const
   catch (std::exception& err) {
     if (0 != etree_close(etreedb))
       throw std::runtime_error("Could not close etree database.");
-    throw err;
+    throw;
   } // catch
   catch (...) {
     if (0 != etree_close(etreedb))
