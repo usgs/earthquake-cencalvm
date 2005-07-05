@@ -32,7 +32,7 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 					const char* filename)
 { // addGrid
   assert(0 != pDB);
-  
+
   std::ifstream fin(filename);
   if (!fin.is_open()) {
     std::ostringstream msg;
@@ -47,14 +47,21 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 
   double resHoriz = 0.0;
   double resVert = 0.0;
-  fin >> resHoriz >> resVert;
+  int numX = 0;
+  int numY = 0;
+  int numZ = 0;
+  int numTotal = 0;
+  fin >> resHoriz >> resVert >> numX >> numY >> numZ >> numTotal;
   if (0.0 == resHoriz ||
       0.0 == resVert) {
     std::ostringstream msg;
     msg << "Could not read horizontal and vertical resolution in '"
 	<< filename << "'.";
-    std::runtime_error(msg.str());
+    throw std::runtime_error(msg.str());
   } // if
+  // convert resHoriz and resVert from km to m
+  resHoriz *= 1.0e+3;
+  resVert *= 1.0e+3;
   
   const double tolerance = 1.0e-6;
   const double vertExag = resHoriz / resVert;
@@ -80,7 +87,7 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
   int numAdded = 0;
   int numIgnored = 0;
   try {
-    while (!fin.eof()) {
+    for (int i=0; i < numTotal; ++i) {
       double lon = 0.0;
       double lat = 0.0;
       double elev = 0.0;
@@ -97,11 +104,13 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 	>> payload.DepthFreeSurf
 	>> payload.FaultBlock
 	>> payload.Zone;
-      if (fin.eof())
-	break;
       if (!fin.good())
 	throw std::runtime_error("Couldn't parse line.");
       if (payload.FaultBlock > 0 && payload.Zone > 0) {
+	// convert elev and depth from km to m
+	elev *= 1.0e+3;
+	payload.DepthFreeSurf *= 1.0e+3;
+
 	etree_addr_t addr;
 	addr.level = level;
 	addr.type = ETREE_LEAF;
@@ -111,20 +120,20 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 	numAdded++;
       } else
 	numIgnored++;
-    } // while
+    } // for
   }
-  catch (std::exception& err) {
+  catch (const std::exception& err) {
     std::ostringstream msg;
     msg << "Caught exception while reading grid from '" << filename << "'.\n"
-	<< "Successfully added " << numAdded << " points and ignore "
+	<< "Successfully added " << numAdded << " points and ignored "
 	<< numIgnored << " others.\n"
-	<< err.what();
+	<< "Etree error message: " << err.what();
     throw std::runtime_error(msg.str());
   } // catch
   catch (...) {
     std::ostringstream msg;
     msg << "Caught exception while reading grid from '" << filename << "'.\n"
-	<< "Successfully added " << numAdded << " points and ignore "
+	<< "Successfully added " << numAdded << " points and ignored "
 	<< numIgnored << " others.\n";
     throw std::runtime_error(msg.str());
   } // catch
