@@ -130,10 +130,10 @@ cencalvm::create::VMCreator::_createDB(void) const
   const char* datetime = ctime(&rawTime);
   std::ostringstream metainfo;
   metainfo
-    << "Central California Velocity Model"
-    << ", U.S. Geological Survey"
-    << ", created on: " << datetime
-    << ", computer: "  << hostname;
+    << "Central California Velocity Model\n"
+    << "U.S. Geological Survey\n"
+    << "created on: " << datetime
+    << "host: "  << hostname;
   if (0 != etree_setappmeta(etreedb, metainfo.str().c_str()))
     throw std::runtime_error(etree_strerror(etree_errno(etreedb)));
 
