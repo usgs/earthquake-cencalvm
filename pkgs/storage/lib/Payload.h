@@ -26,8 +26,8 @@ struct cencalvm::storage::PayloadStruct {
   float Qp;
   float Qs;
   float DepthFreeSurf;
-  short FaultBlock;
-  short Zone;
+  int16_t FaultBlock;
+  int16_t Zone;
 }; // struct PayloadStruct
 
 namespace cencalvm {
