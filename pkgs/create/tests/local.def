@@ -10,10 +10,11 @@
 # ----------------------------------------------------------------------
 #
 
-PROJ_TMPDIR = $(BLD_TMPDIR)/$(PROJECT)/$(PACKAGE)
+PROJ_TMPDIR = $(BLD_TMPDIR)/$(PROJECT)/$(PACKAGE)/tests
 PROJ_CLEAN += $(PROJ_BIN)
 
-PROJ_CXX_INCLUDES += $(BUILD_INCDIR)
+PROJ_CXX_INCLUDES += $(BLD_INCDIR)
+PROJ_LCXX_FLAGS += -L$(BLD_LIBDIR)
 
 # CPPUNIT
 PROJ_CXX_INCLUDES += ${CPPUNIT_INCDIR}
