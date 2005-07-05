@@ -11,7 +11,7 @@
 #
 
 PROJECT = cencalvm
-PACKAGE = storage/tests
+PACKAGE = storage
 
 include local.def
 
@@ -29,8 +29,8 @@ PROJ_BIN = $(PROJ_BINDIR)/teststorage
 # ----------------------------------------------------------------------
 all: $(PROJ_BIN)
 
-$(PROJ_BIN):: $(PROJ_OBJS)
-	$(CXX) -o $@ $(CXXFLAGS) $(LCXXFLAGS) $(PROJ_OBJS)
+$(PROJ_BIN):: product_dirs $(PROJ_OBJS)
+	$(CXX) -o $@ $(LCXXFLAGS) $(PROJ_OBJS)
 
 test:
 	@LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(BLD_LIBDIR) $(PROJ_BIN)
