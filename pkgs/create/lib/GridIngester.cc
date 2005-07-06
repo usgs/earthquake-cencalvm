@@ -111,6 +111,13 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 	elev *= 1.0e+3;
 	payload.DepthFreeSurf *= 1.0e+3;
 
+	// convert Vp & Vs from km/s to m/s
+	payload.Vp *= 1.0e+3;
+	payload.Vs *= 1.0e+3;
+	
+	// convert Density from g/cm^3 to kg/m^3
+	payload.Density *= 1.0e+3;
+
 	etree_addr_t addr;
 	addr.level = level;
 	addr.type = ETREE_LEAF;
