@@ -154,3 +154,7 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 	    << std::endl;
 } // addGrid
 
+// version
+// $Id$
+
+// End of file
