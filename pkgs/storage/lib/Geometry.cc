@@ -69,7 +69,6 @@ cencalvm::storage::Geometry::lonLatElevToAddr(etree_addr_t* pAddr,
   double x = 0;
   double y = 0;
   _pProj->project(&x, &y, lon, lat);
-  const double z = elev;
   
   // convert projected coordinates to coordinates along root octant
   const double azR = _AZ * M_PI / 180.0;
@@ -77,7 +76,7 @@ cencalvm::storage::Geometry::lonLatElevToAddr(etree_addr_t* pAddr,
     (x - _projXNWRoot) * cos(azR) - (y - _projYNWRoot) * sin(azR);
   const double q = 
     (x - _projXNWRoot) * sin(azR) + (y - _projYNWRoot) * cos(azR);
-  const double r = (z-_MAXELEV)*_VERTEXAG + _ROOTLEN;
+  const double r = (elev-_MAXELEV)*_VERTEXAG + _ROOTLEN;
 
   if (p < 0.0 || p > _ROOTLEN ||
       q < 0.0 || q > _ROOTLEN ||
@@ -124,16 +123,6 @@ cencalvm::storage::Geometry::findParent(etree_addr_t* pParentAddr,
   pParentAddr->level = parentLevel;
   pParentAddr->t     = 0;
   pParentAddr->type  = ETREE_INTERIOR;
-
-#if defined(DEBUG_GEOMETRY)
-  char bufA[ETREE_MAXBUF];
-  char bufB[ETREE_MAXBUF];
-  std::cout
-    << ">>> Geometry::findParent\n"
-    << "childAddr: " << etree_straddr(bufA, childAddr)
-    << ", parentAddr: " << etree_straddr(bufB, *pParentAddr)
-    << "<<<" << std::endl;
-#endif
 
   return true;
 } // findParent
