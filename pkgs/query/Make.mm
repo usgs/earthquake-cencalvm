@@ -16,6 +16,7 @@ PACKAGE = query
 RECURSE_DIRS = \
 	lib \
 	apps \
+	tests \
 
 OTHERS = \
 
