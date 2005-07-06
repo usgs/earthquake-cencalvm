@@ -1,0 +1,26 @@
+// -*- C++ -*-
+//
+// ----------------------------------------------------------------------
+//
+//                           Brad T. Aagaard
+//                        U.S. Geological Survey
+//
+// {LicenseText}
+//
+// ----------------------------------------------------------------------
+//
+
+const char* cencalvm::query::TestVMQuery::_FILENAME = "data/one.etree";
+
+const double cencalvm::query::TestVMQuery::_VALUESMAX[] = {
+  1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 1.0, 2.0
+};
+
+const double cencalvm::query::TestVMQuery::_LONLATELEV[] = {
+ -123.85829, 38.42416, 0.0
+};
+
+// version
+// $Id$
+
+// End of file
