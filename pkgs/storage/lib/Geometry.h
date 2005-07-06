@@ -88,6 +88,12 @@ public :
    */
   static double vertExag(void);
 
+ private :
+  // PRIVATE METHODS ////////////////////////////////////////////////////
+
+  Geometry(const Geometry& g); ///< Not implemented
+  const Geometry& operator=(const Geometry& g); ///< Not implemented
+  
 private :
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 

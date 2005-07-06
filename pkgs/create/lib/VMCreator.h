@@ -80,6 +80,12 @@ private :
   /// Create packed etree database from unpacked etree database.
   void _packDB(void) const;
 
+ private :
+  // PRIVATE METHODS ////////////////////////////////////////////////////
+
+  VMCreator(const VMCreator& c); ///< Not implemented
+  const VMCreator& operator=(const VMCreator& c); ///< Not implemented
+  
 private :
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 

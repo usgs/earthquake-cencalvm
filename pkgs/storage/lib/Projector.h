@@ -52,6 +52,12 @@ public :
 	       const double lon,
 	       const double lat) const;
 
+ private :
+  // PRIVATE METHODS ////////////////////////////////////////////////////
+
+  Projector(const Projector& p); ///< Not implemented
+  const Projector& operator=(const Projector& p); ///< Not implemented
+  
 private :
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 
