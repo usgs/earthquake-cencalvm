@@ -115,6 +115,7 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 	addr.level = level;
 	addr.type = ETREE_LEAF;
 	vmgeom.lonLatElevToAddr(&addr, lon, lat, elev);
+
 	if (0 != etree_insert(*pDB, addr, &payload))
 	  throw std::runtime_error(etree_strerror(etree_errno(*pDB)));
 	numAdded++;
