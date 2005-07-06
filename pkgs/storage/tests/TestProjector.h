@@ -56,7 +56,7 @@ private :
 
 }; // class TestProjector
 
-#endif // cencalvm_storgage_testprojector
+#endif // cencalvm_storage_testprojector
 
 // version
 // $Id$

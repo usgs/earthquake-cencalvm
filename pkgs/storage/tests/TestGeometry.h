@@ -61,7 +61,7 @@ public :
 
 }; // class TestGeometry
 
-#endif // cencalvm_storgage_testgeometry
+#endif // cencalvm_storage_testgeometry
 
 // version
 // $Id$

@@ -74,7 +74,7 @@ private :
 
 }; // class TestVMCreator
 
-#endif // cencalvm_storgage_testvmcreator
+#endif // cencalvm_create_testvmcreator
 
 // version
 // $Id$
