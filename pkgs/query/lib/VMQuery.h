@@ -12,7 +12,8 @@
 
 /** @file lib/VMQuery.h
  *
- * @brief C++ manager for querying the USGS central CA velocity model.
+ * @brief C++ manager for querying the USGS central CA velocity
+ * model (USER INTERFACE).
  */
 
 #if !defined(cencalvm_query_vmquery_h)
@@ -24,9 +25,14 @@ namespace cencalvm {
   namespace query {
     class VMQuery;
   }; // query
+  namespace storage {
+    class Geometry;
+    struct PayloadStruct;
+  }; // storage
 }; // cencalvm
 
-/// C++ manager for querying the USGS central CA velocity model.
+/// C++ manager for querying the USGS central CA velocity model (USER
+/// INTERFACE).
 class cencalvm::query::VMQuery
 { // class VMQuery
 
@@ -82,13 +88,13 @@ class cencalvm::query::VMQuery
    *
    * @pre Must call Open() before Query()
    *
-   * @param pVals Pointer to computed values (output from query)
-   * @param numVals Number of values expected (size of pVals array)
+   * @param ppVals Pointer to computed values (output from query)
+   * @param numVals Number of values expected (size of array (preallocated))
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
-   * @param elev Elevation of location for query in meters
+   * @param elev Elevation of location wrt MSL in meters
    */
-  void query(double** pVals,
+  void query(double** ppVals,
 	     const int numVals,
 	     const double lon,
 	     const double lat,
@@ -99,44 +105,38 @@ private :
 
   /** Query database at maximum resolution possible.
    *
-   * @param pVals Pointer to computed values (output from query)
-   * @param numVals Number of values expected (size of pVals array)
+   * @param pPayload Pointer to database payload
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
    * @param elev Elevation of location for query in meters
    */
-  void _queryMax(double** pVals,
-		 const int numVals,
+  void _queryMax(cencalvm::storage::PayloadStruct*,
 		 const double lon,
 		 const double lat,
 		 const double elev);
-
+  
   /** Query database at fixed resolution. Resolution is specified by
    * queryRes().
    *
-   * @param pVals Pointer to computed values (output from query)
-   * @param numVals Number of values expected (size of pVals array)
+   * @param pPayload Pointer to database payload
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
    * @param elev Elevation of location for query in meters
    */
-  void _queryFixed(double** pVals,
-		 const int numVals,
-		 const double lon,
-		 const double lat,
-		 const double elev);
+  void _queryFixed(cencalvm::storage::PayloadStruct*,
+		   const double lon,
+		   const double lat,
+		   const double elev);
 
   /** Query database at resolution specified by wavelength. Resolution
    * is specified by queryRes().
    *
-   * @param pVals Pointer to computed values (output from query)
-   * @param numVals Number of values expected (size of pVals array)
+   * @param pPayload Pointer to database payload
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
    * @param elev Elevation of location for query in meters
    */
-  void _queryAvg(double** pVals,
-		 const int numVals,
+  void _queryAvg(cencalvm::storage::PayloadStruct*,
 		 const double lon,
 		 const double lat,
 		 const double elev);
@@ -155,13 +155,16 @@ private :
   etree_t* _db; ///< Database
   const char* _filename; ///< Name of database file
 
-  int* _pQueryVals; ///< Indices of values to be returned in queries
+  int* _pQueryVals; ///< Address offsets in payload for query values
   int _querySize; ///< Number of values requested to be return in queries
 
   int _cacheSize; ///< Size of query cache
 
-  typedef void (*cencalvm::query::VMQuery::queryFn_t)(double**, int, double, double, double);
+  typedef void (cencalvm::query::VMQuery::*queryFn_t)
+    (cencalvm::storage::PayloadStruct*, double, double, double);
   queryFn_t _queryFn; ///< Method to call for queries
+
+  cencalvm::storage::Geometry* _pGeom;
 
 }; // class VMQuery 
 

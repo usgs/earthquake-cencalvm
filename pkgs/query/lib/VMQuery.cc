@@ -13,6 +13,7 @@
 #include "VMQuery.h" // implementation of class methods
 
 #include "cencalvm/storage/Payload.h" // USES PayloadStruct
+#include "cencalvm/storage/Geometry.h" // USES PayloadStruct
 
 extern "C" {
 #include "etree.h"
@@ -31,7 +32,8 @@ cencalvm::query::VMQuery::VMQuery(void) :
   _pQueryVals(0),
   _querySize(0),
   _cacheSize(128),
-  _queryFn(&cencalvm::query::VMQuery::_queryMax)
+  _queryFn(&cencalvm::query::VMQuery::_queryMax),
+  _pGeom(new cencalvm::storage::Geometry)
 { // constructor
   const int querySize = 8;
   _pQueryVals = (querySize > 0) ? new int[querySize] : 0;
@@ -45,6 +47,7 @@ cencalvm::query::VMQuery::VMQuery(void) :
 cencalvm::query::VMQuery::~VMQuery(void)
 { // destructor
   delete[] _pQueryVals; _pQueryVals = 0;
+  delete _pGeom; _pGeom = 0;
 } // destructor
   
 // ----------------------------------------------------------------------
@@ -86,13 +89,13 @@ cencalvm::query::VMQuery::queryType(const QueryEnum queryType)
   switch (queryType)
     { // switch
     case MAXRES :
-      _queryFn = _queryMax;
+      _queryFn = &cencalvm::query::VMQuery::_queryMax;
       break;
     case FIXEDRES :
-      _queryFn = _queryFixed;
+      _queryFn = &cencalvm::query::VMQuery::_queryFixed;
       break;
     case AVGRES :
-      _queryFn = _queryAvg;
+      _queryFn = &cencalvm::query::VMQuery::_queryAvg;
       break;
     default :
       throw std::runtime_error("Could not find query function for "
@@ -143,48 +146,124 @@ cencalvm::query::VMQuery::queryVals(const char** names,
 // ----------------------------------------------------------------------
 // Query the database.
 void
-cencalvm::query::VMQuery::query(double** pVals,
+cencalvm::query::VMQuery::query(double** ppVals,
 				const int numVals,
 				const double lon,
 				const double lat,
 				const double elev)
 { // query
   assert(0 != _queryFn);
-  _queryFn(pVals, numVals, lon, lat, elev);
+  assert(0 != ppVals);
+  assert(numVals == _querySize);
+
+  cencalvm::storage::PayloadStruct payload;
+  (this->*_queryFn)(&payload, lon, lat, elev);
+
+  for (int i=0; i < _querySize; ++i) {
+    switch (_pQueryVals[i])
+      { // switch
+      case 0 :
+	(*ppVals)[i] = payload.Vp;
+	break;
+      case 1 :
+	(*ppVals)[i] = payload.Vs;
+	break;
+      case 2 :
+	(*ppVals)[i] = payload.Density;
+	break;
+      case 3 :
+	(*ppVals)[i] = payload.Qp;
+	break;
+      case 4 :
+	(*ppVals)[i] = payload.Qs;
+	break;
+      case 5 :
+	(*ppVals)[i] = payload.DepthFreeSurf;
+	break;
+      case 6 :
+	(*ppVals)[i] = payload.FaultBlock;
+	break;
+      case 7 :
+	(*ppVals)[i] = payload.Zone;
+	break;
+      default :
+	throw std::runtime_error("Could not requested query value.");
+      } // switch
+  } // for
 } // query
 
 // ----------------------------------------------------------------------
 // Query database at maximum resolution possible.
 void
-cencalvm::query::VMQuery::_queryMax(double** pVals,
-				    const int numVals,
+cencalvm::query::VMQuery::_queryMax(cencalvm::storage::PayloadStruct* pPayload,
 				    const double lon,
 				    const double lat,
 				    const double elev)
 { // _queryMax
+  assert(0 != pPayload);
+
+  etree_addr_t addr;
+  addr.level = ETREE_MAXLEVEL;
+  addr.type = ETREE_LEAF;
+  _pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
+
+  etree_addr_t resAddr;
+  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload))
+    throw std::runtime_error(etree_strerror(etree_errno(_db)));
 } // _queryMax
 
 // ----------------------------------------------------------------------
 // Query database at fixed resolution. Resolution is specified by queryRes().
 void
-cencalvm::query::VMQuery::_queryFixed(double** pVals,
-				      const int numVals,
+cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload,
 				      const double lon,
 				      const double lat,
 				      const double elev)
 { // _queryFixed
+  assert(0 != pPayload);
+
+  etree_addr_t addr;
+  addr.level = _pGeom->level(_queryRes);
+  addr.type = ETREE_LEAF;
+  _pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
+
+  etree_addr_t resAddr;
+  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload))
+    throw std::runtime_error(etree_strerror(etree_errno(_db)));
 } // _queryFixed
 
 // ----------------------------------------------------------------------
 // Query database at resolution specified by wavelength. Resolution
 // is specified by queryRes().
 void
-cencalvm::query::VMQuery::_queryAvg(double** pVals,
-				    const int numVals,
+cencalvm::query::VMQuery::_queryAvg(cencalvm::storage::PayloadStruct* pPayload,
 				    const double lon,
 				    const double lat,
 				    const double elev)
 { // _queryAvg
+  etree_addr_t addr;
+
+  addr.level = ETREE_MAXLEVEL;
+  addr.type = ETREE_LEAF;
+  _pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
+
+  etree_addr_t resAddr;
+  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload))
+    throw std::runtime_error(etree_strerror(etree_errno(_db)));
+  
+  const double minPeriod = _queryRes;
+  cencalvm::storage::PayloadStruct childProps = *pPayload;
+  while (pPayload->Vs > 0.0 && 
+    _pGeom->edgeLen(resAddr.level) / pPayload->Vs < minPeriod) {
+  childProps = *pPayload;
+  etree_addr_t parentAddr;
+    if (!_pGeom->findParent(&parentAddr, resAddr))
+      break;
+    if (0 != etree_search(_db, parentAddr, &resAddr, "*", pPayload))
+      throw std::runtime_error(etree_strerror(etree_errno(_db)));
+
+} // while
+  
 } // _queryAvg
 
 
