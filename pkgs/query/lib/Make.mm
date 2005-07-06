@@ -27,6 +27,7 @@ export:: release-package-headers export-libraries
 
 EXPORT_HEADERS = \
 	VMQuery.h \
+	VMQuery.icc \
 
 EXPORT_LIBS = $(PROJ_SAR)
 
