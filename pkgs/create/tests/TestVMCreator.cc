@@ -72,7 +72,6 @@ cencalvm::create::TestVMCreator::testFilenameTmp(void)
   CPPUNIT_ASSERT(0 == strcmp(filename, creator._filenameTmp));
 } // testFilenameTmp
 
-#include <iostream>
 // ----------------------------------------------------------------------
 // Test run()
 void 
@@ -89,9 +88,9 @@ cencalvm::create::TestVMCreator::testRun(void)
   creator.run();
 
 
-  const double p = 409600.1;
-  const double q = 204800.1;
-  const double r = 1625600.1;
+  const double p = 409612.5;
+  const double q = 204812.5;
+  const double r = 1587187.5;
   const etree_tick_t level = 3;
   const double res = cencalvm::storage::Geometry::edgeLen(level);
   const etree_tick_t tickLen = 0x80000000 >> level;
@@ -107,6 +106,7 @@ cencalvm::create::TestVMCreator::testRun(void)
     msg << "Could not open etree database '" << filenameOut << "'.";
     throw std::runtime_error(msg.str());
   } // if
+
   etree_addr_t resaddr;
   cencalvm::storage::PayloadStruct payload;
   if (0 != etree_search(db, addr, &resaddr, "*", &payload))
