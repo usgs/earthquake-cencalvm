@@ -1,0 +1,32 @@
+// -*- C++ -*-
+//
+// ======================================================================
+//
+//                           Brad T. Aagaard
+//                        U.S. Geological Survey
+//
+// {LicenseText}
+//
+// ======================================================================
+//
+
+#if !defined(cencalvm_query_vmquery_h)
+#error "VMQuery.icc must only be included from VMQuery.h"
+#endif
+
+// Set the database filename.
+inline
+void
+cencalvm::query::VMQuery::filename(const char* filename)
+{ _filename = filename; }
+
+// Set size of cache during queries.
+inline
+void
+cencalvm::query::VMQuery::cacheSize(const int size)
+{ if (size > 0) _cacheSize = size; }
+
+// version
+// $Id$
+
+// End of file 
