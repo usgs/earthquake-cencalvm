@@ -10,7 +10,7 @@
 // ----------------------------------------------------------------------
 //
 
-/** @file tests/libtests/TestGeometry.h
+/** @file tests/TestGeometry.h
  *
  * @brief C++ TestGeometry object
  *
@@ -22,7 +22,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-/// Namespace for spatialdata package
 namespace cencalvm {
   namespace storage {
     class TestGeometry;

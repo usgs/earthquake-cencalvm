@@ -10,19 +10,20 @@
 // ======================================================================
 //
 
-/** @file pkgs/geocoords/lib/proj4fwd.h
+/** @file storage/lib/proj4fwd.h
  *
  * @brief Forward declarations for proj4 API.
  */
 
-#if !defined(spatialdata_proj4fwd_h)
-#define spatialdata_proj4fwd_h
+#if !defined(cencalvm_storage_proj4fwd_h)
+#define cencalvm_storage_proj4fwd_h
 
+/// forward declaration of projection
 #if !defined(PROJECTS_H)
 typedef void *projPJ;
 #else
 typedef PJ *projPJ;
 #endif
 
-#endif // spatialdata_proj4fwd_h
+#endif // cencalvm_storage_proj4fwd_h
 

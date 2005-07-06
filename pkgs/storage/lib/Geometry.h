@@ -10,6 +10,12 @@
 // ======================================================================
 //
 
+/** @file lib/Geometry.h
+ *
+ * @brief C++ manager for geometry of the USGS central CA velocity
+ * model.
+ */
+
 #if !defined(cencalvm_storage_geometry_h)
 #define cencalvm_storage_geometry_h
 
@@ -25,6 +31,8 @@ namespace cencalvm {
   }; // namespace storage
 }; // namespace cencalvm
 
+/// C++ manager for geometry of the USGS central CA velocity
+/// model.
 class cencalvm::storage::Geometry
 { // Geometry
   friend class TestGeometry;
@@ -43,9 +51,9 @@ public :
    * @warning Level in etree must have been set in address.
    *
    * @param pAddr Pointer to etree address
-   * @param x X coordinate of location
-   * @param y Y coordinate of location
-   * @param z Z coordinate of location
+   * @param lon Longitude of location in degrees
+   * @param lat Latitude of location in degrees
+   * @param elev Elevation of location wrt MSL in meters
    */
   void lonLatElevToAddr(etree_addr_t* pAddr,
 			const double lon,

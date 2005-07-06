@@ -10,7 +10,7 @@
 // ----------------------------------------------------------------------
 //
 
-/** @file tests/libtests/TestProjector.h
+/** @file tests/TestProjector.h
  *
  * @brief C++ TestProjector object
  *
@@ -22,7 +22,6 @@
 
 #include <cppunit/extensions/HelperMacros.h>
 
-/// Namespace for spatialdata package
 namespace cencalvm {
   namespace storage {
     class TestProjector;

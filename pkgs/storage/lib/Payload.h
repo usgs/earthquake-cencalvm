@@ -10,6 +10,11 @@
 // ======================================================================
 //
 
+/** @file lib/Payload.h
+ *
+ * @brief Definition of structure of velocity model data.
+ */
+
 #if !defined(cencalvm_storage_payload_h)
 #define cencalvm_storage_payload_h
 
@@ -19,15 +24,16 @@ namespace cencalvm {
   }; // namespace storage
 }; // namespace cencalvm
 
+/// Data stored in velocity model database
 struct cencalvm::storage::PayloadStruct {
-  float Vp;
-  float Vs;
-  float Density;
-  float Qp;
-  float Qs;
-  float DepthFreeSurf;
-  int16_t FaultBlock;
-  int16_t Zone;
+  float Vp; ///< P wave speed in m/s
+  float Vs; ///< S wave speed in m/s
+  float Density; ///< Density in kg/m^3
+  float Qp; ///< Q for P waves
+  float Qs; ///< Q for S waves
+  float DepthFreeSurf; ///< Depth wrt free surface (burial depth)
+  int16_t FaultBlock; ///< Fault block identifier
+  int16_t Zone; ///< Zone identifier
 }; // struct PayloadStruct
 
 namespace cencalvm {

@@ -10,6 +10,11 @@
 // ======================================================================
 //
 
+/** @file lib/etreefwd.h
+ *
+ * @brief Forward declarations for etree API.
+ */
+
 #if !defined(cencalvm_storage_etreefwd_h)
 #define cencalvm_storage_etreefwd_h
 

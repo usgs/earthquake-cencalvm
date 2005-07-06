@@ -10,6 +10,12 @@
 // ======================================================================
 //
 
+/** @file lib/GridIngester.h
+ *
+ * @brief C++ object for reading input grids containing velocity model
+ * data and inserting them into the database.
+ */
+
 #if !defined(cencalvm_create_gridingester_h)
 #define cencalvm_create_gridingester_h
 
@@ -21,6 +27,8 @@ namespace cencalvm {
   }; // namespace create
 }; // namespace cencalvm
 
+/// C++ object for reading input grids containing velocity model data
+/// and inserting them into the database.
 class cencalvm::create::GridIngester
 { // GridIngester
 

@@ -10,6 +10,12 @@
 // ======================================================================
 //
 
+/** @file lib/Projector.h
+ *
+ * @brief C++ manager for projecting to/from 3-D geologic
+ * model.
+ */
+
 #if !defined(cencalvm_storage_projector_h)
 #define cencalvm_storage_projector_h
 
@@ -21,6 +27,7 @@ namespace cencalvm {
   }; // namespace storage
 }; // namespace cencalvm
 
+/// C++ manager for projecting to/from 3-D geologic model.
 class cencalvm::storage::Projector
 { // Projector
 

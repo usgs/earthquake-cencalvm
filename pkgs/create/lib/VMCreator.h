@@ -10,6 +10,12 @@
 // ======================================================================
 //
 
+/** @file lib/VMCreator.h
+ *
+ * @brief C++ manager for creating the velocity model
+ * database.
+ */
+
 #if !defined(cencalvm_create_vmcreator_h)
 #define cencalvm_create_vmcreator_h
 
@@ -22,6 +28,7 @@ namespace cencalvm {
   }; // namespace create
 }; // namespace cencalvm
 
+/// C++ manager for creating the velocity model database.
 class cencalvm::create::VMCreator
 { // VMCreator
   friend class TestVMCreator;

@@ -10,7 +10,7 @@
 // ----------------------------------------------------------------------
 //
 
-/** @file tests/libtests/TestVMCreator.h
+/** @file tests/TestVMCreator.h
  *
  * @brief C++ TestVMCreator object
  *
