@@ -48,6 +48,8 @@ cencalvm::query::VMQuery::~VMQuery(void)
 { // destructor
   delete[] _pQueryVals; _pQueryVals = 0;
   delete _pGeom; _pGeom = 0;
+  if (0 != _db)
+    close();
 } // destructor
   
 // ----------------------------------------------------------------------
@@ -114,6 +116,7 @@ cencalvm::query::VMQuery::queryVals(const char** names,
   if (numVals > 0) {
     delete[] _pQueryVals; 
     _pQueryVals = (numVals > 0) ? new int[numVals] : 0;
+    _querySize = numVals;
     for (int iVal=0; iVal < numVals; ++iVal) {
       if (0 == strcasecmp("Vp", names[iVal]))
 	_pQueryVals[iVal] = 0;

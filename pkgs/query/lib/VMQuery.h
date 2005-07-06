@@ -24,6 +24,7 @@
 namespace cencalvm {
   namespace query {
     class VMQuery;
+    class TestVMQuery;
   }; // query
   namespace storage {
     class Geometry;
@@ -35,12 +36,17 @@ namespace cencalvm {
 /// INTERFACE).
 class cencalvm::query::VMQuery
 { // class VMQuery
+  friend class TestVMQuery; // unit testing
 
  public :
   // PUBLIC ENUM ////////////////////////////////////////////////////////
 
   /// Type of query
-  enum QueryEnum { MAXRES=0, FIXEDRES=1, AVGRES=2 };
+  enum QueryEnum { 
+    MAXRES=0, ///< Query at maximum resolution
+    FIXEDRES=1, ///< Query at fixed resolution
+    AVGRES=2 ///< Query at resolution tuned to wavelength of shear waves
+  };
 
  public :
   // PUBLIC METHODS /////////////////////////////////////////////////////
@@ -62,6 +68,19 @@ class cencalvm::query::VMQuery
    * @param queryType Set type of query
    */
   void queryType(const QueryEnum queryType);
+
+  /** Set query resolution.
+   *
+   * Meaning depends on type of query:
+   *   @li MAXRES Resolution is not applicable
+   *   @li FIXEDRES Query etree at level corresponding to resolution
+   *   @li AVGRES Resolution corresponds to minimum period of waves;
+   *     etree is queried at lavel corresponding to minimum wavelength
+   *     for shear waves
+   *
+   * @param queryRes Resolution of query.
+   */
+  void queryRes(const double res);
 
   /** Set values to be returned by queries. Default is to return all
    * values in order they appear in PayloadStruct.

@@ -26,6 +26,12 @@ void
 cencalvm::query::VMQuery::cacheSize(const int size)
 { if (size > 0) _cacheSize = size; }
 
+// Set query resolution.
+inline
+void
+cencalvm::query::VMQuery::queryRes(const double res)
+{ if (res > 0.0) _queryRes = res; }
+
 // version
 // $Id$
 
