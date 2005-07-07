@@ -176,6 +176,12 @@ cencalvm::create::VMCreator::_packDB(void) const
   if (0 != etree_registerschema(packeddb, cencalvm::storage::SCHEMA))
     throw std::runtime_error(etree_strerror(etree_errno(packeddb)));
   
+  char* appmeta = 0;
+  if (0 != (appmeta = etree_getappmeta(unpackeddb)))
+    if (0 != etree_setappmeta(packeddb, appmeta))
+      throw std::runtime_error(etree_strerror(etree_errno(packeddb)));
+  free(appmeta);
+  
   etree_addr_t addr;
   addr.x = 0;
   addr.y = 0;
@@ -199,12 +205,6 @@ cencalvm::create::VMCreator::_packDB(void) const
   
   if (0 != etree_endappend(packeddb))
     throw std::runtime_error(etree_strerror(etree_errno(packeddb)));
-  
-  char* appmeta = 0;
-  if (0 != (appmeta = etree_getappmeta(unpackeddb)))
-    if (0 != etree_setappmeta(packeddb, appmeta))
-      throw std::runtime_error(etree_strerror(etree_errno(packeddb)));
-  free(appmeta);
   
   if (0 != etree_close(unpackeddb))
     throw std::runtime_error(etree_strerror(etree_errno(unpackeddb)));
