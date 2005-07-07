@@ -26,7 +26,7 @@ TEST_ARGS = -d data/800x800x200.etree -i ../data/sample.in -o test.out
 # ----------------------------------------------------------------------
 all: $(PROJ_BIN)
 
-$(PROJ_BIN):: $(PROJ_OBJS)
+$(PROJ_BIN):: product_dirs $(PROJ_OBJS)
 	$(CXX) -o $@ $(LCXXFLAGS) $(PROJ_OBJS)
 
 test:
