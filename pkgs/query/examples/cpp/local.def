@@ -14,6 +14,8 @@ PROJ_TMPDIR = $(BLD_TMPDIR)/$(PROJECT)/$(PACKAGE)
 PROJ_CLEAN += $(PROJ_BIN)
 PROJ_CLEAN += test.out
 
+PROJ_LCXX_FLAGS += -L$(BLD_LIBDIR)
+
 PROJ_LCXX_FLAGS += -lcencalvmquery -lcencalvmstorage
 
 
