@@ -106,7 +106,13 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 	>> payload.Zone;
       if (!fin.good())
 	throw std::runtime_error("Couldn't parse line.");
+#if 0
       if (payload.FaultBlock > 0 && payload.Zone > 0) {
+#else
+	// TEMPORARY
+	// Keep all info for now
+	if (true) {
+#endif
 	// convert elev and depth from km to m
 	elev *= 1.0e+3;
 	payload.DepthFreeSurf *= 1.0e+3;
