@@ -21,7 +21,19 @@
  * @li 128 byte cache for queries
  *
  * The default behavior can be modified by calling the appropriate
- * class method, e.g., queryType(), querySize(), queryVals().
+ * class method, e.g., queryType(), cacheSize(), queryVals().
+ *
+ * The general order of use is:
+ *
+ * <ol>
+ * <li> Create query object using cencalvm::query::VMQuery::VMQuery()
+ * <li> Set filename of database using cencalvm::query::VMQuery::filename()
+ * <li> Optionally, set cache size using cencalvm::query::VMQuery::cacheSize()
+ * <li> Optionally, set values to returnin query using cencalvm::query::VMQuery::queryVals()
+ * <li> Open database using cencalvm::query::VMQuery::open()
+ * <li> Query database using cencalvm::query::VMQuery::query()
+ * <li> Close database using cencalvm::query::VMQuery::close()
+ * </ol>
  */
 
 #if !defined(cencalvm_query_vmquery_h)
@@ -88,7 +100,7 @@ class cencalvm::query::VMQuery
    *     etree is queried at lavel corresponding to minimum wavelength
    *     for shear waves
    *
-   * @param queryRes Resolution of query.
+   * @param res Resolution of query.
    */
   void queryRes(const double res);
 
@@ -115,7 +127,16 @@ class cencalvm::query::VMQuery
 
   /** Query the database.
    *
-   * @pre Must call Open() before Query()
+   * @warning Array for values to be returned must be allocated BEFORE
+   * query.
+   *
+   * @note Longitude and latitude are given in degrees in the WGS84 datum.
+   *
+   * @note Elevation is given in meters with respect to mean sea level.
+   *
+   * @note Values will be returned either of the order they are shown
+   * in cencalvm::storage::PayloadStruct or as specified with a call
+   * to queryVals().
    *
    * @param ppVals Pointer to computed values (output from query)
    * @param numVals Number of values expected (size of array (preallocated))

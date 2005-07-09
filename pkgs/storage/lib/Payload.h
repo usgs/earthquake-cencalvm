@@ -31,7 +31,7 @@ struct cencalvm::storage::PayloadStruct {
   float Density; ///< Density in kg/m^3
   float Qp; ///< Q for P waves
   float Qs; ///< Q for S waves
-  float DepthFreeSurf; ///< Depth wrt free surface (burial depth)
+  float DepthFreeSurf; ///< Depth wrt free surface (burial depth) in m
   int16_t FaultBlock; ///< Fault block identifier
   int16_t Zone; ///< Zone identifier
 }; // struct PayloadStruct
