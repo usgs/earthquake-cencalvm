@@ -10,7 +10,7 @@
  * ======================================================================
  */
 
-/** @file lib/cvmquery.h
+/** @file liblang/cvmquery.h
  *
  * @brief C interface definitions for querying the USGS central CA velocity
  * model (USER INTERFACE).
@@ -19,6 +19,28 @@
  * velocity model from C. See f77vmquery.h for the routines to query
  * the velocity model using Fortran via Fortran 77. If you are using
  * C++, you should use the VMQuery object directly.
+ *
+ * The current defaults for queries are:
+ * @li return all values in a query,
+ * @li query at the maximum resolution of the model
+ * @li 128 byte cache for queries
+ *
+ * The default behavior can be modified by calling the appropriate
+ * class method, e.g., cencalvm_queryType(), cencalvm_cacheSize(),
+ * cencalvm_queryVals().
+ *
+ * The general order of use is:
+ *
+ * <ol>
+ * <li> Create query object using cencalvm_createQuery()
+ * <li> Set filename of database using cencalvm_filename()
+ * <li> Optionally, set cache size using cencalvm_cacheSize()
+ * <li> Optionally, set values to returnin query using cencalvm_queryVals()
+ * <li> Open database using cencalvm_open()
+ * <li> Query database using cencalvm_query()
+ * <li> Close database using cencalvm_close()
+ * <li> Destroy query object using cencalvm_destroyQuery()
+ * </ol>
  */
 
 #if !defined(cencalvm_cvmquery_h)
@@ -28,7 +50,7 @@
  *
  * Calls VMQuery().
  *
- * @returns pointer to VMQuery object
+ * @returns pointer to VMQuery object (0 on failure)
  */
 void* cencalvm_createQuery(void);
 
@@ -38,7 +60,7 @@ void* cencalvm_createQuery(void);
  *
  * @param handle Pointer to query
  *
- * @returns 1 on success, 0 on error
+ * @returns 0 on success, 1 on error
  */
 int cencalvm_destroyQuery(void* handle);
 
@@ -46,7 +68,7 @@ int cencalvm_destroyQuery(void* handle);
  *
  * @param handle Pointer to query
  *
- * @returns 1 on success, 0 on error
+ * @returns 0 on success, 1 on error
  */
 int cencalvm_open(void* handle);
   
@@ -54,7 +76,7 @@ int cencalvm_open(void* handle);
  *
  * @param handle Pointer to query
  *
- * @returns 1 on success, 0 on error
+ * @returns 0 on success, 1 on error
  */
 int cencalvm_close(void* handle);
   
@@ -70,7 +92,7 @@ int cencalvm_close(void* handle);
  *   @li =1  Query at fixed resolution
  *   @li =2  Query at resolution tuned to wavelength of shear waves
  *
- * @returns 1 on success, 0 on error
+ * @returns 0 on success, 1 on error
  */
 int cencalvm_queryType(void* handle,
 		       const int queryType);
@@ -85,9 +107,9 @@ int cencalvm_queryType(void* handle,
  *     for shear waves
  *
  * @param handle Pointer to query
- * @param queryRes Resolution of query.
+ * @param res Resolution of query.
  *
- * @returns 1 on success, 0 on error
+ * @returns 0 on success, 1 on error
  */
 int cencalvm_queryRes(void* handle,
 		      const double res);
@@ -99,7 +121,7 @@ int cencalvm_queryRes(void* handle,
  * @param names Names of values to be returned in queries
  * @param numVals Number of values to be returned in queries
  *
- * @returns 1 on success, 0 on error
+ * @returns 0 on success, 1 on error
  */
 int cencalvm_queryVals(void* handle,
 		       const char** names,
@@ -110,7 +132,7 @@ int cencalvm_queryVals(void* handle,
  * @param handle Pointer to query
  * @param filename Name of database file
  *
- * @returns 1 on success, 0 on error
+ * @returns 0 on success, 1 on error
  */
 int cencalvm_filename(void* handle,
 		      const char* filename);
@@ -120,7 +142,7 @@ int cencalvm_filename(void* handle,
  * @param handle Pointer to query
  * @param size Size of cache in ??
  *
- * @returns 1 on success, 0 on error
+ * @returns 0 on success, 1 on error
  */
 int cencalvm_cacheSize(void* handle,
 		       const int size);
@@ -130,7 +152,13 @@ int cencalvm_cacheSize(void* handle,
  * @warning Array for values to be returned must be allocated BEFORE
  * query.
  *
- * @pre Must call Open() before Query()
+ * @note Longitude and latitude are given in degrees in the WGS84 datum.
+ *
+ * @note Elevation is given in meters with respect to mean sea level.
+ *
+ * @note Values will be returned either of the order they are shown
+ * in cencalvm::storage::PayloadStruct or as specified with a call
+ * to queryVals().
  *
  * @param handle Pointer to query
  * @param ppVals Pointer to array holding computed values (output from query)
@@ -139,7 +167,7 @@ int cencalvm_cacheSize(void* handle,
  * @param lat Latitude of location for query in degrees
  * @param elev Elevation of location wrt MSL in meters
  *
- * @returns 1 on success, 0 on error
+ * @returns 0 on success, 1 on error
  */
 int cencalvm_query(void* handle,
 		   double** ppVals,

@@ -20,8 +20,8 @@ extern "C" {
 #include <iostream> // USES std::cerr
 
 // ----------------------------------------------------------------------
-static const int VM_OK = 1;
-static const int VM_ERROR = 0;
+static const int VM_OK = 0;
+static const int VM_ERROR = 1;
 
 // ----------------------------------------------------------------------
 // Create velocity model query object.

@@ -23,8 +23,6 @@ extern "C" {
 #include <sstream> // USES std::istringstream
 #include <string.h> // USE strncpy
 
-#include <iostream>
-
 // ----------------------------------------------------------------------
 // Create velocity model query object.
 void
@@ -37,27 +35,27 @@ cencalvm_createquery_f(size_t* handle)
 // Destroy velocity model query object.
 void
 cencalvm_destroyquery_f(size_t* handleAddr,
-			int* ok)
+			int* err)
 { // destroyQuery
-  *ok = cencalvm_destroyQuery((void*) *handleAddr);
+  *err = cencalvm_destroyQuery((void*) *handleAddr);
 } // destroyQuery
 
 // ----------------------------------------------------------------------
 // Open database for querying.
 void
 cencalvm_open_f(size_t* handleAddr,
-		int* ok)
+		int* err)
 { // open
-  *ok = cencalvm_open((void*) *handleAddr);
+  *err = cencalvm_open((void*) *handleAddr);
 } // open
   
 // ----------------------------------------------------------------------
 // Close the database.
 void
 cencalvm_close_f(size_t* handleAddr,
-		 int* ok)
+		 int* err)
 { // close
-  *ok = cencalvm_close((void*) *handleAddr);
+  *err = cencalvm_close((void*) *handleAddr);
 } // close
   
 // ----------------------------------------------------------------------
@@ -65,9 +63,9 @@ cencalvm_close_f(size_t* handleAddr,
 void
 cencalvm_querytype_f(size_t* handleAddr,
 		     const int* queryType,
-		     int* ok)
+		     int* err)
 { // queryType
-  *ok = cencalvm_queryType((void*) *handleAddr, *queryType);
+  *err = cencalvm_queryType((void*) *handleAddr, *queryType);
 } // queryType
 
 // ----------------------------------------------------------------------
@@ -75,9 +73,9 @@ cencalvm_querytype_f(size_t* handleAddr,
 void
 cencalvm_queryres_f(size_t* handleAddr,
 		    const double* res,
-		    int* ok)
+		    int* err)
 { // queryRes
-  *ok = cencalvm_queryRes((void*) *handleAddr, *res);
+  *err = cencalvm_queryRes((void*) *handleAddr, *res);
 } // queryRes
 
 // ----------------------------------------------------------------------
@@ -85,13 +83,13 @@ cencalvm_queryres_f(size_t* handleAddr,
 void
 cencalvm_filename_f(size_t* handleAddr,
 		    const char* filename,
-		    int* ok,
+		    int* err,
 		    const int len)
 { // filename
   std::istringstream sin(filename);
   std::string cfilename;
   sin >> cfilename;
-  *ok = cencalvm_filename((void*) *handleAddr, cfilename.c_str());
+  *err = cencalvm_filename((void*) *handleAddr, cfilename.c_str());
 } // filename
 
 // ----------------------------------------------------------------------
@@ -99,9 +97,9 @@ cencalvm_filename_f(size_t* handleAddr,
 void
 cencalvm_cachesize_f(size_t* handleAddr,
 		     const int* size,
-		     int* ok)
+		     int* err)
 { // cacheSize
-  *ok = cencalvm_cacheSize((void*) *handleAddr, *size);
+  *err = cencalvm_cacheSize((void*) *handleAddr, *size);
 } // cacheSize
 
 #include <iostream>
@@ -114,10 +112,10 @@ cencalvm_query_f(size_t* handleAddr,
 		 const double* lon,
 		 const double* lat,
 		 const double* elev,
-		 int *ok)
+		 int *err)
 { // query
-  *ok = cencalvm_query((void*) *handleAddr, &pVals, *numVals, 
-		       *lon, *lat, *elev);
+  *err = cencalvm_query((void*) *handleAddr, &pVals, *numVals, 
+			*lon, *lat, *elev);
 } // query
 
 

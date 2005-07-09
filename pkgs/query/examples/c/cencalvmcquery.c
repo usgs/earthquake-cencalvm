@@ -99,19 +99,19 @@ main(int argc,
   if (0 == query)
     return 1;
 
-  if (!cencalvm_filename(query, filenameDB))
+  if (0 != cencalvm_filename(query, filenameDB))
     return 1;
 
 #if !defined(ALLVALS)
   int numVals = 3;
   char* pValNames = { "FaultBlock", "Zone" };
-  if (!cencalvm_queryVals(query, pValNames, numVals))
+  if (0 != cencalvm_queryVals(query, pValNames, numVals))
     return 1;
 #else
   int numVals = 8;
 #endif
 
-  if (!cencalvm_open(query))
+  if (0 != cencalvm_open(query))
     return 1;
   
   FILE* fileIn = fopen(filenameIn, "r");
@@ -134,7 +134,7 @@ main(int argc,
   double elev = 0.0;
   fscanf(fileIn, "%lf %lf %lf", &lon, &lat, &elev);
   while (!feof(fileIn)) {
-    if (!cencalvm_query(query, &pVals, numVals, lon, lat, elev))
+    if (0 != cencalvm_query(query, &pVals, numVals, lon, lat, elev))
       return 1;
 
     fprintf(fileOut, "%9.4f%8.4f%9.1f", lon, lat, elev);
@@ -149,10 +149,10 @@ main(int argc,
     fscanf(fileIn, "%lf %lf %lf", &lon, &lat, &elev);
   } /* while */
 
-  if (!cencalvm_close(query))
+  if (0 != cencalvm_close(query))
     return 1;
 
-  if (!cencalvm_destroyQuery(query))
+  if (0 != cencalvm_destroyQuery(query))
     return 1;
 
   fclose(fileIn);

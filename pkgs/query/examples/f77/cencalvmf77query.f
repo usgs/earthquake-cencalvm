@@ -51,10 +51,10 @@ c       ****************************************************************
 	if (query.eq.0) goto 999
 
 	call cencalvm_filename_f(query, filenameDB, ok)
-	if (ok.eq.0) goto 999
+	if (ok.ne.0) goto 999
 
 	call cencalvm_open_f(query, ok)
-	if(ok.eq.0) goto 999
+	if(ok.ne.0) goto 999
 
 	open(unitIn,file=filenameIn,status='old',err=30)
 	open(unitOut,file=filenameOut,status='new')
@@ -62,7 +62,7 @@ c       ****************************************************************
  10	read(unitIn,*,err=30) lon,lat,elev
 
 	call cencalvm_query_f(query,vals,numVals,lon,lat,elev,ok)
-	if(ok.eq.0) goto 999
+	if(ok.ne.0) goto 999
 
 	write(unitOut,20) lon,lat,elev,vals(1),vals(2),vals(3),
        1 vals(4),vals(5),vals(6),int(vals(7)),int(vals(8))
@@ -71,9 +71,9 @@ c       ****************************************************************
 	goto 10
 
  30	call cencalvm_close_f(query, ok)
-	if(ok.eq.0) goto 999
+	if(ok.ne.0) goto 999
 	call cencalvm_destroyquery_f(query, ok)
-	if(ok.eq.0) goto 999
+	if(ok.ne.0) goto 999
 
 	close(unitIn)
 	close(unitOut)

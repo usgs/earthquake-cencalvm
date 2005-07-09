@@ -10,10 +10,42 @@
  * ======================================================================
  */
 
+/** @file liblang/f77vmquery.h
+ *
+ * @brief Fortran 77 interface definitions for querying the USGS
+ * central CA velocity model (USER INTERFACE).
+ *
+ * These are the routines that are used to query the USGS central CA
+ * velocity model from Fortran 77. See cvmquery.h for the routines to
+ * query the velocity model using C. If you are using C++, you should
+ * use the VMQuery object directly.
+ *
+ * The current defaults for queries are:
+ * @li return all values in a query,
+ * @li query at the maximum resolution of the model
+ * @li 128 byte cache for queries
+ *
+ * The default behavior can be modified by calling the appropriate
+ * class method, e.g., cencalvm_querytype_f() and cencalvm_cachesize_f().
+ *
+ * The general order of use is:
+ *
+ * <ol>
+ * <li> Create query object using cencalvm_createquery_f()
+ * <li> Set filename of database using cencalvm_filename_f()
+ * <li> Optionally, set cache size using cencalvm_cachesize_f()
+ * <li> Open database using cencalvm_open_f()
+ * <li> Query database using cencalvm_query_f()
+ * <li> Close database using cencalvm_close_f()
+ * <li> Destroy query object using cencalvm_destroyquery_f()
+ * </ol>
+ */
+
 #if !defined(cencalvm_f77vmquery_h)
 #define cencalvm_f77vmquery_h
 
 // ----------------------------------------------------------------------
+/** Fortran name mangling */
 #define cencalvm_createquery_f \
   FORTRAN_NAME_(cencalvm_createquery_f, CENCALVM_CREATEQUERY_F)
 /** Create velocity model query object.
@@ -27,44 +59,48 @@ extern "C"
 void cencalvm_createquery_f(size_t* handleAddr);
 
 // ----------------------------------------------------------------------
+/** Fortran name mangling */
 #define cencalvm_destroyquery_f \
   FORTRAN_NAME_(cencalvm_destroyquery_f, CENCALVM_DESTROYQUERY_F)
 /** Destroy velocity model query object.
  *
  * Calls ~VMQuery().
  *
- * @param handleAddr Addreee of handle to VMQuery object
- * @param ok set to 1 on success, 0 on error
+ * @param handleAddr Address of handle to VMQuery object
+ * @param err set to 0 on success, 1 on error
  */
 extern "C"
 void cencalvm_destroyquery_f(size_t* handleAddr,
-			     int* ok);
+			     int* err);
 
 // ----------------------------------------------------------------------
+/** Fortran name mangling */
 #define cencalvm_open_f \
   FORTRAN_NAME_(cencalvm_open_f, CENCALVM_OPEN_F)
 /** Open database for querying.
  *
- * @param handleAddr Addreee of handle to VMQuery object
- * @param ok set to 1 on success, 0 on error
+ * @param handleAddr Address of handle to VMQuery object
+ * @param err set to 0 on success, 1 on error
  */
 extern "C"
 void cencalvm_open_f(size_t* handleAddr,
-		     int* ok);
+		     int* err);
   
 // ----------------------------------------------------------------------
+/** Fortran name mangling */
 #define cencalvm_close_f \
   FORTRAN_NAME_(cencalvm_close_f, CENCALVM_CLOSE_F)
 /** Close the database.
  *
- * @param handleAddr Addreee of handle to VMQuery object
- * @param ok set to 1 on success, 0 on error
+ * @param handleAddr Address of handle to VMQuery object
+ * @param err set to 0 on success, 1 on error
  */
 extern "C"
 void cencalvm_close_f(size_t* handleAddr,
-		      int* ok);
+		      int* err);
 
 // ----------------------------------------------------------------------
+/** Fortran name mangling */
 #define cencalvm_querytype_f \
   FORTRAN_NAME_(cencalvm_querytype_f, CENCALVM_QUERYTYPE_F)
 /** Set query type.
@@ -73,19 +109,20 @@ void cencalvm_close_f(size_t* handleAddr,
  * that has been spatially averaged. This fills in parent octants with
  * the average of its children. 
  *
- * @param handleAddr Addreee of handle to VMQuery object
+ * @param handleAddr Address of handle to VMQuery object
  * @param queryType Type of query
  *   @li =0  Query at maximum resolution
  *   @li =1  Query at fixed resolution
  *   @li =2  Query at resolution tuned to wavelength of shear waves
- * @param ok set to 1 on success, 0 on error
+ * @param err set to 0 on success, 1 on error
  */
 extern "C"
 void cencalvm_querytype_f(size_t* handleAddr,
 			  const int* queryType,
-			  int* ok);
+			  int* err);
 
 // ----------------------------------------------------------------------
+/** Fortran name mangling */
 #define cencalvm_queryres_f \
   FORTRAN_NAME_(cencalvm_queryres_f, CENCALVM_QUERYRES_F)
 /** Set query resolution.
@@ -97,59 +134,71 @@ void cencalvm_querytype_f(size_t* handleAddr,
  *     etree is queried at lavel corresponding to minimum wavelength
  *     for shear waves
  *
- * @param handleAddr Addreee of handle to VMQuery object
- * @param queryRes Resolution of query.
- * @param ok set to 1 on success, 0 on error
+ * @param handleAddr Address of handle to VMQuery object
+ * @param res Resolution of query.
+ * @param err set to 0 on success, 1 on error
  */
 extern "C"
 void cencalvm_queryres_f(size_t* handleAddr,
 			 const double* res,
-			 int* ok);
+			 int* err);
 
 // ----------------------------------------------------------------------
+/** Fortran name mangling */
 #define cencalvm_filename_f \
   FORTRAN_NAME_(cencalvm_filename_f, CENCALVM_FILENAME_F)
 /** Set the database filename.
  *
- * @param handleAddr Addreee of handle to VMQuery object
+ * @param handleAddr Address of handle to VMQuery object
  * @param filename Name of database file
  * @param len Length of string (IMPLICIT IN FORTRAN)
- * @param ok set to 1 on success, 0 on error
+ * @param err set to 0 on success, 1 on error
  */
 extern "C"
-void cencalvm_filename_f(size_t* handleAddrVal,
+void cencalvm_filename_f(size_t* handleAddr,
 			 const char* filename,
-			 int* ok,
+			 int* err,
 			 const int len);
 
 // ----------------------------------------------------------------------
+/** Fortran name mangling */
 #define cencalvm_cachesize_f \
   FORTRAN_NAME_(cencalvm_cachesize_f, CENCALVM_CACHESIZE_F)
 /** Set size of cache during queries.
  *
- * @param handleAddr Addreee of handle to VMQuery object
+ * @param handleAddr Address of handle to VMQuery object
  * @param size Size of cache in ??
- * @param ok set to 1 on success, 0 on error
+ * @param err set to 0 on success, 1 on error
  */
 extern "C"
 void cencalvm_cachesize_f(size_t* handleAddr,
 			  const int* size,
-			  int* ok);
+			  int* err);
 
 // ----------------------------------------------------------------------
+/** Fortran name mangling */
 #define cencalvm_query_f \
   FORTRAN_NAME_(cencalvm_query_f, CENCALVM_QUERY_F)
 /** Query the database.
  *
- * @pre Must call Open() before Query()
+ * @warning Array for values to be returned must be allocated BEFORE
+ * query.
  *
- * @param handleAddr Addreee of handle to VMQuery object
+ * @note Longitude and latitude are given in degrees in the WGS84 datum.
+ *
+ * @note Elevation is given in meters with respect to mean sea level.
+ *
+ * @note Values will be returned either of the order they are shown
+ * in cencalvm::storage::PayloadStruct or as specified with a call
+ * to queryVals().
+ *
+ * @param handleAddr Address of handle to VMQuery object
  * @param pVals Pointer to computed values (output from query)
  * @param numVals Number of values expected (size of array (preallocated))
  * @param lon Longitude of location for query in degrees
  * @param lat Latitude of location for query in degrees
  * @param elev Elevation of location wrt MSL in meters
- * @param ok set to 1 on success, 0 on error
+ * @param err set to 0 on success, 1 on error
  */
 extern "C"
 void cencalvm_query_f(size_t* handleAddr,
@@ -158,7 +207,7 @@ void cencalvm_query_f(size_t* handleAddr,
 		      const double* lon,
 		      const double* lat,
 		      const double* elev,
-		      int* ok);
+		      int* err);
 
 #endif // cencalvm77vmquery_h
 
