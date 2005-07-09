@@ -48,24 +48,20 @@ c       ****************************************************************
 	ok = 1
 
 	call cencalvm_createquery_f(query)
-	write(6,*) 'query:',query
 	if (query.eq.0) goto 999
 
 	call cencalvm_filename_f(query, filenameDB, ok)
-	write(6,*) 'filename ok:',ok
 	if (ok.eq.0) goto 999
 
 	call cencalvm_open_f(query, ok)
-	write(6,*) 'open ok:',ok
 	if(ok.eq.0) goto 999
 
-	open(unitIn,file=filenameIn,status='old',err=777)
-	open(unitOut,file=filenameOut,status='new',err=888)
+	open(unitIn,file=filenameIn,status='old',err=30)
+	open(unitOut,file=filenameOut,status='new')
 
  10	read(unitIn,*,err=30) lon,lat,elev
 
 	call cencalvm_query_f(query,vals,numVals,lon,lat,elev,ok)
-	write(6,*) 'query ok:',ok
 	if(ok.eq.0) goto 999
 
 	write(unitOut,20) lon,lat,elev,vals(1),vals(2),vals(3),
@@ -75,21 +71,20 @@ c       ****************************************************************
 	goto 10
 
  30	call cencalvm_close_f(query, ok)
-	write(6,*) 'close ok:',ok
 	if(ok.eq.0) goto 999
 	call cencalvm_destroyquery_f(query, ok)
-	write(6,*) 'destroy ok:',ok
 	if(ok.eq.0) goto 999
 
 	close(unitIn)
 	close(unitOut)
+	goto 100
  666	write(6,*) 'Error reading input file.'
 	goto 999
  777	write(6,*) 'Error opening input file.'
 	goto 999
  888	write(6,*) 'Error opening output file.'
  999	write(6,*) 'ERROR'
- 	return
+ 100	return
 	end
 
 c version
