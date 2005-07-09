@@ -1,0 +1,32 @@
+# -*- Makefile -*-
+#
+# ======================================================================
+#
+#                           Brad T. Aagaard
+#                        U.S. Geological Survey
+#
+# {LicenseText}
+#
+# ======================================================================
+#
+
+CC_FLAGS = $(COMPILER_CC_FLAGS) \
+	$(PROJ_CC_FLAGS) \
+
+CC_INCLUDES = $(COMPILER_CC_INCLUDES) \
+	$(PROJ_CC_INCLUDES) \
+	$(EXTERNAL_INCLUDES) \
+	$(BLD_INCDIR) \
+
+LCC_FLAGS = $(COMPILER_LCC_FLAGS) \
+	$(PROJ_LCC_FLAGS) \
+
+LCC_LIBPATH = $(PROJ_LCC_LIBPATH) \
+	$(EXTERNAL_LIBPATH) \
+
+CCFLAGS = $(CC_FLAGS) $(CC_BUILD_INCLUDES)
+
+# version
+# $Id$
+
+# End of file 

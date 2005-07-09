@@ -13,6 +13,7 @@
 include $(CONFIG_DIR)/variables-build.def
 include $(CONFIG_DIR)/variables-compiler.def
 include $(CONFIG_DIR)/variables-cpp.def
+include $(CONFIG_DIR)/variables-c.def
 include $(CONFIG_DIR)/variables-make.def
 
 # version
