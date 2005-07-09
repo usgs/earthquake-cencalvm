@@ -35,7 +35,7 @@ cencalvm::query::TestVMQuery::testFilename(void)
 { // testFilename
   VMQuery query;
   query.filename(_FILENAME);
-  CPPUNIT_ASSERT(0 == strcmp(_FILENAME, query._filename));
+  CPPUNIT_ASSERT(0 == strcmp(_FILENAME, query._filename.c_str()));
 } // testFilename
 
 // ----------------------------------------------------------------------
