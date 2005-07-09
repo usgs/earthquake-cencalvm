@@ -16,7 +16,7 @@ PACKAGE = query/examples/f77
 include local.def
 
 PROJ_SRCS = \
-	cencalvmf77query.f77 \
+	cencalvmf77query.f \
 
 
 PROJ_BIN = $(PROJ_BINDIR)/cencalvmf77query
