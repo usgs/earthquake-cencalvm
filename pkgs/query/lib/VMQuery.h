@@ -14,12 +14,22 @@
  *
  * @brief C++ manager for querying the USGS central CA velocity
  * model (USER INTERFACE).
+ *
+ * The current defaults for queries are:
+ * @li return all values in a query,
+ * @li query at the maximum resolution of the model
+ * @li 128 byte cache for queries
+ *
+ * The default behavior can be modified by calling the appropriate
+ * class method, e.g., queryType(), querySize(), queryVals().
  */
 
 #if !defined(cencalvm_query_vmquery_h)
 #define cencalvm_query_vmquery_h
 
 #include "cencalvm/storage/etreefwd.h" // USES etree_t
+
+#include <string> // USES std::string
 
 namespace cencalvm {
   namespace query {
@@ -172,7 +182,7 @@ private :
   double _queryRes; ///< Resolution of query (if specified)
 
   etree_t* _db; ///< Database
-  const char* _filename; ///< Name of database file
+  std::string _filename; ///< Name of database file
 
   int* _pQueryVals; ///< Address offsets in payload for query values
   int _querySize; ///< Number of values requested to be return in queries

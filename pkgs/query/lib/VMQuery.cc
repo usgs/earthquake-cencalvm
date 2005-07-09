@@ -51,7 +51,7 @@ cencalvm::query::VMQuery::~VMQuery(void)
   if (0 != _db)
     close();
 } // destructor
-  
+
 // ----------------------------------------------------------------------
 // Open the database and prepare for querying.
 void
@@ -61,7 +61,7 @@ cencalvm::query::VMQuery::open(void)
     return;
   
   assert(_cacheSize > 0);
-  _db = etree_open(_filename, O_RDONLY, _cacheSize, 0, 0);
+  _db = etree_open(_filename.c_str(), O_RDONLY, _cacheSize, 0, 0);
   if (0 == _db) {
     std::ostringstream msg;
     msg << "Could not open the etree database '" << _filename
