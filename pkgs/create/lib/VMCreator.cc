@@ -164,6 +164,8 @@ cencalvm::create::VMCreator::_createDB(void) const
 void
 cencalvm::create::VMCreator::_packDB(void) const
 { // _packDB
+  std::cout << "Packing etree database..." << std::endl;
+
   etree_t* unpackeddb = etree_open(_filenameTmp, O_RDONLY, 0, 0, 0);
   if (0 == unpackeddb)
     throw std::runtime_error("Could not open unpacked etree database.");
@@ -211,6 +213,8 @@ cencalvm::create::VMCreator::_packDB(void) const
   
   if (0 != etree_close(packeddb))
     throw std::runtime_error(etree_strerror(etree_errno(packeddb)));
+
+  std::cout << "Done packing etree database." << std::endl;
 } // _packDB
 
 // version
