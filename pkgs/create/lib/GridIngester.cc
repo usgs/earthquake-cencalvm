@@ -106,13 +106,7 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 	>> payload.Zone;
       if (!fin.good())
 	throw std::runtime_error("Couldn't parse line.");
-#if 0
       if (payload.FaultBlock > 0 && payload.Zone > 0) {
-#else
-	// TEMPORARY
-	// Keep all info for now
-	if (true) {
-#endif
 	// convert elev and depth from km to m
 	elev *= 1.0e+3;
 	payload.DepthFreeSurf *= 1.0e+3;
@@ -124,6 +118,7 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 	// convert Density from g/cm^3 to kg/m^3
 	payload.Density *= 1.0e+3;
 
+	// add data to etree
 	etree_addr_t addr;
 	addr.level = level;
 	addr.type = ETREE_LEAF;
@@ -132,8 +127,28 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 	if (0 != etree_insert(*pDB, addr, &payload))
 	  throw std::runtime_error(etree_strerror(etree_errno(*pDB)));
 	numAdded++;
-      } else
+      } else {
+	// TEMPORARY
+	// Need to decide what to do with values not populated with
+	// material data by Bob Jachens routines
+#if 1
+	// convert elev and depth from km to m
+	elev *= 1.0e+3;
+	payload.DepthFreeSurf *= 1.0e+3;
+
+	// add data to etree
+	etree_addr_t addr;
+	addr.level = level;
+	addr.type = ETREE_LEAF;
+	vmgeom.lonLatElevToAddr(&addr, lon, lat, elev);
+	
+	if (0 != etree_insert(*pDB, addr, &payload))
+	  throw std::runtime_error(etree_strerror(etree_errno(*pDB)));
+	numAdded++;
+#else
 	numIgnored++;
+#endif
+      } // else
     } // for
   }
   catch (const std::exception& err) {
