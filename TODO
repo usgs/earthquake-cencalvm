@@ -1,0 +1,34 @@
+// -*- C++ -*-
+//
+// ======================================================================
+//
+//                           Brad T. Aagaard
+//                        U.S. Geological Survey
+//
+// {LicenseText}
+//
+// ======================================================================
+//
+
+/**
+ * @anchor todo
+ * @file TODO List of features that need to be implemented.
+ *
+ * <ol>
+ *
+ * <li> Cleanup error handling. I am contemplating the design of an
+ * error handling object that would manage error flags, messages,
+ * dumping warnings to a log file etc.
+ *
+ * <li> Adapt spatial averaging routines that Juilo Lopez provided to
+ * the central CA velocity model.
+ *
+ * <li> Create tests to check spatial averaging routines.
+ *
+ * </ol>
+ */
+
+// version
+// $Id$
+
+// End of file 
