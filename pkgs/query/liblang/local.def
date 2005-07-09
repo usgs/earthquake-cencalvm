@@ -1,0 +1,24 @@
+# -*- Makefile -*-
+#
+# ----------------------------------------------------------------------
+#
+#                           Brad T. Aagaard
+#                        U.S. Geological Survey
+#
+# <LicenseText>
+#
+# ----------------------------------------------------------------------
+#
+
+PROJ_TMPDIR = $(BLD_TMPDIR)/$(PROJECT)/$(PACKAGE)/liblang
+
+PROJ_CLEAN += $(PROJ_SAR)
+
+PROJ_LCXX_FLAGS += -L$(BLD_LIBDIR)
+
+PROJ_LCXX_FLAGS += -lcencalvmquery -lcencalvmstorage
+
+# version
+# $Id$
+
+# End of file 
