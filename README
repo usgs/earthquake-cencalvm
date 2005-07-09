@@ -13,21 +13,36 @@
 /** @mainpage
  *
  * @author Brad Aagaard
- * @date 2007/07/05
- * @version 0.1
+ * @date 2007/07/09
+ * @version 0.1.0
  *
  * @section summary Summary
  *
  * This directory tree contains the software used to create and query
- * the central California velocity model developed by the United
- * States Geological Survey. The current version is 0.1.
+ * the seismic veloicty model covering the greater San Francisco Bay
+ * area (central California) developed by the United States Geological
+ * Survey.
  *
- * @section install Installation
+ * Note that updates to the data in the velocity model (the etree
+ * database file) are generally independent of updates to the querying
+ * software. In other words, unless the velocity model undergoes
+ * fundamental changes in the way the data is stored, you can safely
+ * use updated versions of the etree database without recompiling the
+ * query software.
  *
- * For installation instructions, see INSTALL.
+ * @section installation Installation
+ *
+ * For installation instructions, see \ref install "INSTALL".
  *
  * @section dirs Directories
- * @li \b doc Documentation
+ *
+ * @li \b doc Directory where the documentation for the query API
+ * resides. The documentation is available online at
+ * http://pasadena.wr.usgs.gov/office/baagaard/software/software.html. You
+ * can generate the documentation if you have doxygen installed by
+ * running 'make' in the doc directory. The routines associated with
+ * the user interface are labeled as such in the html documentation.
+ *
  * @li \b pkgs Packages comprising cencalvm
  *
  * @subsection create Package 'create'
@@ -38,7 +53,8 @@
  * @subsection query Package 'query'
  *
  * This package is used to query the etree database holding the
- * velocity model.
+ * velocity model. See \ref queryREADME "pkgs/query/README" for
+ * additional information on the query routines.
  *
  * @subsection storage Package 'storage'
  *

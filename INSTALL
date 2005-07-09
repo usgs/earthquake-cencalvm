@@ -1,58 +1,246 @@
-======================================================================
+// -*- C++ -*-
+//
+// ----------------------------------------------------------------------
+//
+//                           Brad T. Aagaard
+//                        U.S. Geological Survey
+//
+// <LicenseText>
+//
+// ----------------------------------------------------------------------
+//
 
-                           Brad T. Aagaard
-                        U.S. Geological Survey
+/**
+ * @anchor install
+ * @file INSTALL
+ * 
+ * @brief Installation instructions
+ *
+ * See \ref queryREADME "pkgs/query/README" for a description of the
+ * velocity model querying software and how to use it.
+ *
+ * @section prerequisites Software Prerequisites
+ *
+ * @subsection general General
+ * 
+ * <ol>
+ * <li> GNU make (not essential but helpful)<br>
+ * version 3.79 and later are known to work without any problems
+ *
+ * Use of the provided Makefiles requires GNU make. See \ref
+ * knownissues "Known Issues" for more information.
+ *
+ * </ol>
+ *
+ * @subsection euclid Euclid - Etree database library
+ * http://www-2.cs.cmu.edu/~euclid/
+ *
+ * <ol>
+ * <li> Download the euclid source code.
+ *
+ *  As of Friday 8 July 2005, the version of Euclid on CMU website
+ *  (http://www-2.cs.cmu.edu/~euclid/) is not really the latest
+ *  version. This out-of-date version contains bugs related to
+ *  different endian types (doesn't work on big endian systems). Julio
+ *  Lopez should be posting the latest version, which works on both
+ *  big and little endian systems, any day. Until then, please
+ *  download Euclid from the USGS EHZ ftp server
+ *  (ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/euclid).
 
- {LicenseText}
+ * <li> Edit the Makefile.
+ *
+ * Go to the libsrc directory. Edit the Makefile to suit your
+ * system. Some example Makefiles can be found on the USGS EHZ ftp
+ * server
+ * (ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/euclid/Makefiles).
+ *
+ * Note: The '-DALIGNMENT' flag appears to be required on all big
+ * endian systems. The code will compile without it, but you will get
+ * core dumps, segmentation faults, and/or bus errors if you don't use
+ * it.
+ *
+ * <li> Build the library.
+ *
+ * Type make and copy the library and all the header files to your
+ * favorite local install directory unless they are put there in the
+ * Makefile.
+ *
+ * <li> Set environment variables.
+ *
+ * If the libraries and header files are not installed in system
+ * directories, set the environment variables ETREE_LIBDIR,
+ * ETREE_INCDIR, and LD_LIBRARY_PATH (or the equivalent)
+ * accordingly. If libetree.so is in /home/tools/etree/lib and header
+ * files are in /home/tools/etree/include, then:
+ *
+ * <ul>
+ * <li> bash shell users
+ *
+\verbatim
+export ETREE_LIBDIR=/usr/local/etree/lib
+export ETREE_INCDIR=/usr/local/etree/include
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(ETREE_LIBDIR)
+\endverbatim
+ *
+ * <li> tcsh shell users
+\verbatim
+setenv ETREE_LIBDIR /usr/local/etree/lib
+setenv ETREE_INCDIR /usr/local/etree/include
+setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(ETREE_LIBDIR)
+\endverbatim
+ *
+ * </ul>
+ *
+ * </ol>
+ *
+ * @subsection proj4 proj4 - Cartographic projections library<br>
+ * http://proj.maptools.org/<br>
+ * version 4.4.9 is known to work
+ *
+ * <ol>
+ * <li> Download the proj4 source code from http://proj.maptools.org/.
+ * <li> Run configure.  Helpful arguments include '--prefix=INSTALL_DIR.
+ * <li> Run 'make' and then 'make install'.
+ *
+ * Although not required, it is useful to download the NAD datum
+ * corrections, so that you can use proj4 to convert b/t NAD27 and
+ * NAD83/WGS84 datums.
+ *
+ * <li> If the libraries and files are not installed in system
+ * libraries, set the environment variables PROJ4_LIBDIR and
+ * PROJ4_INCDIR accordingly. If libproj.so is in /home/tools/proj4/lib
+ * and header files are in /home/tools/proj4/include, then:
+ *
+ * <ul>
+ * <li> bash shell users
+ *
+\verbatim
+export PROJ4_LIBDIR=/usr/local/proj4/lib
+export PROJ4_INCDIR=/usr/local/proj4/include
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
+\endverbatim
+ *
+ * <li> tcsh shell users
+\verbatim
+sestenv PROJ4_LIBDIR /usr/local/proj4/lib
+setenv PROJ4_INCDIR /usr/local/proj4/include
+setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
+\endverbatim
+ *
+ * </ul>
+ *
+ * </ol>
+ *
+ * @section optionalsoftare Install unit testing software (OPTIONAL)
+ *
+ * @subsection cppunit cppunit - C++ unit testing library
+ * http://cppunit.sourceforge.net<br>
+ * version 1.10.2 is known to work
+ *
+ * This library is used in the unit testing of the code. It is only
+ * used for testing and skipping this step will not affect the
+ * functioning of the velocity model software.
+ *
+ * <ol>
+ *
+ * <li> Download the cppunit source code from
+ * http://cppunit.sourceforge.net, or install the binary package for
+ * your operating system (some linux distributions have cppunit
+ * packages).
+ *
+ * <li> Run 'configure' and then 'make' and 'make install'.
+ *
+ * <li> If the libraries and files are not installed in system
+ * libraries, set the environment variables CPPUNIT_LIBDIR and
+ * CPPUNIT_INCDIR accordingly, in the same manner as you did for the
+ * required software.
+ *
+ * </ol>
+ *
+ * @section cencalvm cencalvm - USGS Central CA velocity model query software
+ * ftp://ehzftp.wr.usgs.gov/pub/baagaard/cencalvm/software
+ *
+ * <ol>
+ *
+ * <li> Set architecture, compiler and directory variables in
+ * config/Makefile.config.
+ *
+ * <li> If files appropriate for your system do not exist (see the
+ * Makefile.config file), create your own using the other files as a
+ * template. If you create your own files, I would appreciate it if
+ * you could send them to me so I can add them to the source code
+ * distribution.
+ *
+ * <li> Build the software.
+ *
+ * Pick one of these:
+ * <ul>
+ *
+ * <li> Run make in the top level directory. This will build libraries
+ * related to the storage, creation, and querying of the velocity
+ * model database and the examples. This includes C and Fortran 77
+ * bindings for the query routines. 
+ *
+ * <li> Run make in pkgs/storage/lib and pkgs/query/lib.
+ *
+ * </ul>
+ *
+ * <li> OPTIONAL
+ *
+ * Run 'make' and then 'make tests' in each of the tests directories.
+ *
+ * As of Friday 8 July 2005, the testQueryFixed and testQueryAvg tests
+ * will fail, because the tests haven't been implemented yet.
+ *
+ * <li> Download the velocity model from
+ * ftp://ehzftp.wr.usgs.gov/pub/baagaard/cencalvm.
+ *
+ * <li> OPTIONAL
+ *
+ * Create symbolic links to the USGS central CA velocity model from
+ * each of the examples directories (cpp, c, f77) and run 'make' and
+ * 'make test' in each of the directories. The output (test.out)
+ * should be identical to the file sample.out in the examples/data
+ * directory.
+ *
+ * <li> The libraries, header files, and binaries are now in the
+ * BLD_ROOT directory (defined in Makefile.config).
+ *
+ * </ol>
+ *
+ * @section knownissues Known Issues
+ *
+ * <ul>
+ *
+ * <li> Compiling velocity model querying software without a recent
+ * version of GNU make.
+ *
+ * <ul>
+ *
+ * <li> solaris make
+ *
+\verbatim
+make: Fatal error in reader: ./config/rules-targets.def, line 14: Unexpected end of line seen
+\endverbatim
+ *
+ * Workaround is to use GNU make.
+ *
+ * <li> gmake version 3.76.1 on a solaris system,
+ *
+\verbatim
+BLD_ACTION="all" make recurse
+make: Fatal error in reader: ./config/rules-targets.def, line 14: Unexpected end of line seen
+\endverbatim
+ *
+ * Workaround is to get newer version of GNU make or run make in each
+ * directory.
+ *
+ * </ul>
+ *
+ * </ul>
+ */
 
-======================================================================
+// version
+// $Id$
 
-Brad Aagaard
-2006/07/05
-
-----------------------------------------------------------------------
-INSTALL SOFTWARE PREREQUISITES
-----------------------------------------------------------------------
-
-* Euclid
-  Etree database library
-  http://www-2.cs.cmu.edu/~euclid/
-
-* proj4
-  Cartographic projections library
-  http://proj.maptools.org/
-  version 4.4.9 is known to work
-
-----------------------------------------------------------------------
-INSTALL OPTIONAL SOFTWARE
-----------------------------------------------------------------------
-
-* cppunit
-  C++ unit testing library
-
-  This library is used in the unit testing of the code. It is only
-  used for testing and not the actual functioning of the velocity
-  model software.
-
-----------------------------------------------------------------------
-INSTALL SOFTWARE
-----------------------------------------------------------------------
-
-(1) Set architecture, compiler and directory variables in
-config/Makefile.config
-
-(2) If necessary, create file with compiler flags.
-
-(3) If necessary, create file with architecture flags.
-
-(4) run 'make' in top level directory
-
-  Note: make will fail in the tests directories if the optional
-  software is not installed. You can safely ignore the compilation
-  errors. If you want to run the tests and have the optional software
-  installed simply run 'make test' in the tests directories.
-
-version
-$Id$
-
-End of file
+// End of file 
