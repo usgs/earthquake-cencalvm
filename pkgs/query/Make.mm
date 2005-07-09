@@ -15,6 +15,7 @@ PACKAGE = query
 
 RECURSE_DIRS = \
 	lib \
+	liblang \
 	apps \
 	tests \
 	examples \
