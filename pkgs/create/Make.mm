@@ -16,7 +16,6 @@ PACKAGE = create
 RECURSE_DIRS = \
 	lib \
 	driver \
-	tests \
 
 OTHERS = \
 

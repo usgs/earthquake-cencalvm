@@ -15,7 +15,6 @@ PACKAGE = storage
 
 RECURSE_DIRS = \
 	lib \
-	tests \
 
 OTHERS = \
 

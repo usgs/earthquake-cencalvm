@@ -17,7 +17,6 @@ RECURSE_DIRS = \
 	lib \
 	liblang \
 	apps \
-	tests \
 	examples \
 
 OTHERS = \
