@@ -21,18 +21,6 @@ PROJ_LIBDIR = $(BLD_LIBDIR)
 PROJ_TMPDIR = $(BLD_TMPDIR)/$(PROJECT)
 PROJ_INCDIR = $(BLD_INCDIR)/$(PROJECT)
 
-PROJ_TIDY = core *~ .*~ *.bak
-PROJ_CLEAN = $(PROJ_OBJS) $(PROJ_TIDY)
-
-RECURSE = \
-    for x in $(SUBPACKAGES); do { \
-        if [ -d $$x ]; then { \
-            (cd $$x; $(MM) $(BLD_ACTION) || exit 1; ) \
-        } else { \
-            echo "Subdirectory $$x not found"; \
-        } fi \
-    } done
-
 # version
 # $Id$
 

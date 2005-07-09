@@ -15,6 +15,7 @@ include $(CONFIG_DIR)/rules-targets.def
 include $(CONFIG_DIR)/rules-export.def
 include $(CONFIG_DIR)/rules-cpp.def
 include $(CONFIG_DIR)/rules-c.def
+include $(CONFIG_DIR)/rules-f77.def
 include $(CONFIG_DIR)/rules-test.def
 
 # version

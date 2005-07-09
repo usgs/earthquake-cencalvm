@@ -12,11 +12,20 @@
 
 PROJ_OBJS = ${addprefix ${PROJ_TMPDIR}/, ${addsuffix .${EXT_OBJ}, ${basename ${PROJ_SRCS}}}}
 
-PROJ_DEPENDENCIES = empty.def
+#PROJ_DEPENDENCIES = empty.def
 PROJ_DEPENDENCIES += ${addprefix ${PROJ_TMPDIR}/, ${addsuffix .${EXT_DEPEND}, ${basename ${PROJ_SRCS}}}}
 
-LCXX_SARFLAGS = $(COMPILER_LCXX_SARFLAGS) $(EXTERNAL_SARFLAGS)
-LCXXFLAGS = $(LCXX_FLAGS) $(LCXX_LIBPATH)
+PROJ_TIDY = core *~ .*~ *.bak
+PROJ_CLEAN = $(PROJ_OBJS) $(PROJ_TIDY)
+
+RECURSE = \
+    for x in $(SUBPACKAGES); do { \
+        if [ -d $$x ]; then { \
+            (cd $$x; $(MM) $(BLD_ACTION) || exit 1; ) \
+        } else { \
+            echo "Subdirectory $$x not found"; \
+        } fi \
+    } done
 
 # version
 # $Id$
