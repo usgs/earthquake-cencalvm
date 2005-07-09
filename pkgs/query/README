@@ -1,0 +1,87 @@
+// -*- C++ -*-
+//
+// ----------------------------------------------------------------------
+//
+//                           Brad T. Aagaard
+//                        U.S. Geological Survey
+//
+// <LicenseText>
+//
+// ----------------------------------------------------------------------
+//
+
+/**
+ * @anchor queryREADME
+ * @file pkgs/query/README
+ * 
+ * @brief Interface for querying USGS central CA velocity model.
+ *
+ * This directory tree contains the routines for querying the USGS
+ * central CA velocity model along with some examples.
+ *
+ * @section dirs Directories
+ *
+ * @li \b apps Applications for help in querying models.
+ * @li \b examples Examples of how to use the query routines.
+ * @li \b lib Source code for C++ query routines.
+ * @li \b liblang Source code for C and Fortran bindings of C++ query
+ * routines.
+ * @li \b tests Unit testing routines for C++ query routines.
+ *
+ * @section Database
+ *
+ * See cencalvm::storage::PayloadStruct for a list of the data (and the order
+ * in which it is returned by default).
+ *
+ * @subsection Units
+ *
+ * SI units are used in the database and its interface. See the
+ * documentation of the query routines for specific units of arguments
+ * to each routine.
+ *
+ * @section Applications
+ *
+ * @subsection cencalvminfo
+ *
+ * This application dumps the metadata and database schema from an
+ * etree database to stdout.
+ *
+ * @section Examples
+ *
+ * The data directory contains sample input and output for the
+ * examples. The output can be compared to that generated on your
+ * machine to make sure the example ran properly.
+ *
+ * The cpp, c, and f77 directories contain the examples of how to
+ * query the database from C++, C, and Fortran, respectively.
+ *
+ * @section Querying routines
+ *
+ * Documentation for the query routines for each language are
+ * contained in the header files. Pay special attention to the default
+ * query parameters.
+ *
+ * @subsection f77notes Fortran 77 notes
+ *
+ * @li \b cencalvm_createquery_f()
+ *
+ * The argument to cencalvm_createquery_f() is used to store the
+ * address of the handle to the underlying C++ object. It is
+ * ABSOLUTELY CRITICAL that the number of bytes associated with this
+ * variable match the size of a C/C++ pointer on the system where the
+ * routines are compiled. On 32-bit and 64-bit systems, the variables
+ * will generally be a 4 byte integer (integer*4) and an 8 byte
+ * integer (integer*8), respectively.
+ *
+ * @li No Fortran 77 binding for cencalvm_queryVals()
+ *
+ * Because arrays of strings cannot be passed in a standard manner
+ * from Fortran to C++, there is no Fortran 77 binding for
+ * cencalvm_queryVals(). Instead, you must use the default behavior,
+ * where all values are returned.
+ */
+
+// version
+// $Id$
+
+// End of file 
