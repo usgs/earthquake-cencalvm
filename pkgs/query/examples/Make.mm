@@ -15,6 +15,8 @@ PACKAGE = query/examples
 
 RECURSE_DIRS = \
 	cpp \
+	c \
+	f77 \
 
 OTHERS = \
 
