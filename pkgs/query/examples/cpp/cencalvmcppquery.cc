@@ -103,7 +103,6 @@ main(int argc,
   std::string filenameIn = "";
   std::string filenameOut = "";
   std::string filenameDB = "";
-  std::string filenameVals = "";
   
   parseArgs(&filenameIn, &filenameOut, &filenameDB, argc, argv);
 
