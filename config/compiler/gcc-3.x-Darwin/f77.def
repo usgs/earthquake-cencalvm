@@ -1,0 +1,27 @@
+# -*- Makefile -*-
+#
+# ======================================================================
+#
+#                           Brad T. Aagaard
+#                        U.S. Geological Survey
+#
+# {LicenseText}
+#
+# ======================================================================
+#
+
+F77 = f77
+COMPILER_F77_FLAGS = -fPIC -Wall -O
+
+COMPILER_F77_DEPENDS = $(F77) -M
+
+COMPILER_F77_INCLUDES = 
+
+COMPILER_LF77_SARFLAGS = -dynamiclib -single_module -undefined suppress -flat_namespace
+
+COMPILER_LF77_FLAGS =
+
+# version
+# $Id$
+
+# End of file 

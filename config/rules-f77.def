@@ -1,0 +1,28 @@
+# -*- Makefile -*-
+#
+# ======================================================================
+#
+#                           Brad T. Aagaard
+#                        U.S. Geological Survey
+#
+# {LicenseText}
+#
+# ======================================================================
+#
+
+$(PROJ_TMPDIR)/%.$(EXT_OBJ): %.$(EXT_F77)
+	@$(F77_MAKEDEPEND); \
+	$(CP) $*.$(EXT_DEPEND) $(PROJ_TMPDIR)/$*.$(EXT_DEPEND) ; \
+	tr '[:blank:]' '\n' < $*.$(EXT_DEPEND) > $*.tmp.$(EXT_DEPEND) ; \
+	sed -e 's/#.*//' -e 's/^[^:]*: *//' \
+	  -e 's/ *\\$$//' -e '/^$$/ d' -e 's/$$/ :/' < $*.tmp.$(EXT_DEPEND) \
+	  >> $(PROJ_TMPDIR)/$*.$(EXT_DEPEND) ; \
+	$(RM) $(RMFLAGS) $*.$(EXT_DEPEND) $*.tmp.$(EXT_DEPEND)
+	$(F77) $(F77FLAGS) -c -o $@ $<
+
+F77_MAKEDEPEND = $(COMPILER_F77_DEPENDS) $(F77FLAGS) $< > $*.$(EXT_DEPEND)
+
+# version
+# $Id$
+
+# End of file 

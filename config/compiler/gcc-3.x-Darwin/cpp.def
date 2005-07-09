@@ -1,0 +1,24 @@
+# -*- Makefile -*-
+#
+# ======================================================================
+#
+#                           Brad T. Aagaard
+#                        U.S. Geological Survey
+#
+# {LicenseText}
+#
+# ======================================================================
+#
+
+CXX = g++
+
+COMPILER_CXX_DEPENDS = $(CXX) -MMD
+COMPILER_CXX_FLAGS = -fPIC -Wall -O
+COMPILER_CXX_INCLUDES = 
+COMPILER_LCXX_SARFLAGS = -dynamiclib -single_module -undefined suppress -flat_namespace
+COMPILER_LCXX_FLAGS =
+
+# version
+# $Id$
+
+# End of file 
