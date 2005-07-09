@@ -382,8 +382,10 @@ INPUT                  = ../
 # *.h++ *.idl *.odl *.cs *.php *.php3 *.inc
 
 FILE_PATTERNS          = README \
+                         INSTALL \
+                         TODO \
+                         CHANGES \
 			 *.h \
-                         *.py \
                          
 # The RECURSIVE tag can be used to turn specify whether or not subdirectories 
 # should be searched for input files as well. Possible values are YES and NO. 
@@ -406,7 +408,7 @@ EXCLUDE_SYMLINKS       = YES
 # EXCLUDE_PATTERNS tag to specify one or more wildcard patterns to exclude 
 # certain files from those directories.
 
-EXCLUDE_PATTERNS       = 
+EXCLUDE_PATTERNS       = */tests/*
 
 # The EXAMPLE_PATH tag can be used to specify one or more files or 
 # directories that contain example code fragments that are included (see 
