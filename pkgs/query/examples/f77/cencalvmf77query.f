@@ -56,10 +56,10 @@ c       ****************************************************************
 	call cencalvm_open_f(query, ok)
 	if(ok.ne.0) goto 999
 
-	open(unitIn,file=filenameIn,status='old',end=30)
+	open(unitIn,file=filenameIn,status='old')
 	open(unitOut,file=filenameOut,status='new')
 
- 10	read(unitIn,*,err=30) lon,lat,elev
+ 10	read(unitIn,*,end=30) lon,lat,elev
 
 	call cencalvm_query_f(query,vals,numVals,lon,lat,elev,ok)
 	if(ok.ne.0) goto 999
