@@ -45,14 +45,14 @@
  *  Lopez should be posting the latest version, which works on both
  *  big and little endian systems, any day. Until then, please
  *  download Euclid from the USGS EHZ ftp server
- *  (ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/euclid).
+ *  (ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/euclid3).
 
  * <li> Edit the Makefile.
  *
  * Go to the libsrc directory. Edit the Makefile to suit your
  * system. Some example Makefiles can be found on the USGS EHZ ftp
  * server
- * (ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/euclid/Makefiles).
+ * (ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/euclid3/Makefiles).
  *
  * Note: The '-DALIGNMENT' flag appears to be required on all big
  * endian systems. The code will compile without it, but you will get
@@ -158,7 +158,7 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  * </ol>
  *
  * @section cencalvm cencalvm - USGS Central CA velocity model query software
- * ftp://ehzftp.wr.usgs.gov/pub/baagaard/cencalvm/software
+ * ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/cencalvm/software
  *
  * <ol>
  *
@@ -193,7 +193,7 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  * will fail, because the tests haven't been implemented yet.
  *
  * <li> Download the velocity model from
- * ftp://ehzftp.wr.usgs.gov/pub/baagaard/cencalvm.
+ * ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/cencalvm.
  *
  * <li> OPTIONAL
  *

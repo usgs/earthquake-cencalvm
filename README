@@ -38,7 +38,7 @@
  *
  * @li \b doc Directory where the documentation for the query API
  * resides. The documentation is available online at
- * http://pasadena.wr.usgs.gov/office/baagaard/software/software.html. You
+ * http://pasadena.wr.usgs.gov/office/baagaard/research/software/cencalvm/. You
  * can generate the documentation if you have doxygen installed by
  * running 'make' in the doc directory. The routines associated with
  * the user interface are labeled as such in the html documentation.
