@@ -38,21 +38,16 @@
  * <ol>
  * <li> Download the euclid source code.
  *
- *  As of Friday 8 July 2005, the version of Euclid on CMU website
- *  (http://www-2.cs.cmu.edu/~euclid/) is not really the latest
- *  version. This out-of-date version contains bugs related to
- *  different endian types (doesn't work on big endian systems). Julio
- *  Lopez should be posting the latest version, which works on both
- *  big and little endian systems, any day. Until then, please
- *  download Euclid from the USGS EHZ ftp server
- *  (ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/euclid3).
+ *  As of Monday 11 July 2005, the version of Euclid on CMU website
+ *  (http://www-2.cs.cmu.edu/~euclid/) IS the latest
+ *  version.
 
  * <li> Edit the Makefile.
  *
  * Go to the libsrc directory. Edit the Makefile to suit your
  * system. Some example Makefiles can be found on the USGS EHZ ftp
  * server
- * (ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/euclid3/Makefiles).
+ * (ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/euclid3/Makefiles).
  *
  * Note: The '-DALIGNMENT' flag appears to be required on all big
  * endian systems. The code will compile without it, but you will get
@@ -158,7 +153,7 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  * </ol>
  *
  * @section cencalvm cencalvm - USGS Central CA velocity model query software
- * ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/cencalvm/software
+ * ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/software
  *
  * <ol>
  *
@@ -193,7 +188,7 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  * will fail, because the tests haven't been implemented yet.
  *
  * <li> Download the velocity model from
- * ftp://ehzftp.wr.usgs.gov/pub/ehz/baagaard/cencalvm.
+ * ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database
  *
  * <li> OPTIONAL
  *
