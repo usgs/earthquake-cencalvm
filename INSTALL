@@ -220,7 +220,7 @@ make: Fatal error in reader: ./config/rules-targets.def, line 14: Unexpected end
  *
  * Workaround is to use GNU make.
  *
- * <li> gmake version 3.76.1 on a solaris system,
+ * <li> gmake (versions 3.76.1 and 3.80, at least) on a solaris system,
  *
 \verbatim
 BLD_ACTION="all" make recurse
