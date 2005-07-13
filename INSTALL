@@ -182,7 +182,7 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  *
  * <li> OPTIONAL
  *
- * Run 'make' and then 'make tests' in each of the tests directories.
+ * Run 'make' and then 'make test' in each of the tests directories.
  *
  * As of Friday 8 July 2005, the testQueryFixed and testQueryAvg tests
  * will fail, because the tests haven't been implemented yet.
