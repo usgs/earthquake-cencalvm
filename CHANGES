@@ -14,11 +14,13 @@
  * @anchor changes
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
- * \section Version 0.1.0, 2005/07/09 - original version
- *
- * \section Version 0.1.1, 2005/07/18 - Fixed errors in documentation
+ * \section ver011 Version 0.1.1, 2005/07/18
+ * Fixed errors in documentation
  * and updated Make.mm files in examples directory to reflect name of
  * database in release pre1.0.
+ *
+ * \section ver010 Version 0.1.0, 2005/07/09 
+ * original version
  *
  */
 
