@@ -26,6 +26,9 @@ namespace cencalvm {
     class VMCreator;
     class TestVMCreator; // friend
   }; // namespace create
+  namespace storage {
+    class ErrorHandler; // HOLDS ErrorHandler
+  }; // namespace storage
 }; // namespace cencalvm
 
 /// C++ manager for creating the velocity model database.
@@ -63,6 +66,12 @@ public :
   /// Create the velocity model database.
   void run(void) const;
 
+  /** Get handle to error handler.
+   *
+   * @returns Pointer to Error handler
+   */
+  cencalvm::storage::ErrorHandler* errorHandler(void);
+
 private :
   // PRIVATE METHODS ////////////////////////////////////////////////////
 
@@ -89,9 +98,11 @@ private :
 private :
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 
-  const char* _filenameParams; ///< Filename for parameter file
-  const char* _filenameOut; ///< Filename for output file
-  const char* _filenameTmp; ///< Filename for temporary file
+  std::string _filenameParams; ///< Filename for parameter file
+  std::string _filenameOut; ///< Filename for output file
+  std::string _filenameTmp; ///< Filename for temporary file
+
+  cencalvm::storage::ErrorHandler* _pErrHandler; ///< Error handler
 
 }; // VMCreator
 

@@ -32,6 +32,12 @@ void
 cencalvm::create::VMCreator::filenameTmp(const char* filename)
 { _filenameTmp = filename; }
 
+// Get handle to error handler.
+inline
+cencalvm::storage::ErrorHandler*
+cencalvm::create::VMCreator::errorHandler(void)
+{ return _pErrHandler; }
+
 // version
 // $Id$
 

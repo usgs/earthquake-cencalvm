@@ -32,6 +32,12 @@ void
 cencalvm::query::VMQuery::queryRes(const double res)
 { if (res > 0.0) _queryRes = res; }
 
+// Get handle to error handler.
+inline
+cencalvm::storage::ErrorHandler*
+cencalvm::query::VMQuery::errorHandler(void)
+{ return _pErrHandler; }
+
 // version
 // $Id$
 

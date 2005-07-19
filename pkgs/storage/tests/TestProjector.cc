@@ -13,6 +13,7 @@
 #include "TestProjector.h" // Implementation of class methods
 
 #include "../lib/Projector.h" // USES Projector
+#include "../lib/ErrorHandler.h" // USES Projector
 
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::storage::TestProjector );
@@ -25,7 +26,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::storage::TestProjector );
 void
 cencalvm::storage::TestProjector::testConstructor(void)
 { // testConstructor
-  Projector proj;
+  ErrorHandler errHandler;
+  Projector proj(errHandler);
+  CPPUNIT_ASSERT_EQUAL(ErrorHandler::OK, errHandler.status());
 } // testConstructor
 
 // ----------------------------------------------------------------------
@@ -33,7 +36,9 @@ cencalvm::storage::TestProjector::testConstructor(void)
 void
 cencalvm::storage::TestProjector::testProject(void)
 { // testProject
-  Projector proj;
+  ErrorHandler errHandler;
+  Projector proj(errHandler);
+
   const int numLocs = _NUMLOCS;
   for (int iLoc=0; iLoc < numLocs; ++iLoc) {
     double x = 0;
@@ -45,6 +50,8 @@ cencalvm::storage::TestProjector::testProject(void)
     CPPUNIT_ASSERT_DOUBLES_EQUAL(x/pXY[0], 1.0, tolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(y/pXY[1], 1.0, tolerance);
   } // for
+
+  CPPUNIT_ASSERT_EQUAL(ErrorHandler::OK, errHandler.status());
 } // testProject
 
 // version

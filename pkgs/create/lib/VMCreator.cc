@@ -14,6 +14,7 @@
 
 #include "cencalvm/storage/Payload.h" // USES SCHEMA
 #include "GridIngester.h" // USES GridIngester
+#include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 
 extern "C" {
 #include "etree.h"
@@ -27,7 +28,6 @@ extern "C" {
 #include <unistd.h> // USES gethostname()
 
 #include <sstream> // USES std::ostringstream
-#include <stdexcept> // USES std::runtime_error
 #include <assert.h> // USES assert()
 
 // ----------------------------------------------------------------------
@@ -35,7 +35,8 @@ extern "C" {
 cencalvm::create::VMCreator::VMCreator(void) :
   _filenameParams(""),
   _filenameOut(""),
-  _filenameTmp("")
+  _filenameTmp(""),
+  _pErrHandler(new cencalvm::storage::ErrorHandler)
 { // constructor
 } // constructor
 
@@ -43,6 +44,7 @@ cencalvm::create::VMCreator::VMCreator(void) :
 // Destructor
 cencalvm::create::VMCreator::~VMCreator(void)
 { // destructor
+  delete _pErrHandler; _pErrHandler = 0;
 } // destructor
 
 // ----------------------------------------------------------------------
@@ -50,9 +52,9 @@ cencalvm::create::VMCreator::~VMCreator(void)
 void
 cencalvm::create::VMCreator::run(void) const
 { // run
-  assert(0 != strcmp("", _filenameParams));
-  assert(0 != strcmp("", _filenameTmp));
-  assert(0 != strcmp("", _filenameOut));
+  assert(std::string("") != _filenameParams);
+  assert(std::string("") != _filenameTmp);
+  assert(std::string("") != _filenameOut);
 
   std::string* pGridFilenames = 0;
   int numGrids = 0;
@@ -71,12 +73,13 @@ cencalvm::create::VMCreator::_readParams(std::string** ppGridFilenames,
   assert(0 != ppGridFilenames);
   assert(0 != pNumGrids);
 
-  std::ifstream fin(_filenameParams);
+  std::ifstream fin(_filenameParams.c_str());
   if (!fin.is_open()) {
     std::ostringstream msg;
     msg << "Could not open parameter file '" << _filenameParams
 	<< "' for reading.";
-    throw std::runtime_error(msg.str());
+    _pErrHandler->error(msg.str().c_str());
+    return;
   } // if
 
   int numGrids = 0;
@@ -113,14 +116,20 @@ cencalvm::create::VMCreator::_createDB(void) const
   _readParams(&pGridFilenames, &numGrids);
 
   std::cout << "Preparing etree database for data..." << std::endl;
-  etree_t* etreedb = etree_open(_filenameTmp, O_CREAT | O_TRUNC | O_RDWR, 
+  etree_t* etreedb = etree_open(_filenameTmp.c_str(), 
+				O_CREAT | O_TRUNC | O_RDWR, 
 				0, 0, 3);
-  if (0 == etreedb)
-    throw std::runtime_error("Could not create etree database.");
+  if (0 == etreedb) {
+    _pErrHandler->error("Could not create etree database.");
+    return;
+  } // if
   
   // Register schema
-  if (0 != etree_registerschema(etreedb, cencalvm::storage::SCHEMA))
-    throw std::runtime_error(etree_strerror(etree_errno(etreedb)));
+  if (0 != etree_registerschema(etreedb, cencalvm::storage::SCHEMA)) {
+    _pErrHandler->error(etree_strerror(etree_errno(etreedb)));
+    etree_close(etreedb);
+    return;
+  } // if
  
   // Create and then register metadata 
   const int maxLen = 128;
@@ -134,29 +143,22 @@ cencalvm::create::VMCreator::_createDB(void) const
     << "U.S. Geological Survey\n"
     << "created on: " << datetime
     << "host: "  << hostname;
-  if (0 != etree_setappmeta(etreedb, metainfo.str().c_str()))
-    throw std::runtime_error(etree_strerror(etree_errno(etreedb)));
+  if (0 != etree_setappmeta(etreedb, metainfo.str().c_str())) {
+    _pErrHandler->error(etree_strerror(etree_errno(etreedb)));
+    etree_close(etreedb);
+    return;
+  } // if
 
   std::cout
     << "Finished preparing database. Starting processing of " << numGrids
     << " files." << std::endl;
-  try {
-    for (int iGrid=0; iGrid < numGrids; ++iGrid)
-      GridIngester::addGrid(&etreedb, pGridFilenames[iGrid].c_str());
-  } // try
-  catch (std::exception& err) {
-    if (0 != etree_close(etreedb))
-      throw std::runtime_error("Could not close etree database.");
-    throw;
-  } // catch
-  catch (...) {
-    if (0 != etree_close(etreedb))
-      throw std::runtime_error("Could not close etree database.");
-    throw;
-  } // catch
 
+  for (int iGrid=0; iGrid < numGrids; ++iGrid)
+    GridIngester::addGrid(&etreedb, pGridFilenames[iGrid].c_str(),
+			  *_pErrHandler);
+  
   if (0 != etree_close(etreedb))
-    throw std::runtime_error("Could not close etree database.");       
+    _pErrHandler->error("Could not close etree database.");
 } // _createDB
 
 // ----------------------------------------------------------------------
@@ -166,22 +168,31 @@ cencalvm::create::VMCreator::_packDB(void) const
 { // _packDB
   std::cout << "Packing etree database..." << std::endl;
 
-  etree_t* unpackeddb = etree_open(_filenameTmp, O_RDONLY, 0, 0, 0);
-  if (0 == unpackeddb)
-    throw std::runtime_error("Could not open unpacked etree database.");
+  etree_t* unpackeddb = etree_open(_filenameTmp.c_str(), O_RDONLY, 0, 0, 0);
+  if (0 == unpackeddb) {
+    _pErrHandler->error("Could not open unpacked etree database.");
+    return;
+  } // if
   
-  etree_t* packeddb = etree_open(_filenameOut, O_CREAT | O_TRUNC | O_RDWR,
+  etree_t* packeddb = etree_open(_filenameOut.c_str(),
+				 O_CREAT | O_TRUNC | O_RDWR,
 				 0, 0, 3);
-  if (0 == packeddb)
-    throw std::runtime_error("Could not open packed etree database.");
+  if (0 == packeddb) {
+    _pErrHandler->error("Could not open packed etree database.");
+    return;
+  } // if
   
-  if (0 != etree_registerschema(packeddb, cencalvm::storage::SCHEMA))
-    throw std::runtime_error(etree_strerror(etree_errno(packeddb)));
+  if (0 != etree_registerschema(packeddb, cencalvm::storage::SCHEMA)) {
+    _pErrHandler->error(etree_strerror(etree_errno(packeddb)));
+    return;
+  } // if
   
   char* appmeta = 0;
   if (0 != (appmeta = etree_getappmeta(unpackeddb)))
-    if (0 != etree_setappmeta(packeddb, appmeta))
-      throw std::runtime_error(etree_strerror(etree_errno(packeddb)));
+    if (0 != etree_setappmeta(packeddb, appmeta)) {
+      _pErrHandler->error(etree_strerror(etree_errno(packeddb)));
+      return;
+    } // if
   free(appmeta);
   
   etree_addr_t addr;
@@ -189,30 +200,44 @@ cencalvm::create::VMCreator::_packDB(void) const
   addr.y = 0;
   addr.z = 0;
   addr.level = 0;
-  if (0 != etree_initcursor(unpackeddb, addr))
-    throw std::runtime_error(etree_strerror(etree_errno(unpackeddb)));
+  if (0 != etree_initcursor(unpackeddb, addr)) {
+    _pErrHandler->error(etree_strerror(etree_errno(unpackeddb)));
+    return;
+  } // if
   
-  if (0 != etree_beginappend(packeddb, 1))
-    throw std::runtime_error(etree_strerror(etree_errno(packeddb)));
+  if (0 != etree_beginappend(packeddb, 1)) {
+    _pErrHandler->error(etree_strerror(etree_errno(packeddb)));
+    return;
+  } // if
   
   do {
     cencalvm::storage::PayloadStruct payload;
     
-    if (0 != etree_getcursor(unpackeddb, &addr, "*", &payload))
-      throw std::runtime_error(etree_strerror(etree_errno(unpackeddb)));
+    if (0 != etree_getcursor(unpackeddb, &addr, "*", &payload)) {
+      _pErrHandler->error(etree_strerror(etree_errno(unpackeddb)));
+      return;
+    } // if
     
-    if (0 != etree_append(packeddb, addr, &payload))
-      throw std::runtime_error(etree_strerror(etree_errno(packeddb)));
+    if (0 != etree_append(packeddb, addr, &payload)) {
+      _pErrHandler->error(etree_strerror(etree_errno(packeddb)));
+      return;
+    } // if
   } while (0 == etree_advcursor(unpackeddb));
   
-  if (0 != etree_endappend(packeddb))
-    throw std::runtime_error(etree_strerror(etree_errno(packeddb)));
+  if (0 != etree_endappend(packeddb)) {
+    _pErrHandler->error(etree_strerror(etree_errno(packeddb)));
+    return;
+  } // if
   
-  if (0 != etree_close(unpackeddb))
-    throw std::runtime_error(etree_strerror(etree_errno(unpackeddb)));
+  if (0 != etree_close(unpackeddb)) {
+    _pErrHandler->error(etree_strerror(etree_errno(unpackeddb)));
+    return;
+  } // if
   
-  if (0 != etree_close(packeddb))
-    throw std::runtime_error(etree_strerror(etree_errno(packeddb)));
+  if (0 != etree_close(packeddb)) {
+    _pErrHandler->error(etree_strerror(etree_errno(packeddb)));
+    return; 
+  } // if
 
   std::cout << "Done packing etree database." << std::endl;
 } // _packDB

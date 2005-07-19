@@ -46,6 +46,7 @@ class cencalvm::query::TestVMQuery : public CppUnit::TestFixture
   CPPUNIT_TEST( testQueryMax );
   CPPUNIT_TEST( testQueryFixed );
   CPPUNIT_TEST( testQueryAvg );
+  CPPUNIT_TEST( testErrorHandler );
   CPPUNIT_TEST_SUITE_END();
 
   // PUBLIC METHODS /////////////////////////////////////////////////////
@@ -77,6 +78,9 @@ public :
 
   /// Test query() for avg query
   void testQueryAvg(void);
+
+  /// Test errorHandler()
+  void testErrorHandler(void);
 
   // PRIVATE METHODS ////////////////////////////////////////////////////
 private :

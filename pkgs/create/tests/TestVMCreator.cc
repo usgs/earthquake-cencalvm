@@ -14,6 +14,7 @@
 
 #include "cencalvm/create/VMCreator.h" // USES VMCreator
 #include "cencalvm/storage/Geometry.h" // USES Geometry
+#include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 
 extern "C" {
 #include "etree.h"
@@ -45,7 +46,7 @@ cencalvm::create::TestVMCreator::testFilenameParams(void)
 
   VMCreator creator;
   creator.filenameParams(filename);
-  CPPUNIT_ASSERT(0 == strcmp(filename, creator._filenameParams));
+  CPPUNIT_ASSERT_EQUAL(std::string(filename), creator._filenameParams);
 } // testFilenameParams
 
 // ----------------------------------------------------------------------
@@ -57,7 +58,7 @@ cencalvm::create::TestVMCreator::testFilenameOut(void)
 
   VMCreator creator;
   creator.filenameOut(filename);
-  CPPUNIT_ASSERT(0 == strcmp(filename, creator._filenameOut));
+  CPPUNIT_ASSERT_EQUAL(std::string(filename), creator._filenameOut);
 } // testFilenameOut
 
 // ----------------------------------------------------------------------
@@ -69,7 +70,7 @@ cencalvm::create::TestVMCreator::testFilenameTmp(void)
 
   VMCreator creator;
   creator.filenameTmp(filename);
-  CPPUNIT_ASSERT(0 == strcmp(filename, creator._filenameTmp));
+  CPPUNIT_ASSERT_EQUAL(std::string(filename), creator._filenameTmp);
 } // testFilenameTmp
 
 // ----------------------------------------------------------------------
@@ -129,6 +130,18 @@ cencalvm::create::TestVMCreator::testRun(void)
   CPPUNIT_ASSERT_EQUAL(_PAYLOAD.FaultBlock, payload.FaultBlock);
   CPPUNIT_ASSERT_EQUAL(_PAYLOAD.Zone, payload.Zone);
 } // testRun
+
+// ----------------------------------------------------------------------
+// Test errorHandler()
+void
+cencalvm::create::TestVMCreator::testErrorHandler(void)
+{ // testErrorHandler
+  VMCreator creator;
+  const cencalvm::storage::ErrorHandler* pHandler = creator.errorHandler();
+  CPPUNIT_ASSERT(0 != pHandler);
+  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
+		       pHandler->status());
+} // testErrorHandler
 
 // version
 // $Id$

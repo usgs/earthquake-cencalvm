@@ -13,12 +13,12 @@
 #include "Geometry.h" // implementation of class methods
 
 #include "Projector.h"
+#include "ErrorHandler.h"
 
 extern "C" {
 #include "etree.h"
 }
 
-#include <stdexcept> // USES std::runtime_error
 #include <sstream> // USES std::ostringstream
 #include <iomanip> // USES setw(), setiosflags(), resetiosflags()
 #include <assert.h> // USES assert()
@@ -36,14 +36,15 @@ const double cencalvm::storage::Geometry::_BUFFERSW = 204800.0;
 const double cencalvm::storage::Geometry::_MAXELEV = 12800.0;
 
 // ----------------------------------------------------------------------
-cencalvm::storage::Geometry::Geometry(void) :
+cencalvm::storage::Geometry::Geometry(ErrorHandler& errHandler) :
   _projXNWRoot(_PROJXNW 
 	       - _BUFFERNW*cos(_AZ*M_PI/180.0)
 	       - _BUFFERSW*sin(_AZ*M_PI/180.0)),
   _projYNWRoot(_PROJYNW
 	       + _BUFFERNW*sin(_AZ*M_PI/180.0)
 	       - _BUFFERSW*cos(_AZ*M_PI/180.0)),
-  _pProj(new Projector)
+  _pProj(new Projector(errHandler)),
+  _errHandler(errHandler)
 { // constructor
 } // constructor
 
@@ -86,12 +87,20 @@ cencalvm::storage::Geometry::lonLatElevToAddr(etree_addr_t* pAddr,
       << std::resetiosflags(std::ios::fixed)
       << std::setiosflags(std::ios::scientific)
       << std::setprecision(6)
+      << lon << ", " << lat << ", " << elev << ", Out of bounds\n";
+    _errHandler.log(msg.str().c_str());
+    std::ostringstream error;
+    error
+      << std::resetiosflags(std::ios::fixed)
+      << std::setiosflags(std::ios::scientific)
+      << std::setprecision(6)
       << "Location (" << lon << ", " << lat << ", " << elev << ")\n"
       << "not in domain. Coordinates relative to root octant are:\n"
       << "  p: " << p/_ROOTLEN << "\n"
       << "  q: " << q/_ROOTLEN << "\n"
       << "  r: " << r/_ROOTLEN << "\n";
-    throw std::runtime_error(msg.str());
+    _errHandler.error(error.str().c_str());
+    return;
   } // if
 
   const double res = _ROOTLEN / ((etree_tick_t) 1 << pAddr->level);

@@ -14,6 +14,7 @@
 // velocity model.
 
 #include "cencalvm/create/VMCreator.h" // USES VMCreator
+#include "cencalvm/storage/ErrorHandler.h" // USES VMCreator
 
 #include <stdlib.h> // USES exit()
 #include <unistd.h> // USES getopt()
@@ -26,11 +27,12 @@ void
 usage(void)
 { // usage
   std::cerr
-    << "usage: gencencalvm [-h] -i paramFile -o outFile -t tmpFile\n"
+    << "usage: gencencalvm [-h] -i paramFile -o outFile -t tmpFile [-l logFile]\n"
     << "  -i paramFile  Parameter file with list of grid input files\n"
     << "  -o outFile    Etree database file created.\n"
     << "  -t tmpFile    Name of scratch file used in database construction.\n"
     << "  -h            Display usage and exit.\n"
+    << "  -l logFile    Log file for warnings about data.\n"
     << "\n"
     << "Parameter file is list of grid input files, one per line.\n";
   exit(1);
@@ -41,12 +43,14 @@ void
 parseArgs(std::string* pFilenameParams,
 	  std::string* pFilenameOut,
 	  std::string* pFilenameTmp,
+	  std::string* pFilenameLog,
 	  int argc,
 	  char** argv)
 { // parseArgs
   assert(0 != pFilenameParams);
   assert(0 != pFilenameOut);
   assert(0 != pFilenameTmp);
+  assert(0 != pFilenameLog);
 
   extern char* optarg;
 
@@ -54,8 +58,9 @@ parseArgs(std::string* pFilenameParams,
   *pFilenameParams = "";
   *pFilenameOut = "";
   *pFilenameTmp = "";
+  *pFilenameLog = "";
   int c = EOF;
-  while ( (c = getopt(argc, argv, "hi:o:t:") ) != EOF) {
+  while ( (c = getopt(argc, argv, "hi:l:o:t:") ) != EOF) {
     switch (c)
       { // switch
 	case 'i' : // process -i option
@@ -74,6 +79,10 @@ parseArgs(std::string* pFilenameParams,
 	  nparsed += 1;
 	  usage();
 	  exit(0);
+	  break;
+	case 'l' : // process -l option
+	  *pFilenameLog = optarg;
+	  nparsed += 2;
 	  break;
 	default :
 	  usage();
@@ -94,28 +103,26 @@ main(int argc,
   std::string filenameParams = "";
   std::string filenameOut = "";
   std::string filenameTmp = "";
+  std::string filenameLog = "";
   
-  parseArgs(&filenameParams, &filenameOut, &filenameTmp, argc, argv);
+  parseArgs(&filenameParams, &filenameOut, &filenameTmp, &filenameLog,
+	    argc, argv);
 
-  try {
-    cencalvm::create::VMCreator creator;
-    creator.filenameParams(filenameParams.c_str());
-    creator.filenameOut(filenameOut.c_str());
-    creator.filenameTmp(filenameTmp.c_str());
-    creator.run();
-  } // try
-  catch (const std::exception& err) {
-    std::cerr << "Error occurred while generating etree database.\n"
-	      << "Error message:\n"
-	      << err.what()
-	      << std::endl;
-    return -1;
-  } // catch
-  catch (...) {
-    std::cerr << "Unknown error occurred while generating etree database."
-	      << std::endl;
-    return -1;
-  } // catch
+  cencalvm::create::VMCreator creator;
+  cencalvm::storage::ErrorHandler* pHandler = creator.errorHandler();
+
+  if (filenameLog.length() > 0)
+    pHandler->logFilename(filenameLog.c_str());
+
+  creator.filenameParams(filenameParams.c_str());
+  creator.filenameOut(filenameOut.c_str());
+  creator.filenameTmp(filenameTmp.c_str());
+  creator.run();
+
+  if (cencalvm::storage::ErrorHandler::OK != pHandler->status()) {
+    std::cerr << pHandler->message();
+    return 1;
+  } // if
 
   return 0;
 } // main

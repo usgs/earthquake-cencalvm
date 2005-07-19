@@ -16,6 +16,7 @@ PACKAGE = storage
 include local.def
 
 PROJ_SRCS = \
+	TestErrorHandler.cc \
 	TestGeometry.cc \
 	TestProjector.cc \
 	teststorage.cc \

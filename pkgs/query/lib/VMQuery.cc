@@ -13,15 +13,19 @@
 #include "VMQuery.h" // implementation of class methods
 
 #include "cencalvm/storage/Payload.h" // USES PayloadStruct
-#include "cencalvm/storage/Geometry.h" // USES PayloadStruct
+#include "cencalvm/storage/Geometry.h" // USES Geometry
+#include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 
 extern "C" {
 #include "etree.h"
 }
 
 #include <sstream> // USES std::ostringstream
-#include <stdexcept> // USES std::runtime_error
+#include <iomanip> // USES setw(), setiosflags(), resetiosflags()
 #include <strings.h> // USES strcasecmp()
+
+// ----------------------------------------------------------------------
+const double cencalvm::query::VMQuery::_NODATAVAL = -999.0;
 
 // ----------------------------------------------------------------------
 /// Default constructor
@@ -33,7 +37,8 @@ cencalvm::query::VMQuery::VMQuery(void) :
   _querySize(0),
   _cacheSize(128),
   _queryFn(&cencalvm::query::VMQuery::_queryMax),
-  _pGeom(new cencalvm::storage::Geometry)
+  _pErrHandler(new cencalvm::storage::ErrorHandler),
+  _pGeom(new cencalvm::storage::Geometry(*_pErrHandler))
 { // constructor
   const int querySize = 8;
   _pQueryVals = (querySize > 0) ? new int[querySize] : 0;
@@ -48,6 +53,7 @@ cencalvm::query::VMQuery::~VMQuery(void)
 { // destructor
   delete[] _pQueryVals; _pQueryVals = 0;
   delete _pGeom; _pGeom = 0;
+  delete _pErrHandler; _pErrHandler = 0;
   if (0 != _db)
     close();
 } // destructor
@@ -66,7 +72,7 @@ cencalvm::query::VMQuery::open(void)
     std::ostringstream msg;
     msg << "Could not open the etree database '" << _filename
 	<< "' for querying.";
-    throw std::runtime_error(msg.str());
+    _pErrHandler->error(msg.str().c_str());
   } // if
 } // open
   
@@ -78,7 +84,7 @@ cencalvm::query::VMQuery::close(void)
   if (0 != _db && 0 != etree_close(_db)) {
     std::ostringstream msg;
     msg << "Could not close the etree database '" << _filename << "'.";
-    throw std::runtime_error(msg.str());
+    _pErrHandler->error(msg.str().c_str());
   } // if
   _db = 0;
 } // close
@@ -100,8 +106,8 @@ cencalvm::query::VMQuery::queryType(const QueryEnum queryType)
       _queryFn = &cencalvm::query::VMQuery::_queryAvg;
       break;
     default :
-      throw std::runtime_error("Could not find query function for "
-			       "requested query type.");
+      _pErrHandler->error("Could not find query function for requested "
+			 "query type.");
     } // switch
 } // queryType
 
@@ -140,7 +146,7 @@ cencalvm::query::VMQuery::queryVals(const char** names,
 	    << "of the values in the velocity database.\n"
 	    << "Values in database are:\n"
 	    << "  Vp, Vs, Density, Qp, Qs, DepthFreeSurf, FaultBlock, Zone.";
-	throw std::runtime_error(msg.str());
+	_pErrHandler->error(msg.str().c_str());
       } // else
     } // for
   } // if
@@ -190,7 +196,7 @@ cencalvm::query::VMQuery::query(double** ppVals,
 	(*ppVals)[i] = payload.Zone;
 	break;
       default :
-	throw std::runtime_error("Could not requested query value.");
+	_pErrHandler->error("Could not parse requested query value.");
       } // switch
   } // for
 } // query
@@ -209,10 +215,36 @@ cencalvm::query::VMQuery::_queryMax(cencalvm::storage::PayloadStruct* pPayload,
   addr.level = ETREE_MAXLEVEL;
   addr.type = ETREE_LEAF;
   _pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
+  if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
+    return;
 
   etree_addr_t resAddr;
-  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload))
-    throw std::runtime_error(etree_strerror(etree_errno(_db)));
+  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload)) {
+    std::ostringstream msg;
+    msg
+      << std::resetiosflags(std::ios::fixed)
+      << std::setiosflags(std::ios::scientific)
+      << std::setprecision(6)
+      << lon << ", " << lat << ", " << elev << ", No data\n";
+    _pErrHandler->log(msg.str().c_str());
+    std::ostringstream warning;
+    warning
+      << "WARNING: No data for "
+      << std::resetiosflags(std::ios::fixed)
+      << std::setiosflags(std::ios::scientific)
+      << std::setprecision(6)
+      << lon << ", " << lat << ", " << elev << ".\n";
+    _pErrHandler->warning(warning.str().c_str());
+    pPayload->Vp = _NODATAVAL;
+    pPayload->Vs = _NODATAVAL;
+    pPayload->Density = _NODATAVAL;
+    pPayload->Qp = _NODATAVAL;
+    pPayload->Qs = _NODATAVAL;
+    pPayload->DepthFreeSurf = _NODATAVAL;
+    pPayload->FaultBlock = 0;
+    pPayload->Zone = 0;
+    return;
+  } // if
 } // _queryMax
 
 // ----------------------------------------------------------------------
@@ -229,10 +261,36 @@ cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload
   addr.level = _pGeom->level(_queryRes);
   addr.type = ETREE_LEAF;
   _pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
+  if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
+    return;
 
   etree_addr_t resAddr;
-  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload))
-    throw std::runtime_error(etree_strerror(etree_errno(_db)));
+  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload)) {
+    std::ostringstream msg;
+    msg
+      << std::resetiosflags(std::ios::fixed)
+      << std::setiosflags(std::ios::scientific)
+      << std::setprecision(6)
+      << lon << ", " << lat << ", " << elev << ", No data\n";
+    _pErrHandler->log(msg.str().c_str());
+    std::ostringstream warning;
+    warning
+      << "WARNING: No data for "
+      << std::resetiosflags(std::ios::fixed)
+      << std::setiosflags(std::ios::scientific)
+      << std::setprecision(6)
+      << lon << ", " << lat << ", " << elev << ".\n";
+    _pErrHandler->warning(warning.str().c_str());
+    pPayload->Vp = _NODATAVAL;
+    pPayload->Vs = _NODATAVAL;
+    pPayload->Density = _NODATAVAL;
+    pPayload->Qp = _NODATAVAL;
+    pPayload->Qs = _NODATAVAL;
+    pPayload->DepthFreeSurf = _NODATAVAL;
+    pPayload->FaultBlock = 0;
+    pPayload->Zone = 0;
+    return;
+  } // if
 } // _queryFixed
 
 // ----------------------------------------------------------------------
@@ -249,26 +307,67 @@ cencalvm::query::VMQuery::_queryAvg(cencalvm::storage::PayloadStruct* pPayload,
   addr.level = ETREE_MAXLEVEL;
   addr.type = ETREE_LEAF;
   _pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
+  if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
+    return;
 
   etree_addr_t resAddr;
-  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload))
-    throw std::runtime_error(etree_strerror(etree_errno(_db)));
+  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload)) {
+    std::ostringstream msg;
+    msg
+      << std::resetiosflags(std::ios::fixed)
+      << std::setiosflags(std::ios::scientific)
+      << std::setprecision(6)
+      << lon << ", " << lat << ", " << elev << ", No data\n";
+    _pErrHandler->log(msg.str().c_str());
+    std::ostringstream warning;
+    warning
+      << "WARNING: No data for "
+      << std::resetiosflags(std::ios::fixed)
+      << std::setiosflags(std::ios::scientific)
+      << std::setprecision(6)
+      << lon << ", " << lat << ", " << elev << ".\n";
+    _pErrHandler->warning(warning.str().c_str());
+    pPayload->Vp = _NODATAVAL;
+    pPayload->Vs = _NODATAVAL;
+    pPayload->Density = _NODATAVAL;
+    pPayload->Qp = _NODATAVAL;
+    pPayload->Qs = _NODATAVAL;
+    pPayload->DepthFreeSurf = _NODATAVAL;
+    pPayload->FaultBlock = 0;
+    pPayload->Zone = 0;
+    return;
+  } // if
   
   const double minPeriod = _queryRes;
   cencalvm::storage::PayloadStruct childProps = *pPayload;
   while (pPayload->Vs > 0.0 && 
-    _pGeom->edgeLen(resAddr.level) / pPayload->Vs < minPeriod) {
-  childProps = *pPayload;
-  etree_addr_t parentAddr;
+	 _pGeom->edgeLen(resAddr.level) / pPayload->Vs < minPeriod) {
+    childProps = *pPayload;
+    etree_addr_t parentAddr;
     if (!_pGeom->findParent(&parentAddr, resAddr))
       break;
-    if (0 != etree_search(_db, parentAddr, &resAddr, "*", pPayload))
-      throw std::runtime_error(etree_strerror(etree_errno(_db)));
-
-} // while
+    if (0 != etree_search(_db, parentAddr, &resAddr, "*", pPayload)) {
+      std::ostringstream msg;
+      msg
+	<< std::resetiosflags(std::ios::fixed)
+	<< std::setiosflags(std::ios::scientific)
+	<< std::setprecision(6)
+	<< lon << ", " << lat << ", " << elev << ", No parent\n";
+      _pErrHandler->log(msg.str().c_str());
+      char buf[ETREE_MAXBUF];
+      msg
+	<< "Could not find parent octant " << 
+	etree_straddr(_db, buf, parentAddr)
+	<< "of child octant " << etree_straddr(_db, buf, resAddr) << "\n"
+	<< "for location " << lon << ", " << lat << ", " << elev
+	<< ". Using values from child octant.";
+      _pErrHandler->warning(msg.str().c_str());
+      etree_search(_db, addr, &resAddr, "*", pPayload);
+      return;
+    } // if
+  } // while
   
 } // _queryAvg
-
 
 // version
 // $Id$

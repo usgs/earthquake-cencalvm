@@ -14,6 +14,7 @@
 
 #include "cencalvm/storage/Payload.h" // USES PayloadStruct
 #include "cencalvm/storage/Geometry.h" // USES Geometry
+#include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 
 extern "C" {
 #include "etree.h"
@@ -22,26 +23,33 @@ extern "C" {
 #include <fstream> // USES std::ifstream
 #include <iostream> // USES std::cout
 #include <sstream> // USES std::ostringstream
-#include <stdexcept> // USES std::runtime_error
+#include <iomanip> // USES std::resetiosflags(), std::setprecision()
 #include <assert.h> // USES assert()
 
 // ----------------------------------------------------------------------
 // Add gridded data to database.
 void
 cencalvm::create::GridIngester::addGrid(etree_t** pDB,
-					const char* filename)
+					const char* filename,
+				  cencalvm::storage::ErrorHandler& errHandler)
 { // addGrid
   assert(0 != pDB);
+
+  if (cencalvm::storage::ErrorHandler::ERROR != errHandler.status())
+    errHandler.resetStatus();
+  else
+    return;
 
   std::ifstream fin(filename);
   if (!fin.is_open()) {
     std::ostringstream msg;
     msg << "Could not open grid file '" << filename
 	<< "' for reading.";
-    throw std::runtime_error(msg.str());
+    errHandler.error(msg.str().c_str());
+    return;
   } // if
 
-  cencalvm::storage::Geometry vmgeom;
+  cencalvm::storage::Geometry vmgeom(errHandler);
 
   std::cout << "Beginning processing of '" << filename << "'..." << std::endl;
 
@@ -57,7 +65,8 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
     std::ostringstream msg;
     msg << "Could not read horizontal and vertical resolution in '"
 	<< filename << "'.";
-    throw std::runtime_error(msg.str());
+    errHandler.error(msg.str().c_str());
+    return;
   } // if
   // convert resHoriz and resVert from km to m
   resHoriz *= 1.0e+3;
@@ -71,7 +80,8 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
     msg << "Vertical exaggeration of " << vertExag << " in '" << filename
 	<< "' does not match velocity model vertical exaggeration of "
 	<< vertExagE << ".";
-    throw std::runtime_error(msg.str());
+    errHandler.error(msg.str().c_str());
+    return;
   } // if
 
   const etree_tick_t level = vmgeom.level(resHoriz);
@@ -81,93 +91,83 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
     msg << "Horizontal resolution of " << resHoriz << " in '" << filename
 	<< "' does not fit resolution of nearest level in database of "
 	<< edgeLen << ".";
-    throw std::runtime_error(msg.str());
+    errHandler.error(msg.str().c_str());
+    return;
   } // if    
 
   int numAdded = 0;
   int numIgnored = 0;
-  try {
-    for (int i=0; i < numTotal; ++i) {
-      double lon = 0.0;
-      double lat = 0.0;
-      double elev = 0.0;
-      cencalvm::storage::PayloadStruct payload;
-      fin
-	>> lon
-	>> lat
-	>> elev
-	>> payload.Vp
-	>> payload.Vs
-	>> payload.Density
-	>> payload.Qp
-	>> payload.Qs
-	>> payload.DepthFreeSurf
-	>> payload.FaultBlock
-	>> payload.Zone;
-      if (!fin.good())
-	throw std::runtime_error("Couldn't parse line.");
-      if (payload.FaultBlock > 0 && payload.Zone > 0) {
-	// convert elev and depth from km to m
-	elev *= 1.0e+3;
-	payload.DepthFreeSurf *= 1.0e+3;
+  for (int i=0; i < numTotal; ++i) {
+    double lon = 0.0;
+    double lat = 0.0;
+    double elev = 0.0;
+    cencalvm::storage::PayloadStruct payload;
+    fin
+      >> lon
+      >> lat
+      >> elev
+      >> payload.Vp
+      >> payload.Vs
+      >> payload.Density
+      >> payload.Qp
+      >> payload.Qs
+      >> payload.DepthFreeSurf
+      >> payload.FaultBlock
+      >> payload.Zone;
+    if (!fin.good()) {
+      errHandler.error("Couldn't parse line.");
+      break;
+    } // if
+    if (payload.FaultBlock > 0 && payload.Zone > 0) {
+      // convert elev and depth from km to m
+      elev *= 1.0e+3;
+      payload.DepthFreeSurf *= 1.0e+3;
+      
+      // convert Vp & Vs from km/s to m/s
+      payload.Vp *= 1.0e+3;
+      payload.Vs *= 1.0e+3;
+      
+      // convert Density from g/cm^3 to kg/m^3
+      payload.Density *= 1.0e+3;
+      
+      // add data to etree
+      etree_addr_t addr;
+      addr.level = level;
+      addr.type = ETREE_LEAF;
+      vmgeom.lonLatElevToAddr(&addr, lon, lat, elev);
+      
+      if (0 != etree_insert(*pDB, addr, &payload)) {
+	errHandler.error(etree_strerror(etree_errno(*pDB)));
+	break;
+      } // if
+      numAdded++;
+    } else {
+      // convert elev and depth from km to m
+      elev *= 1.0e+3;
+      payload.DepthFreeSurf *= 1.0e+3;
+      
+      std::ostringstream msg;
+      msg
+	<< std::resetiosflags(std::ios::fixed)
+	<< std::setiosflags(std::ios::scientific)
+	<< std::setprecision(6)
+	<< lon << ", " << lat << ", " << elev << ", Ignoring\n";
+      errHandler.log(msg.str().c_str());
+      numIgnored++;
+    } // if/else
+  } // for
 
-	// convert Vp & Vs from km/s to m/s
-	payload.Vp *= 1.0e+3;
-	payload.Vs *= 1.0e+3;
-	
-	// convert Density from g/cm^3 to kg/m^3
-	payload.Density *= 1.0e+3;
+  fin.close();
 
-	// add data to etree
-	etree_addr_t addr;
-	addr.level = level;
-	addr.type = ETREE_LEAF;
-	vmgeom.lonLatElevToAddr(&addr, lon, lat, elev);
-
-	if (0 != etree_insert(*pDB, addr, &payload))
-	  throw std::runtime_error(etree_strerror(etree_errno(*pDB)));
-	numAdded++;
-      } else {
-	// TEMPORARY
-	// Need to decide what to do with values not populated with
-	// material data by Bob Jachens routines
-#if 1
-	// convert elev and depth from km to m
-	elev *= 1.0e+3;
-	payload.DepthFreeSurf *= 1.0e+3;
-
-	// add data to etree
-	etree_addr_t addr;
-	addr.level = level;
-	addr.type = ETREE_LEAF;
-	vmgeom.lonLatElevToAddr(&addr, lon, lat, elev);
-	
-	if (0 != etree_insert(*pDB, addr, &payload))
-	  throw std::runtime_error(etree_strerror(etree_errno(*pDB)));
-	numAdded++;
-#else
-	numIgnored++;
-#endif
-      } // else
-    } // for
-  }
-  catch (const std::exception& err) {
+  if (cencalvm::storage::ErrorHandler::OK != errHandler.status()) {
     std::ostringstream msg;
-    msg << "Caught exception while reading grid from '" << filename << "'.\n"
+    msg << "Caught error while reading grid from '" << filename << "'.\n"
 	<< "Successfully added " << numAdded << " points and ignored "
 	<< numIgnored << " others.\n"
-	<< "Etree error message: " << err.what();
-    throw std::runtime_error(msg.str());
-  } // catch
-  catch (...) {
-    std::ostringstream msg;
-    msg << "Caught exception while reading grid from '" << filename << "'.\n"
-	<< "Successfully added " << numAdded << " points and ignored "
-	<< numIgnored << " others.\n";
-    throw std::runtime_error(msg.str());
-  } // catch
-   
-  fin.close();
+	<< "Error message: " << errHandler.message();
+    errHandler.error(msg.str().c_str());
+    return;
+  } // if
 
   std::cout << "Done procesing '" << filename << "'."
 	    << "  # points added: " << numAdded

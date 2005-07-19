@@ -12,7 +12,8 @@
 
 #include "TestGeometry.h" // Implementation of class methods
 
-#include "cencalvm/storage/Geometry.h" // USES Projector
+#include "cencalvm/storage/Geometry.h" // USES Geometry
+#include "cencalvm/storage/ErrorHandler.h" // USES Geometry
 
 extern "C" {
 #include "etree.h"
@@ -26,7 +27,9 @@ CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::storage::TestGeometry );
 void
 cencalvm::storage::TestGeometry::testConstructor(void)
 { // testConstructor
-  Geometry geom;
+  ErrorHandler errHandler;
+  Geometry geom(errHandler);
+  CPPUNIT_ASSERT(ErrorHandler::OK == errHandler.status());
 } // testConstructor
 
 // ----------------------------------------------------------------------
@@ -34,7 +37,8 @@ cencalvm::storage::TestGeometry::testConstructor(void)
 void 
 cencalvm::storage::TestGeometry::testAddress(void)
 { // testAddress
-  Geometry geom;
+  ErrorHandler errHandler;
+  Geometry geom(errHandler);
 
   const double lon = -123.8584929;
   const double lat = 38.424179;
@@ -60,6 +64,8 @@ cencalvm::storage::TestGeometry::testAddress(void)
     CPPUNIT_ASSERT_EQUAL(y, addr.y);
     CPPUNIT_ASSERT_EQUAL(z, addr.z);
   } // for
+
+  CPPUNIT_ASSERT(ErrorHandler::OK == errHandler.status());
 } // testAddress
 
 // ----------------------------------------------------------------------

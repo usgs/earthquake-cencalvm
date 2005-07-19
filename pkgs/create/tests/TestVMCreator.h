@@ -42,6 +42,7 @@ class cencalvm::create::TestVMCreator : public CppUnit::TestFixture
   CPPUNIT_TEST( testFilenameOut );
   CPPUNIT_TEST( testFilenameTmp );
   CPPUNIT_TEST( testRun );
+  CPPUNIT_TEST( testErrorHandler );
   CPPUNIT_TEST_SUITE_END();
 
   // PUBLIC METHODS /////////////////////////////////////////////////////
@@ -61,6 +62,9 @@ public :
 
   /// Test run()
   void testRun(void);
+
+  /// Test errorHandler()
+  void testErrorHandler(void);
 
   // PRIVATE METHODS ////////////////////////////////////////////////////
 private :

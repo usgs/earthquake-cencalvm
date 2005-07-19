@@ -26,7 +26,8 @@
 namespace cencalvm {
   namespace storage {
     class Geometry;
-    class Projector; // forward declaration (Geometry HOLDSA Projector)
+    class Projector; // HOLDSA Projector
+    class ErrorHandler; // HOLDSA ErrorHandler
     class TestGeometry; // friend
   }; // namespace storage
 }; // namespace cencalvm
@@ -40,8 +41,11 @@ class cencalvm::storage::Geometry
 public :
   // PUBLIC METHODS /////////////////////////////////////////////////////
 
-  /// Constructor
-  Geometry(void);
+  /** Constructor.
+   *
+   * @param errHandler Error handler
+   */
+  Geometry(ErrorHandler& errHandler);
 
   /// Destructor
   ~Geometry(void);
@@ -106,6 +110,9 @@ private :
   /// Projector for converting from lon/lat/elev to projected coordinates
   Projector* _pProj;
   
+  /// Error handler
+  ErrorHandler& _errHandler;
+
   /// Length of root octant
   static const double _ROOTLEN;
 

@@ -29,7 +29,7 @@
  * <li> Create query object using cencalvm::query::VMQuery::VMQuery()
  * <li> Set filename of database using cencalvm::query::VMQuery::filename()
  * <li> Optionally, set cache size using cencalvm::query::VMQuery::cacheSize()
- * <li> Optionally, set values to returnin query using cencalvm::query::VMQuery::queryVals()
+ * <li> Optionally, set values to return in query using cencalvm::query::VMQuery::queryVals()
  * <li> Open database using cencalvm::query::VMQuery::open()
  * <li> Query database using cencalvm::query::VMQuery::query()
  * <li> Close database using cencalvm::query::VMQuery::close()
@@ -46,11 +46,12 @@
 namespace cencalvm {
   namespace query {
     class VMQuery;
-    class TestVMQuery;
+    class TestVMQuery; // friend
   }; // query
   namespace storage {
-    class Geometry;
-    struct PayloadStruct;
+    class Geometry; // HOLDSA geometry
+    class ErrorHandler; // HOLDA ErrorHandler
+    struct PayloadStruct; // USES PayloadStruct
   }; // storage
 }; // cencalvm
 
@@ -150,6 +151,12 @@ class cencalvm::query::VMQuery
 	     const double lat,
 	     const double elev);
 
+  /** Get handle to error handler.
+   *
+   * @returns Pointer to Error handler
+   */
+  cencalvm::storage::ErrorHandler* errorHandler(void);
+
 private :
   // PRIVATE METHODS ////////////////////////////////////////////////////
 
@@ -214,7 +221,11 @@ private :
     (cencalvm::storage::PayloadStruct*, double, double, double);
   queryFn_t _queryFn; ///< Method to call for queries
 
-  cencalvm::storage::Geometry* _pGeom;
+  cencalvm::storage::ErrorHandler* _pErrHandler; ///< Error handler
+
+  cencalvm::storage::Geometry* _pGeom; ///< Velocity model geometry
+
+  static const double _NODATAVAL; ///< Value assigned when no data is available
 
 }; // class VMQuery 
 

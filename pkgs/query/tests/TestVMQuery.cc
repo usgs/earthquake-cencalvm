@@ -13,6 +13,7 @@
 #include "TestVMQuery.h" // Implementation of class methods
 
 #include "cencalvm/query/VMQuery.h" // USES VMQuery
+#include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::query::TestVMQuery );
@@ -164,6 +165,18 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
 
   query.close();
 } // testQueryAvg
+
+// ----------------------------------------------------------------------
+// Test errorHandler()
+void
+cencalvm::query::TestVMQuery::testErrorHandler(void)
+{ // testErrorHandler
+  VMQuery query;
+  const cencalvm::storage::ErrorHandler* pHandler = query.errorHandler();
+  CPPUNIT_ASSERT(0 != pHandler);
+  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
+		       pHandler->status());
+} // testErrorHandler
 
 // version
 // $Id$

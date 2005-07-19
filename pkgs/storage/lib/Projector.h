@@ -24,6 +24,7 @@
 namespace cencalvm {
   namespace storage {
     class Projector;
+    class ErrorHandler; // HOLDSA ErrorHandler
   }; // namespace storage
 }; // namespace cencalvm
 
@@ -34,8 +35,11 @@ class cencalvm::storage::Projector
 public :
   // PUBLIC METHODS /////////////////////////////////////////////////////
 
-  /// Constructor
-  Projector(void);
+  /** Constructor.
+   *
+   * @param errHandler Error handler
+   */
+  Projector(ErrorHandler& errHandler);
 
   /// Destructor
   ~Projector(void);
@@ -61,8 +65,9 @@ public :
 private :
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 
-  /// Handle to Proj4 projection
-  projPJ _pProj; // Pointer to projection
+  
+  projPJ _pProj; ///< Handle to Proj4 projection
+  ErrorHandler& _errHandler; ///< Error handler
 
   static const double _MERIDIAN; ///< Longitude of central meridian for proj
   static const double _LAT; ///< Latitude of origin for projection
