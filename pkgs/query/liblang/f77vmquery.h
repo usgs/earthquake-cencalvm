@@ -209,6 +209,22 @@ void cencalvm_query_f(size_t* handleAddr,
 		      const double* elev,
 		      int* err);
 
+// ----------------------------------------------------------------------
+/** Fortran name mangling */
+#define cencalvm_errorhandler_f \
+  FORTRAN_NAME_(cencalvm_errorhandler_f, CENCALVM_ERRORHANDLER_F)
+/** Get handle to error handler.
+ *
+ * Create handle to velocity model query object. If creation fails
+ * address of handle is set to 0.
+ *
+ * @param handleAddr Address of handle to VMQuery object.
+ * @param errAddr Address of handle to ErrorHandler object.
+ */
+extern "C"
+void cencalvm_errorhandler_f(size_t* handleAddr,
+			     size_t* errAddr);
+
 #endif // cencalvm77vmquery_h
 
 // version

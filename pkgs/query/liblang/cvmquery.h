@@ -124,7 +124,7 @@ int cencalvm_queryRes(void* handle,
  * @returns 0 on success, 1 on error
  */
 int cencalvm_queryVals(void* handle,
-		       const char** names,
+		       const char* names[],
 		       const int numVals);
 
 /** Set the database filename.
@@ -175,6 +175,14 @@ int cencalvm_query(void* handle,
 		   const double lon,
 		   const double lat,
 		   const double elev);
+
+/** Get handle to error handler.
+ *
+ * @param handle Pointer to query
+ *
+ * @returns pointer to ErrorHandler object (0 on failure)
+ */
+void* cencalvm_errorHandler(void* handle);
 
 #endif /* cencalvm_cvmquery_h */
 

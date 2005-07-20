@@ -21,7 +21,7 @@ PROJ_SRCS = \
 
 PROJ_BIN = $(PROJ_BINDIR)/cencalvmf77query
 
-TEST_ARGS = -d data/cencalvm-pre1.0.etree -i ../data/sample.in -o test.out
+TEST_ARGS = -d data/cencalvm-pre1.0.etree -i ../data/sample.in -o test.out -l test.log
 
 # ----------------------------------------------------------------------
 all: $(PROJ_BIN)

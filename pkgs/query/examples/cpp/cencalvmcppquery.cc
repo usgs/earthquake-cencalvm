@@ -124,6 +124,12 @@ main(int argc,
 
   // Get handle to error handler
   cencalvm::storage::ErrorHandler* pErrHandler = query.errorHandler();
+  if (0 == pErrHandler) {
+    std::cerr << "Could not get handle to error handler.\n";
+    return 1;
+  } // if
+    
+  // If log filename has been set, set log filename in error handler
   if (filenameLog.length() > 0)
     pErrHandler->logFilename(filenameLog.c_str());
 
@@ -158,7 +164,7 @@ main(int argc,
   std::ifstream fileIn(filenameIn.c_str());
   if (!fileIn.is_open()) {
     std::cerr << "Could not open file '" << filenameIn
-	      << "' to read query locations.";
+	      << "' to read query locations.\n";
     return 1;
   } // if
   
@@ -166,7 +172,7 @@ main(int argc,
   std::ofstream fileOut(filenameOut.c_str());
   if (!fileOut.is_open()) {
     std::cerr << "Could not open file '" << filenameOut
-	      << "' to receive query data.";
+	      << "' to receive query data.\n";
     return 1;
   } // if
 
