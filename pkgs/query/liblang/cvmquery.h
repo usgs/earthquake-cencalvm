@@ -23,7 +23,7 @@
  * The current defaults for queries are:
  * @li return all values in a query,
  * @li query at the maximum resolution of the model
- * @li 128 byte cache for queries
+ * @li 128 MB cache for queries
  *
  * The default behavior can be modified by calling the appropriate
  * class method, e.g., cencalvm_queryType(), cencalvm_cacheSize(),
@@ -144,7 +144,7 @@ int cencalvm_filename(void* handle,
 /** Set size of cache during queries.
  *
  * @param handle Pointer to query
- * @param size Size of cache in ??
+ * @param size Size of cache in MB
  *
  * @returns Status of error handler
  */
