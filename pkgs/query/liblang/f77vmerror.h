@@ -41,7 +41,7 @@
  *
  * Calls logFilename().
  *
- * @param handle Handle to error handler
+ * @param handleAddr Handle to error handler
  * @param filename Name of file
  * @param err set to 0 on success, 1 on error
  * @param len Length of filename string (IMPLICIT ARG)
@@ -64,7 +64,7 @@ void cencalvm_error_logfilename_f(size_t* handleAddr,
  * @note Turning logging on after it has been turned off will cause
  * subsequent messages to be appended to the log file.
  *
- * @param handle Handle to error handler
+ * @param handleAddr Handle to error handler
  * @param turnOn =1 to turn on logging, =0 to turn logging off
  * @param err set to 0 on success, 1 on error
  */
@@ -79,7 +79,7 @@ void cencalvm_error_loggingon_f(size_t* handleAddr,
   FORTRAN_NAME_(cencalvm_error_resetstatus_f, CENCALVM_ERROR_RESETSTATUS_F)
 /** Reset error status and clear any error message.
  *
- * @param handle Handle to error handler
+ * @param handleAddr Handle to error handler
  * @param err set to 0 on success, 1 on error
  */
 extern "C"
@@ -92,7 +92,7 @@ void cencalvm_error_resetstatus_f(size_t* handleAddr,
   FORTRAN_NAME_(cencalvm_error_status_f, CENCALVM_ERROR_STATUS_F)
 /** Get status of error handler.
  *
- * @param handle Handle to error handler
+ * @param handleAddr Handle to error handler
  * @param err set to 0 if ok, 1 if warning, 2 if error
  */
 extern "C"
@@ -105,7 +105,7 @@ void cencalvm_error_status_f(size_t* handleAddr,
   FORTRAN_NAME_(cencalvm_error_message_f, CENCALVM_ERROR_MESSAGE_F)
 /** Get warning/error message.
  *
- * @param handle Handle to error handler
+ * @param handleAddr Handle to error handler
  * @param message String for message
  * @param err set to 0 on success, 1 on error
  * @param len Length of filename string (IMPLICIT ARG)
