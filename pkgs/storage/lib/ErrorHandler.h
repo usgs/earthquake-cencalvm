@@ -13,7 +13,19 @@
 /** @file lib/ErrorHandler.h
  *
  * @brief C++ error handler associated with the USGS central CA velocity
- * model.
+ * model (USER INTERFACE).
+ *
+ * Use this object to turn logging of errors on or off, set the name
+ * of the log file, get information about errors, and reset the status
+ * of the error handler.
+ *
+ * The log file will generally contain coordinates of points for which
+ * data was not found in the velocity model along with a short string
+ * indicating the type of error.
+ *
+ * The default behavior is no log file is written (the log file is set
+ * to /dev/null). To turn logging on, simply set the name of the log
+ * file.
  */
 
 #if !defined(cencalvm_storage_errorhandler_h)
@@ -39,9 +51,9 @@ public :
 
   /// Enumerated type for error status.
   enum StatusEnum { 
-    OK, ///< No errors
-    WARNING, ///< Non-fatal error
-    ERROR ///< Fatal error
+    OK=0, ///< No errors
+    WARNING=1, ///< Non-fatal error
+    ERROR=2 ///< Fatal error
   };
 
 public :
@@ -53,7 +65,7 @@ public :
   /// Destructor
   ~ErrorHandler(void);
 
-  /** Set filename for logging.
+  /** Set filename for logging and enable logging.
    *
    * @param filename Name of file
    */
@@ -61,11 +73,17 @@ public :
 
   /** Turn logging on/off.
    *
+   * @pre The log filename must have been set for logging to work if
+   * it is turned on.
+   *
+   * @note Turning logging on after it has been turned off will cause
+   * subsequent messages to be appended to the log file.
+   *
    * @param turnOn True to turn on logging, false to turn logging off
    */
   void loggingOn(const bool turnOn =true);
 
-  /// Reset error status and message.
+  /// Reset error status and clear any error message.
   void resetStatus(void);
 
   /** Get status.
