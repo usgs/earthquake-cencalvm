@@ -41,6 +41,10 @@
  * <li> Close database using cencalvm_close()
  * <li> Destroy query object using cencalvm_destroyQuery()
  * </ol>
+ *
+ * The values associated with the error status come from the status
+ * of the error handler. See cencalvm::storage::ErrorHandler for what
+ * the values mean.
  */
 
 #if !defined(cencalvm_cvmquery_h)
@@ -60,7 +64,7 @@ void* cencalvm_createQuery(void);
  *
  * @param handle Pointer to query
  *
- * @returns 0 on success, 1 on error
+ * @returns Status of error handler
  */
 int cencalvm_destroyQuery(void* handle);
 
@@ -68,7 +72,7 @@ int cencalvm_destroyQuery(void* handle);
  *
  * @param handle Pointer to query
  *
- * @returns 0 on success, 1 on error
+ * @returns Status of error handler
  */
 int cencalvm_open(void* handle);
   
@@ -76,7 +80,7 @@ int cencalvm_open(void* handle);
  *
  * @param handle Pointer to query
  *
- * @returns 0 on success, 1 on error
+ * @returns Status of error handler
  */
 int cencalvm_close(void* handle);
   
@@ -92,7 +96,7 @@ int cencalvm_close(void* handle);
  *   @li =1  Query at fixed resolution
  *   @li =2  Query at resolution tuned to wavelength of shear waves
  *
- * @returns 0 on success, 1 on error
+ * @returns Status of error handler
  */
 int cencalvm_queryType(void* handle,
 		       const int queryType);
@@ -109,7 +113,7 @@ int cencalvm_queryType(void* handle,
  * @param handle Pointer to query
  * @param res Resolution of query.
  *
- * @returns 0 on success, 1 on error
+ * @returns Status of error handler
  */
 int cencalvm_queryRes(void* handle,
 		      const double res);
@@ -121,7 +125,7 @@ int cencalvm_queryRes(void* handle,
  * @param names Names of values to be returned in queries
  * @param numVals Number of values to be returned in queries
  *
- * @returns 0 on success, 1 on error
+ * @returns Status of error handler
  */
 int cencalvm_queryVals(void* handle,
 		       const char* names[],
@@ -132,7 +136,7 @@ int cencalvm_queryVals(void* handle,
  * @param handle Pointer to query
  * @param filename Name of database file
  *
- * @returns 0 on success, 1 on error
+ * @returns Status of error handler
  */
 int cencalvm_filename(void* handle,
 		      const char* filename);
@@ -142,7 +146,7 @@ int cencalvm_filename(void* handle,
  * @param handle Pointer to query
  * @param size Size of cache in ??
  *
- * @returns 0 on success, 1 on error
+ * @returns Status of error handler
  */
 int cencalvm_cacheSize(void* handle,
 		       const int size);
@@ -167,7 +171,7 @@ int cencalvm_cacheSize(void* handle,
  * @param lat Latitude of location for query in degrees
  * @param elev Elevation of location wrt MSL in meters
  *
- * @returns 0 on success, 1 on error
+ * @returns Status of error handler
  */
 int cencalvm_query(void* handle,
 		   double** ppVals,

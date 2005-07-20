@@ -39,6 +39,10 @@
  * <li> Close database using cencalvm_close_f()
  * <li> Destroy query object using cencalvm_destroyquery_f()
  * </ol>
+ *
+ * The values associated with the error status come from the status of
+ * the error handler. See cencalvm::storage::ErrorHandler for what the
+ * values mean.
  */
 
 #if !defined(cencalvm_f77vmquery_h)
@@ -67,7 +71,7 @@ void cencalvm_createquery_f(size_t* handleAddr);
  * Calls ~VMQuery().
  *
  * @param handleAddr Address of handle to VMQuery object
- * @param err set to 0 on success, 1 on error
+ * @param err set to status of error handler
  */
 extern "C"
 void cencalvm_destroyquery_f(size_t* handleAddr,
@@ -80,7 +84,7 @@ void cencalvm_destroyquery_f(size_t* handleAddr,
 /** Open database for querying.
  *
  * @param handleAddr Address of handle to VMQuery object
- * @param err set to 0 on success, 1 on error
+ * @param err set to status of error handler
  */
 extern "C"
 void cencalvm_open_f(size_t* handleAddr,
@@ -93,7 +97,7 @@ void cencalvm_open_f(size_t* handleAddr,
 /** Close the database.
  *
  * @param handleAddr Address of handle to VMQuery object
- * @param err set to 0 on success, 1 on error
+ * @param err set to status of error handler
  */
 extern "C"
 void cencalvm_close_f(size_t* handleAddr,
@@ -114,7 +118,7 @@ void cencalvm_close_f(size_t* handleAddr,
  *   @li =0  Query at maximum resolution
  *   @li =1  Query at fixed resolution
  *   @li =2  Query at resolution tuned to wavelength of shear waves
- * @param err set to 0 on success, 1 on error
+ * @param err set to status of error handler
  */
 extern "C"
 void cencalvm_querytype_f(size_t* handleAddr,
@@ -136,7 +140,7 @@ void cencalvm_querytype_f(size_t* handleAddr,
  *
  * @param handleAddr Address of handle to VMQuery object
  * @param res Resolution of query.
- * @param err set to 0 on success, 1 on error
+ * @param err set to status of error handler
  */
 extern "C"
 void cencalvm_queryres_f(size_t* handleAddr,
@@ -152,7 +156,7 @@ void cencalvm_queryres_f(size_t* handleAddr,
  * @param handleAddr Address of handle to VMQuery object
  * @param filename Name of database file
  * @param len Length of string (IMPLICIT IN FORTRAN)
- * @param err set to 0 on success, 1 on error
+ * @param err set to status of error handler
  */
 extern "C"
 void cencalvm_filename_f(size_t* handleAddr,
@@ -168,7 +172,7 @@ void cencalvm_filename_f(size_t* handleAddr,
  *
  * @param handleAddr Address of handle to VMQuery object
  * @param size Size of cache in ??
- * @param err set to 0 on success, 1 on error
+ * @param err set to status of error handler
  */
 extern "C"
 void cencalvm_cachesize_f(size_t* handleAddr,
@@ -198,7 +202,7 @@ void cencalvm_cachesize_f(size_t* handleAddr,
  * @param lon Longitude of location for query in degrees
  * @param lat Latitude of location for query in degrees
  * @param elev Elevation of location wrt MSL in meters
- * @param err set to 0 on success, 1 on error
+ * @param err set to status of error handler
  */
 extern "C"
 void cencalvm_query_f(size_t* handleAddr,
