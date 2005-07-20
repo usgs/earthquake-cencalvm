@@ -13,13 +13,13 @@
 /** @mainpage
  *
  * @author Brad Aagaard
- * @date 2005/07/18
- * @version 0.1.1
+ * @date 2005/07/20
+ * @version 0.2.0
  *
  * @section summary Summary
  *
  * This directory tree contains the software used to create and query
- * the seismic veloicty model covering the greater San Francisco Bay
+ * the seismic velocity model covering the greater San Francisco Bay
  * area (central California) developed by the United States Geological
  * Survey.
  *
@@ -64,6 +64,11 @@
  * packages. You should never need to call the routines in this
  * library directly.
  *
+ * @section version Version history
+ *
+ * For information regarding changes, enhancements, significant bug
+ * fixes, etc. see \ref changes "CHANGES".
+ * 
  */
 
 // version

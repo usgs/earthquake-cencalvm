@@ -14,12 +14,21 @@
  * @anchor changes
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
+ * \section ver020 Version 0.2.0, 2005/07/20
+ *
+ * @li Added error handler to allow queries to continue even when
+ * values cannnot be found for locations. Coordinates of locations
+ * where data was not found can be written to a log file.
+ * @li Fixed bugs in C and C++ examples associated with setting values
+ * to be returned in a query.
+ *
  * \section ver011 Version 0.1.1, 2005/07/18
- * Fixed errors in documentation
- * and updated Make.mm files in examples directory to reflect name of
- * database in release pre1.0.
+ *
+ * @li Fixed errors in documentation and updated Make.mm files in examples
+ * directory to reflect name of database in release pre1.0.
  *
  * \section ver010 Version 0.1.0, 2005/07/09 
+ *
  * original version
  *
  */

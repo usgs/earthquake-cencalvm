@@ -117,7 +117,7 @@ export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  *
  * <li> tcsh shell users
 \verbatim
-sestenv PROJ4_LIBDIR /usr/local/proj4/lib
+setenv PROJ4_LIBDIR /usr/local/proj4/lib
 setenv PROJ4_INCDIR /usr/local/proj4/include
 setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
 \endverbatim
