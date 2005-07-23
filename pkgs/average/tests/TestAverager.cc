@@ -31,7 +31,7 @@ const char* cencalvm::average::TestAverager::_DBFILENAMEOUT = "out.etree";
 const int cencalvm::average::TestAverager::_LEVEL = 2;
 const etree_tick_t cencalvm::average::TestAverager::_XTICK = 2;
 const etree_tick_t cencalvm::average::TestAverager::_YTICK = 0;
-const etree_tick_t cencalvm::average::TestAverager::_ZTICK = 1;
+const etree_tick_t cencalvm::average::TestAverager::_ZTICK = 2;
 const double cencalvm::average::TestAverager::_VALS[] = {
   10.0, 1.0, 0.1, 0.01, 0.001, 100.0, 1.0, 1.0
 };
@@ -49,9 +49,8 @@ cencalvm::average::TestAverager::testConstructor(void)
 void
 cencalvm::average::TestAverager::testFillOctants1(void)
 { // testFillOctants1
-  const int numOctants = 2;
+  const int numOctants = 1;
   const double val = _createDB(numOctants);
-  std::cout << "val: " << val << std::endl;
 
   Averager averager;
   averager.filenameIn(_DBFILENAMEIN);
@@ -90,6 +89,13 @@ cencalvm::average::TestAverager::_createDB(const int size) const
     addr.z = tickLen*(_ZTICK + iOctant / 4);
     addr.level = _LEVEL;
     addr.type = ETREE_LEAF;
+
+    std::cout << "CREATEDB: "
+	      << addr.x << " "
+	      << addr.y << " "
+	      << addr.z << " "
+	      << addr.level
+	      << std::endl;
 
     cencalvm::storage::PayloadStruct payload;
     int i=0;
