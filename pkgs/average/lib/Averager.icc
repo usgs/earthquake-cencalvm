@@ -1,0 +1,38 @@
+// -*- C++ -*-
+//
+// ======================================================================
+//
+//                           Brad T. Aagaard
+//                        U.S. Geological Survey
+//
+// {LicenseText}
+//
+// ======================================================================
+//
+
+#if !defined(cencalvm_average_averager_h)
+#error "Averager.icc must only be included from Averager.h"
+#endif
+
+// Set filename of input database.
+inline
+void
+cencalvm::average::Averager::filenameIn(const char* filenameIn)
+{ _filenameIn = filenameIn; }
+
+// Set filename of output database.
+inline
+void
+cencalvm::average::Averager::filenameOut(const char* filenameOut)
+{ _filenameOut = filenameOut; }
+
+// Get handle to error handler.
+inline
+cencalvm::storage::ErrorHandler*
+cencalvm::average::Averager::errorHandler(void)
+{ return _pErrHandler; }
+
+// version
+// $Id$
+
+// End of file 
