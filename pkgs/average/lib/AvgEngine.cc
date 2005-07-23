@@ -75,10 +75,11 @@ cencalvm::average::AvgEngine::AvgEngine(etree_t* dbOut,
 // Default destructor.
 cencalvm::average::AvgEngine::~AvgEngine(void)
 { // destructor
-  for (int i=0; i < _pendingSize; ++i) {
-    delete _pPendingOctants[i].data.pSum; _pPendingOctants[i].data.pSum = 0;
-    delete _pPendingOctants[i].pAddr; _pPendingOctants[i].pAddr = 0;
-  } // for
+  if (0 != _pPendingOctants)
+    for (int i=0; i < _pendingSize; ++i) {
+      delete _pPendingOctants[i].data.pSum; _pPendingOctants[i].data.pSum = 0;
+      delete _pPendingOctants[i].pAddr; _pPendingOctants[i].pAddr = 0;
+    } // for
   delete[] _pPendingOctants; _pPendingOctants = 0;
   _pendingSize = 0;
 } // destructor
@@ -88,6 +89,9 @@ cencalvm::average::AvgEngine::~AvgEngine(void)
 void
 cencalvm::average::AvgEngine::fillOctants(void)
 { // fillOctants
+  assert(0 != _dbIn);
+  assert(0 != _dbAvg);
+
   etree_addr_t cursor;
   cursor.x = 0;
   cursor.y = 0;
@@ -162,9 +166,9 @@ void
 cencalvm::average::AvgEngine::_averageOctant(etree_addr_t* pAddr,
 			    const cencalvm::storage::PayloadStruct& payload)
 { // _processOctant
-  std::cout << "_averageOctant pAddr:" << printAddr(pAddr) << std::endl;
-
   assert(0 != pAddr);
+  assert(0 != _dbAvg);
+  assert(0 != _pPendingOctants);
 
   // if at root, we are done
   if (pAddr->level <= 0)
@@ -174,8 +178,6 @@ cencalvm::average::AvgEngine::_averageOctant(etree_addr_t* pAddr,
   if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
     return;
   assert(pendingLevel >= 0 && pendingLevel == pAddr->level-1);
-
-  std::cout << "ETREE (_averageOctant): Appending " << printAddr(pAddr) << " to database." << std::endl;
 
   int err = etree_append(_dbAvg, *pAddr, &payload);
   if (0 != err) {
@@ -204,7 +206,7 @@ cencalvm::average::AvgEngine::_averageOctant(etree_addr_t* pAddr,
 void
 cencalvm::average::AvgEngine::_finishProcessing(void)
 { // _finishProcessing
-  std::cout << "_finishProcessing" << std::endl;
+  assert(0 != _pPendingOctants);
 
   // Complete processing of the octants, begin at the bottom of the
   // tree and work towards the root
@@ -237,17 +239,14 @@ cencalvm::average::AvgEngine::_sameAddr(etree_addr_t* pA,
 void
 cencalvm::average::AvgEngine::_createOctant(etree_addr_t* pAddr)
 { // _createOctant
-  std::cout << "_createOctant pAddr: " << printAddr(pAddr) << std::endl;
-
   assert(0 != pAddr);
   assert(0 != _pPendingOctants);
+  assert(0 != _dbAvg);
 
   const int pendingLevel = pAddr->level;
   assert(!_pPendingOctants[pendingLevel].isValid);
 
   cencalvm::storage::PayloadStruct payload;
-
-  std::cout << "ETREE (createOctant): Appending " << printAddr(pAddr) << " to database." << std::endl;
 
   int err = etree_append(_dbAvg, *pAddr, &payload);
   if (0 != err) {
@@ -270,8 +269,6 @@ cencalvm::average::AvgEngine::_createOctant(etree_addr_t* pAddr)
 
   ++_octantCounter.output;
   ++_octantCounter.interior;
-
-  std::cout << "_createOctant: Created pending octant w/index " << pendingLevel << " at " << printAddr(pAddr) << std::endl;
 } // _createOctant
 
 // ----------------------------------------------------------------------
@@ -299,14 +296,7 @@ cencalvm::average::AvgEngine::_addToParent(OctantPendingStruct* pPendingParent,
   assert(0 != pPendingParent);
   assert(0 != pAddrChild);
 
-  std::cout << "_addToParent: child is " << printAddr(pAddrChild)
-	    << ", I am " << printAddr(pPendingParent->pAddr)
-	    << std::endl;
-
-
   unsigned char childBit = _childOctantBit(pAddrChild);
-  std::cout << "_addToParent: _childOctantBit: " << int(childBit) << std::endl;
-  
   if (pPendingParent->processedChildren & childBit) {
     _errHandler.error("Consistency check for parent/child failed while "
 		      "trying to add child's contribution to parent.");
@@ -331,10 +321,8 @@ void
 cencalvm::average::AvgEngine::_updateOctant(etree_addr_t* pAddr,
 		       const cencalvm::storage::PayloadStruct& childPayload)
 { // _updateOctant
-  std::cout << "_updateOctant pAddr:" << printAddr(pAddr) << std::endl;
   assert(0 != pAddr);
-
-  std::cout << "ETREE (_updateOctant): updating " << printAddr(pAddr) << std::endl;
+  assert(0 != _dbAvg);
 
   int err = etree_update(_dbAvg, *pAddr, &childPayload);
   if (0 != err) {
@@ -348,7 +336,7 @@ cencalvm::average::AvgEngine::_updateOctant(etree_addr_t* pAddr,
 void
 cencalvm::average::AvgEngine::_processOctant(const int pendingLevel)
 { // _processOctant
-  std::cout << "_processOctant pendingLevel: " << pendingLevel << std::endl;
+  assert(0 != _pPendingOctants);
 
   static const unsigned char X0_Y0_Z0 = 0x01;
   static const unsigned char X1_Y0_Z0 = 0x02;
@@ -460,7 +448,7 @@ cencalvm::average::AvgEngine::_processOctant(const int pendingLevel)
 int
 cencalvm::average::AvgEngine::_findParent(etree_addr_t* pAddr)
 { // _findParent
-  std::cout << "_findParent pAddr: " << printAddr(pAddr) << std::endl;
+  assert(0 != _pPendingOctants);
 
   static const unsigned char INC_FULL = 0xFF;
 
