@@ -20,6 +20,9 @@ PROJ_SRCS = \
 	testaverage.cc \
 
 
+RECURSE_DIRS = \
+	data \
+
 PROJ_BIN = $(PROJ_BINDIR)/testaverage
 
 # ----------------------------------------------------------------------
@@ -32,6 +35,12 @@ test:
 	@LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(BLD_LIBDIR) $(PROJ_BIN)
 
 export:: export-binaries
+
+tidy::
+	BLD_ACTION="tidy" $(MM) recurse
+
+clean::
+	BLD_ACTION="clean" $(MM) recurse
 
 EXPORT_BINS = $(PROJ_BIN)
 
