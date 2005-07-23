@@ -46,7 +46,7 @@ namespace cencalvm {
       "float32_t Qs; "
       "float32_t DepthFreeSurf; "
       "int16_t FaultBlock; "
-      "int16_t Zone; ";
+      "int16_t Zone;";
   }; // namespace storage
 }; // namespace cencalvm
 
