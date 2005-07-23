@@ -101,6 +101,7 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
     double lon = 0.0;
     double lat = 0.0;
     double elev = 0.0;
+    int volID = 0;
     cencalvm::storage::PayloadStruct payload;
     fin
       >> lon
@@ -113,7 +114,8 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
       >> payload.Qs
       >> payload.DepthFreeSurf
       >> payload.FaultBlock
-      >> payload.Zone;
+      >> payload.Zone
+      >> volID;
     if (!fin.good()) {
       errHandler.error("Couldn't parse line.");
       break;
@@ -145,15 +147,27 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
       // convert elev and depth from km to m
       elev *= 1.0e+3;
       payload.DepthFreeSurf *= 1.0e+3;
+
+      if (payload.FaultBlock > 0) {
+	std::ostringstream msg;
+	msg
+	  << std::resetiosflags(std::ios::fixed)
+	  << std::setiosflags(std::ios::scientific)
+	  << std::setprecision(6)
+	  << lon << ", " << lat << ", " << elev << ", No fault block\n";
+	errHandler.log(msg.str().c_str());
+	numIgnored++;
+      } else {
+	std::ostringstream msg;
+	msg
+	  << std::resetiosflags(std::ios::fixed)
+	  << std::setiosflags(std::ios::scientific)
+	  << std::setprecision(6)
+	  << lon << ", " << lat << ", " << elev << ", Ignoring\n";
+	errHandler.log(msg.str().c_str());
+	numIgnored++;
+      } // if/else
       
-      std::ostringstream msg;
-      msg
-	<< std::resetiosflags(std::ios::fixed)
-	<< std::setiosflags(std::ios::scientific)
-	<< std::setprecision(6)
-	<< lon << ", " << lat << ", " << elev << ", Ignoring\n";
-      errHandler.log(msg.str().c_str());
-      numIgnored++;
     } // if/else
   } // for
 
