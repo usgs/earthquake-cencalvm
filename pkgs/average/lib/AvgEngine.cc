@@ -53,7 +53,7 @@ cencalvm::average::AvgEngine::AvgEngine(etree_t* dbOut,
     _pPendingOctants[i].data.pSum = new cencalvm::storage::PayloadStruct;
     _pPendingOctants[i].data.numChildren = 0;
     _pPendingOctants[i].pAddr = new etree_addr_t;
-    _pPendingOctants[i].processedChildren = 0;
+    _pPendingOctants[i].processedChildren = 0x00;
     _pPendingOctants[i].isValid = false;
   } // if
   _pendingSize = pendingSize;
@@ -115,9 +115,8 @@ cencalvm::average::AvgEngine::fillOctants(void)
       return;
     } // if
     _averageOctant(&cursor, payload);
-    if (cencalvm::storage::ErrorHandler::OK == _errHandler.status()) {
+    if (cencalvm::storage::ErrorHandler::OK == _errHandler.status())
       eof = etree_advcursor(_dbIn);
-    }
     else
       return;
   } // while
@@ -176,7 +175,7 @@ cencalvm::average::AvgEngine::_averageOctant(etree_addr_t* pAddr,
     return;
   assert(pendingLevel >= 0 && pendingLevel == pAddr->level-1);
 
-  std::cout << "_averageOctant: Appending " << printAddr(pAddr) << " to database." << std::endl;
+  std::cout << "ETREE (_averageOctant): Appending " << printAddr(pAddr) << " to database." << std::endl;
 
   int err = etree_append(_dbAvg, *pAddr, &payload);
   if (0 != err) {
@@ -191,14 +190,13 @@ cencalvm::average::AvgEngine::_averageOctant(etree_addr_t* pAddr,
     return;
   
   // if completed processing of octant, update higher levels
-  if (_pPendingOctants[pendingLevel].processedChildren == 0xFF)
-    while(pendingLevel >= 0 &&
-	  _pPendingOctants[pendingLevel].processedChildren == 0xFF) {
-      _processOctant(pendingLevel);
-      if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
-	return;
-      --pendingLevel;
-    } // while
+  while(pendingLevel >= 0 &&
+	_pPendingOctants[pendingLevel].processedChildren == 0xFF) {
+    _processOctant(pendingLevel);
+    if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
+      return;
+    --pendingLevel;
+  } // while
 } // _processOctant
 
 // ----------------------------------------------------------------------
@@ -249,7 +247,7 @@ cencalvm::average::AvgEngine::_createOctant(etree_addr_t* pAddr)
 
   cencalvm::storage::PayloadStruct payload;
 
-  std::cout << "_createOctant: Appending " << printAddr(pAddr) << " to database." << std::endl;
+  std::cout << "ETREE (createOctant): Appending " << printAddr(pAddr) << " to database." << std::endl;
 
   int err = etree_append(_dbAvg, *pAddr, &payload);
   if (0 != err) {
@@ -283,7 +281,7 @@ cencalvm::average::AvgEngine::_childOctantBit(etree_addr_t* pAddr) const
 { // _childOctantBit
   assert(0 != pAddr);
 
-  etree_tick_t mask = _LEFTMOSTONE >> pAddr->level;
+  const etree_tick_t mask = _LEFTMOSTONE >> pAddr->level;
   unsigned int shifts = (mask & pAddr->z) ? 4 : 0;
   shifts += (mask & pAddr->y) ? 2 : 0;
   shifts += (mask & pAddr->x) ? 1 : 0;
@@ -305,7 +303,9 @@ cencalvm::average::AvgEngine::_addToParent(OctantPendingStruct* pPendingParent,
 	    << ", I am " << printAddr(pPendingParent->pAddr)
 	    << std::endl;
 
+
   unsigned char childBit = _childOctantBit(pAddrChild);
+  std::cout << "_addToParent: _childOctantBit: " << int(childBit) << std::endl;
   
   if (pPendingParent->processedChildren & childBit) {
     _errHandler.error("Consistency check for parent/child failed while "
@@ -334,7 +334,7 @@ cencalvm::average::AvgEngine::_updateOctant(etree_addr_t* pAddr,
   std::cout << "_updateOctant pAddr:" << printAddr(pAddr) << std::endl;
   assert(0 != pAddr);
 
-  std::cout << "_updateOctant, updating " << printAddr(pAddr) << std::endl;
+  std::cout << "ETREE (_updateOctant): updating " << printAddr(pAddr) << std::endl;
 
   int err = etree_update(_dbAvg, *pAddr, &childPayload);
   if (0 != err) {
@@ -489,7 +489,7 @@ cencalvm::average::AvgEngine::_findParent(etree_addr_t* pAddr)
     // are not "square". If the octant at the current level is fully
     // processed or it is not a parent of the current octant, then
     // flush it to the database.
-    if (_sameAddr(&parent, _pPendingOctants[pendingLevel].pAddr) ||
+    if (!_sameAddr(&parent, _pPendingOctants[pendingLevel].pAddr) ||
 	INC_FULL == _pPendingOctants[pendingLevel].processedChildren) {
       _processOctant(pendingLevel);
       if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
