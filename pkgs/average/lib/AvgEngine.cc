@@ -23,14 +23,6 @@ extern "C" {
 #include <assert.h> // USES assert()
 #include <iostream> // USES std::cout
 
-std::string
-printAddr(etree_addr_t* pAddr)
-{
-  std::ostringstream msg;
-  msg << pAddr->x << " " << pAddr->y << " " << pAddr->z << " " << pAddr->level;
-  return std::string(msg.str());
-}
-
 // ----------------------------------------------------------------------
 const etree_tick_t cencalvm::average::AvgEngine::_LEFTMOSTONE =
   ~(~((etree_tick_t)0) >> 1);
@@ -247,7 +239,6 @@ cencalvm::average::AvgEngine::_createOctant(etree_addr_t* pAddr)
   assert(!_pPendingOctants[pendingLevel].isValid);
 
   cencalvm::storage::PayloadStruct payload;
-
   int err = etree_append(_dbAvg, *pAddr, &payload);
   if (0 != err) {
     _errHandler.error("Error occurred while appending new octant to etree.");
@@ -312,7 +303,6 @@ cencalvm::average::AvgEngine::_addToParent(OctantPendingStruct* pPendingParent,
   pPendingParent->data.pSum->Qp += childPayload.Qp;
   pPendingParent->data.pSum->Qs += childPayload.Qs;
   pPendingParent->data.pSum->DepthFreeSurf += childPayload.DepthFreeSurf;
-
 } // _addToParent
 		    
 // ----------------------------------------------------------------------
@@ -413,21 +403,6 @@ cencalvm::average::AvgEngine::_processOctant(const int pendingLevel)
   payload.DepthFreeSurf = pendingOctant.data.pSum->DepthFreeSurf / numChildren;
   payload.FaultBlock = _NODATA;
   payload.Zone = _NODATA;
-
-  std::cout << "OCTANT "
-	    << pendingOctant.pAddr->x << " "
-	    << pendingOctant.pAddr->y << " "
-	    << pendingOctant.pAddr->z << " "
-	    << pendingOctant.pAddr->level
-	    << ", Vp: " << payload.Vp
-	    << ", Vs: " << payload.Vs
-	    << ", Density: " << payload.Density
-	    << ", Qp: " << payload.Qp
-	    << ", Qs: " << payload.Qs
-	    << ", DepthFreeSurf: " << payload.DepthFreeSurf
-	    << ", FaultBlock: " << payload.FaultBlock
-	    << ", Zone: " << payload.Zone
-	    << std::endl;
 
   _updateOctant(pendingOctant.pAddr, payload);
   if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
