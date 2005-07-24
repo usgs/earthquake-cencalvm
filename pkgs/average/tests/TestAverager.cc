@@ -55,8 +55,57 @@ cencalvm::average::TestAverager::testFillOctants(void)
     CPPUNIT_ASSERT(false);
   } // if
 
-  
+  etree_t* db = etree_open(_DBFILENAMEOUT, O_RDONLY, 0, 0, 0);
+  CPPUNIT_ASSERT(0 != db);
 
+  const int numOctants = _NUMOCTANTSIN;
+  for (int iOctant=0; iOctant < numOctants; ++iOctant) {
+    
+    etree_addr_t addr;
+    addr.level = _LEVELS[iOctant];
+    addr.type = ETREE_LEAF;
+
+    const etree_tick_t tickLen = 0x80000000 >> addr.level;
+    const int numCoords = 3;
+    addr.x = tickLen * _COORDS[numCoords*iOctant  ];
+    addr.y = tickLen * _COORDS[numCoords*iOctant+1];
+    addr.z = tickLen * _COORDS[numCoords*iOctant+2];
+
+    cencalvm::storage::PayloadStruct payload;
+    etree_addr_t resAddr;
+    int err = etree_search(db, addr, &resAddr, "*", &payload);
+    CPPUNIT_ASSERT(0 == err);
+
+    const double tolerance = 1.0e-06;
+    const double val = _OCTVALS[iOctant];
+    int i=0;
+    double valE = _RELPAY[i++]*val;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.Vp/valE, tolerance);
+    valE = _RELPAY[i++]*val;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.Vs/valE, tolerance);
+    valE = _RELPAY[i++]*val;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.Density/valE, tolerance);
+    valE = _RELPAY[i++]*val;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.Qp/valE, tolerance);
+    valE = _RELPAY[i++]*val;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.Qs/valE, tolerance);
+    valE = _RELPAY[i++]*val;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.DepthFreeSurf/valE, tolerance);
+    if (iOctant < _NUMOCTANTSIN) {
+      valE = _RELPAY[i++];
+      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.FaultBlock/valE, tolerance);
+      valE = _RELPAY[i++];
+      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.Zone/valE, tolerance);
+    } else {
+      valE = 999.0;
+      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.FaultBlock/valE, tolerance);
+      valE = 999.9;
+      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.Zone/valE, tolerance);
+    } // if/else
+  } // for
+
+  int err = etree_close(db);
+  CPPUNIT_ASSERT(0 == err);
 } // testFillOctants
 
 // ----------------------------------------------------------------------
@@ -94,14 +143,6 @@ cencalvm::average::TestAverager::_createDB(void) const
     payload.DepthFreeSurf = _RELPAY[i++]*val;
     payload.FaultBlock = int(_RELPAY[i++]);
     payload.Zone = int(_RELPAY[i++]);
-
-    std::cout << "CREATEDB: "
-	      << addr.x << " "
-	      << addr.y << " "
-	      << addr.z << " "
-	      << addr.level << " "
-	      << val
-	      << std::endl;
 
     err = etree_insert(db, addr, &payload);
     CPPUNIT_ASSERT(0 == err);

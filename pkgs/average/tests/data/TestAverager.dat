@@ -41,9 +41,9 @@ const int cencalvm::average::TestAverager::_COORDS[] = {
 
 const double cencalvm::average::TestAverager::_OCTVALS[] = {
   7.9, 4.3, 7.8, 6.3, 8.8, 3.8, 4.8, 9.9, 8.9, 7.4, 4.9,
-  3.7, 9.35, 8.15, 4.9,
-  6.525,
-  6.525
+  3.7, 6.7, 8.15, 4.9,
+  5.8625,
+  5.8625
 };
 
 const double cencalvm::average::TestAverager::_RELPAY[] = {
