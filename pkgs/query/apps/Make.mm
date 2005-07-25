@@ -29,6 +29,9 @@ clean::
 tidy::
 	BLD_ACTION="tidy" $(MM) recurse
 
+export::
+	BLD_ACTION="export" $(MM) recurse
+
 # version
 # $Id$
 
