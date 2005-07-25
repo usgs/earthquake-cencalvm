@@ -21,8 +21,6 @@ PROJ_SRCS = \
 
 PROJ_BIN = $(PROJ_BINDIR)/cencalvmf77query
 
-TEST_ARGS = -d data/cencalvm-pre1.0.etree -i ../data/sample.in -o test.out -l test.log
-
 # ----------------------------------------------------------------------
 all: $(PROJ_BIN)
 
@@ -30,7 +28,7 @@ $(PROJ_BIN):: product_dirs $(PROJ_OBJS)
 	$(F77) -o $@ $(LF77FLAGS) $(PROJ_OBJS)
 
 test:
-	@LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(BLD_LIBDIR) $(PROJ_BIN) $(TEST_ARGS)
+	@LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(BLD_LIBDIR) $(PROJ_BIN)
 
 export:: export-binaries
 
