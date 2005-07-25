@@ -169,6 +169,7 @@ cencalvm::average::AvgEngine::_averageOctant(etree_addr_t* pAddr,
   int pendingLevel = _findParent(pAddr);
   if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
     return;
+  assert(pendingLevel == pAddr->level-1);
   assert(pendingLevel >= 0 && pendingLevel == pAddr->level-1);
 
   int err = etree_append(_dbAvg, *pAddr, &payload);
@@ -286,11 +287,20 @@ cencalvm::average::AvgEngine::_addToParent(OctantPendingStruct* pPendingParent,
 { // _addToParent
   assert(0 != pPendingParent);
   assert(0 != pAddrChild);
+  assert(pPendingParent->isValid);
+  assert(pAddrChild->level-1 == pPendingParent->pAddr->level);
 
   unsigned char childBit = _childOctantBit(pAddrChild);
   if (pPendingParent->processedChildren & childBit) {
-    _errHandler.error("Consistency check for parent/child failed while "
-		      "trying to add child's contribution to parent.");
+    char bufA[ETREE_MAXBUF];
+    char bufB[ETREE_MAXBUF];
+    std::ostringstream msg;
+    msg
+      << "Consistency check for parent/child failed while trying to add\n"
+      << "child " << etree_straddr(_dbAvg, bufA, *pAddrChild)
+      << " to\n"
+      << "parent " << etree_straddr(_dbAvg, bufB, *pPendingParent->pAddr);
+    _errHandler.error(msg.str().c_str());
     return;
   } // if
 
@@ -408,6 +418,8 @@ cencalvm::average::AvgEngine::_processOctant(const int pendingLevel)
   if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
     return;
   if (pendingLevel > 0) {
+    assert(_pPendingOctants[pendingLevel-1].pAddr->level == 
+	   pendingOctant.pAddr->level-1);
     _addToParent(&_pPendingOctants[pendingLevel-1], pendingOctant.pAddr,
 		 payload);
     if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
