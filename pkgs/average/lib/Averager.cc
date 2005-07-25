@@ -113,6 +113,26 @@ cencalvm::average::Averager::average(void)
     return;
   } // if
 
+  // Set database metadata if input etree has metadata
+  char* appmeta = etree_getappmeta(_dbIn);
+  if (0 != appmeta) {
+    const int maxLen = 128;
+    char hostname[maxLen];
+    gethostname(hostname, maxLen);
+    time_t rawTime = time(0);
+    const char* datetime = ctime(&rawTime);
+    std::ostringstream metainfo;
+    metainfo
+      << appmeta << "\n"
+      << "spatially averaged on: " << datetime
+      << "host: "  << hostname;
+    if (0 != etree_setappmeta(_dbAvg, metainfo.str().c_str())) {
+      _pErrHandler->error(etree_strerror(etree_errno(_dbAvg)));
+      etree_close(_dbAvg);
+      return;
+    } // if
+  } // if
+
   AvgEngine engine(_dbAvg, _dbIn, *_pErrHandler);
   engine.fillOctants();
   engine.printOctantInfo();
