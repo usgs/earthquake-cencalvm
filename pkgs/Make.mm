@@ -17,6 +17,7 @@ RECURSE_DIRS = \
 	storage \
 	create \
 	query \
+	average \
 
 OTHERS = \
 
