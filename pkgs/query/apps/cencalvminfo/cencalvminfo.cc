@@ -67,12 +67,15 @@ main(int argc,
 
   char* schema = etree_getschema(db);
   if (0 != schema) {
-    std::cout << "Database schema:\n" << schema << "\n";
+    std::cout << "Database schema:\n" << schema << "\n\n";
     free(schema);
   } else {
     std::cerr << "Could not retrieve database schema.";
     return -1;
   } // else
+
+  uint64_t size = etree_gettotalcount(db);
+  std::cout << "Number of octants: " << size << std::endl;
 
   if (0 != etree_close(db)) {
     std::cerr << etree_strerror(etree_errno(db));
