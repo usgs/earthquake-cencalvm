@@ -116,9 +116,12 @@ cencalvm::create::VMCreator::_createDB(void) const
   _readParams(&pGridFilenames, &numGrids);
 
   std::cout << "Preparing etree database for data..." << std::endl;
+  const int cacheSize = 64;
+  const int numDims = 3;
+  const int payloadSize = sizeof(cencalvm::storage::PayloadStruct);
   etree_t* etreedb = etree_open(_filenameTmp.c_str(), 
 				O_CREAT | O_TRUNC | O_RDWR, 
-				0, 0, 3);
+				cacheSize, payloadSize, numDims);
   if (0 == etreedb) {
     _pErrHandler->error("Could not create etree database.");
     return;
@@ -168,7 +171,11 @@ cencalvm::create::VMCreator::_packDB(void) const
 { // _packDB
   std::cout << "Packing etree database..." << std::endl;
 
-  etree_t* unpackeddb = etree_open(_filenameTmp.c_str(), O_RDONLY, 0, 0, 0);
+  const int cacheSize = 64;
+  const int numDims = 3;
+  const int payloadSize = sizeof(cencalvm::storage::PayloadStruct);
+  etree_t* unpackeddb = etree_open(_filenameTmp.c_str(), O_RDONLY,
+				   cacheSize, payloadSize, numDims);
   if (0 == unpackeddb) {
     _pErrHandler->error("Could not open unpacked etree database.");
     return;
@@ -176,7 +183,7 @@ cencalvm::create::VMCreator::_packDB(void) const
   
   etree_t* packeddb = etree_open(_filenameOut.c_str(),
 				 O_CREAT | O_TRUNC | O_RDWR,
-				 0, 0, 3);
+				 cacheSize, payloadSize, numDims);
   if (0 == packeddb) {
     _pErrHandler->error("Could not open packed etree database.");
     return;
