@@ -100,35 +100,13 @@ private :
 private :
   // PRIVATE METHODS ////////////////////////////////////////////////////
 
+  /** Do average processing on octant.
+   *
+   * @param pAddr Address of octant to process
+   * @param payload Payload of octant
+   */
   void _averageOctant(etree_addr_t* pAddr,
 		      const cencalvm::storage::PayloadStruct& payload);
-
-  void _finishProcessing(void);
-
-  /** Are octant addresses the same.
-   *
-   * @param pA Pointer to address A
-   * @param pB Pointer to address B
-   * 
-   * @returns True if addresses are the same, false otherwise
-   */
-  bool _sameAddr(etree_addr_t* pA,
-		 etree_addr_t* pB) const;
-  
-  /** Create a new octant in the average database and append it to the
-   *  array of pending octants.
-   *
-   * @param pAddr Pointer to address of octant to create
-   */
-  void _createOctant(etree_addr_t* pAddr);
-
-  /** Get bit associated with child's location relative to parent.
-   *
-   * @param pAddr Pointer to address of child.
-   *
-   * @returns Bit of child
-   */
-  unsigned char _childOctantBit(etree_addr_t* pAddr) const;
 
   /** Add contribution of octant to parent.
    *
@@ -162,6 +140,40 @@ private :
    */
   int _findParent(etree_addr_t* pAddr);
 
+  /// Process any remaining pending octants.
+  void _finishProcessing(void);
+
+  /** Create a new octant in the average database and append it to the
+   *  array of pending octants.
+   *
+   * @param pAddr Pointer to address of octant to create
+   */
+  void _createOctant(etree_addr_t* pAddr);
+
+  /** Get bit associated with child's location relative to parent.
+   *
+   * @param pAddr Pointer to address of child.
+   *
+   * @returns Bit of child
+   */
+  unsigned char _childOctantBit(etree_addr_t* pAddr) const;
+
+  /** Are octant addresses the same.
+   *
+   * @param pA Pointer to address A
+   * @param pB Pointer to address B
+   * 
+   * @returns True if addresses are the same, false otherwise
+   */
+  bool _sameAddr(etree_addr_t* pA,
+		 etree_addr_t* pB) const;
+  
+  /** Check consistency of pending octants structure.
+   *
+   * @param addr Address of current octant
+   */
+  void _checkPending(etree_addr_t& addr);
+
 private :
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 
@@ -170,10 +182,12 @@ private :
 
   OctantPendingStruct* _pPendingOctants; ///< Array of pending octants
   int _pendingSize; ///< Number of pending octants
+  int _pendingCursor;
 
   CounterStruct _octantCounter;
 
   cencalvm::storage::ErrorHandler& _errHandler; ///< Error handler
+
 
   static const etree_tick_t _LEFTMOSTONE; ///< first bit is 1, others 0
   static const short _NODATA; ///< Value for fault block and zone in avg octant
