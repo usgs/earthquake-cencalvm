@@ -76,15 +76,15 @@ public :
    */
   static int level(const double res);
 
-  /** Get address of parent octant if it exists.
+  /** Compute address of ancestor at specified level of given octant.
    *
-   * @param pParentAddr Pointer to address of parent octant
+   * @param pAncestorAddr Pointer to address of ancestor octant
    * @param childAddr Address of current octant
-   *
-   * @returns True if found parent, false otherwise
+   * @param ancestorLevel Level of ancestor octant
    */
-  static bool findParent(etree_addr_t* pParentAddr,
-			 const etree_addr_t& childAddr);
+  static void findAncestor(etree_addr_t* pAncestorAddr,
+			   const etree_addr_t& childAddr,
+			   const int ancestorLevel);
 
   /** Get vertical exaggeration.
    *
@@ -136,6 +136,8 @@ private :
 
   /// Elevation (wrt MSL) or top of root octant
   static const double _MAXELEV;
+
+  static const etree_tick_t _LEFTMOSTONE; ///< first bit is 1, others 0
 
 }; // Geometry
 

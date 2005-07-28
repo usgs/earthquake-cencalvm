@@ -34,6 +34,8 @@ const double cencalvm::storage::Geometry::_PROJYNW = 380186.124;
 const double cencalvm::storage::Geometry::_BUFFERNW = 409600.0;
 const double cencalvm::storage::Geometry::_BUFFERSW = 204800.0;
 const double cencalvm::storage::Geometry::_MAXELEV = 12800.0;
+const etree_tick_t cencalvm::storage::Geometry::_LEFTMOSTONE =
+  ~(~((etree_tick_t)0) >> 1);
 
 // ----------------------------------------------------------------------
 cencalvm::storage::Geometry::Geometry(ErrorHandler& errHandler) :
@@ -112,28 +114,20 @@ cencalvm::storage::Geometry::lonLatElevToAddr(etree_addr_t* pAddr,
 } // lonLatElevToAddr
   
 // ----------------------------------------------------------------------
-// Get address of parent octant if it exists.
-bool
-cencalvm::storage::Geometry::findParent(etree_addr_t* pParentAddr,
-					const etree_addr_t& childAddr)
-{ // findParent
-  assert(0 != pParentAddr);
-  
-  if (childAddr.level == 0)
-    return false;
-
-  const etree_tick_t leftmost_one = ~(~((etree_tick_t)0) >> 1);
-  const int parentLevel = childAddr.level - 1;
-  etree_tick_t mask = ((signed) leftmost_one) >> parentLevel;
-  
-  pParentAddr->x     = childAddr.x & mask;
-  pParentAddr->y     = childAddr.y & mask;
-  pParentAddr->z     = childAddr.z & mask;
-  pParentAddr->level = parentLevel;
-  pParentAddr->t     = 0;
-  pParentAddr->type  = ETREE_INTERIOR;
-
-  return true;
+// Compute address of ancestor at specified level of given octant.
+void
+cencalvm::storage::Geometry::findAncestor(etree_addr_t* pAncestorAddr,
+					  const etree_addr_t& childAddr,
+					  const int ancestorLevel)
+{ // findAncestor
+  assert(0 != pAncestorAddr);
+  assert(0 <= ancestorLevel && ancestorLevel < childAddr.level);
+  etree_tick_t mask = ((signed) _LEFTMOSTONE) >> ancestorLevel;
+  pAncestorAddr->x = childAddr.x & mask;
+  pAncestorAddr->y = childAddr.y & mask;
+  pAncestorAddr->z = childAddr.z & mask;
+  pAncestorAddr->level = ancestorLevel;
+  pAncestorAddr->type  = ETREE_INTERIOR;
 } // findParent
 
 // version

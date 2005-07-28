@@ -94,19 +94,22 @@ cencalvm::storage::TestGeometry::testLevel(void)
 } // testLevel
 
 // ----------------------------------------------------------------------
-// Test findParent()
+// Test findAncestor()
 void 
-cencalvm::storage::TestGeometry::testFindParent(void)
-{ // testFindParent
+cencalvm::storage::TestGeometry::testFindAncestor(void)
+{ // testFindAncestor
 
-  const int numTests = 3;
-  const int pLevelsChild[] = { 2, 3, 4 };
+  const int numTests = 4;
+  const int pLevelsChild[] = { 2, 3, 4, 4 };
   const int pAddrChild[] = { 0, 0, 0,
 			     1, 0, 2,
+			     53, 88, 19,
 			     53, 88, 19 };
   const int pAddrParent[] = { 0, 0, 0,
 			      0, 0, 1,
-			      26, 44, 9 };
+			      26, 44, 9,
+                              13, 22, 4 };
+  const int pLevelsParent[] = { 1, 2, 3, 2 };
 
   for (int iTest=0, i=0; iTest < numTests; ++iTest, i+=3) {
     etree_addr_t child;
@@ -117,19 +120,18 @@ cencalvm::storage::TestGeometry::testFindParent(void)
     child.z = pAddrChild[i+2]*tickLen;
 
     etree_addr_t parent;
-    etree_tick_t parentLevel = pLevelsChild[iTest] - 1;
+    etree_tick_t parentLevel = pLevelsParent[iTest];
     tickLen = 0x80000000 >> parentLevel;
     etree_tick_t x = pAddrParent[i  ]*tickLen;
     etree_tick_t  y = pAddrParent[i+1]*tickLen;
     etree_tick_t  z = pAddrParent[i+2]*tickLen;
-    bool hasParent = Geometry::findParent(&parent, child);
-    CPPUNIT_ASSERT(hasParent);
+    Geometry::findAncestor(&parent, child, parentLevel);
     CPPUNIT_ASSERT_EQUAL(x, parent.x);
     CPPUNIT_ASSERT_EQUAL(y, parent.y);
     CPPUNIT_ASSERT_EQUAL(z, parent.z);
     CPPUNIT_ASSERT_EQUAL((int) parentLevel, parent.level);
   } // for
-} // testFindParent
+} // testFindAncestor
 
 // version
 // $Id$

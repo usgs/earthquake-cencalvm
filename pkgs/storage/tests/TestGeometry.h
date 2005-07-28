@@ -38,7 +38,7 @@ class cencalvm::storage::TestGeometry : public CppUnit::TestFixture
   CPPUNIT_TEST( testAddress );
   CPPUNIT_TEST( testEdgeLen );
   CPPUNIT_TEST( testLevel );
-  CPPUNIT_TEST( testFindParent );
+  CPPUNIT_TEST( testFindAncestor );
   CPPUNIT_TEST_SUITE_END();
 
   // PUBLIC METHODS /////////////////////////////////////////////////////
@@ -56,8 +56,8 @@ public :
   /// Test level()
   void testLevel(void);
 
-  /// Test findParent()
-  void testFindParent(void);
+  /// Test findAncestor()
+  void testFindAncestor(void);
 
 }; // class TestGeometry
 
