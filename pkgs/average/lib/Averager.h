@@ -52,13 +52,13 @@ public :
    *
    * @param filename Name of file
    */
-  void filenameIn(const char* filenameIn);
+  void filenameIn(const char* filename);
 
   /** Set filename of output database.
    *
    * @param filename Name of file
    */
-  void filenameOut(const char* filenameOut);
+  void filenameOut(const char* filename);
 
   /** Spatially average etree database by filling in etree octants
    * with average of their children.

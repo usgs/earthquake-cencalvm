@@ -57,10 +57,13 @@ cencalvm::average::Averager::average(void)
 { // average
   assert(0 != _pErrHandler);
 
-  const int payloadSize = sizeof(cencalvm::storage::PayloadStruct);
 
   // Open input database
-  _dbIn = etree_open(_filenameIn.c_str(), O_RDONLY, 5, payloadSize, 3);
+  const int cacheSize = 64;
+  const int numDims = 3;
+  const int payloadSize = sizeof(cencalvm::storage::PayloadStruct);
+  _dbIn = etree_open(_filenameIn.c_str(), O_RDONLY,
+		     cacheSize, payloadSize, numDims);
   if (0 == _dbIn) {
     std::ostringstream msg;
     msg
@@ -96,7 +99,7 @@ cencalvm::average::Averager::average(void)
 
   // Open avg database for output
   _dbAvg = etree_open(_filenameOut.c_str(),
-		      O_CREAT|O_RDWR|O_TRUNC, 5, payloadSize, 3);
+		      O_CREAT|O_RDWR|O_TRUNC, cacheSize, payloadSize, numDims);
   if (0 == _dbAvg) {
     std::ostringstream msg;
     msg

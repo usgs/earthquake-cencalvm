@@ -17,14 +17,14 @@
 // Set filename of input database.
 inline
 void
-cencalvm::average::Averager::filenameIn(const char* filenameIn)
-{ _filenameIn = filenameIn; }
+cencalvm::average::Averager::filenameIn(const char* filename)
+{ _filenameIn = filename; }
 
 // Set filename of output database.
 inline
 void
-cencalvm::average::Averager::filenameOut(const char* filenameOut)
-{ _filenameOut = filenameOut; }
+cencalvm::average::Averager::filenameOut(const char* filename)
+{ _filenameOut = filename; }
 
 // Get handle to error handler.
 inline
