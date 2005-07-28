@@ -98,8 +98,8 @@ class cencalvm::query::VMQuery
    *   @li MAXRES Resolution is not applicable
    *   @li FIXEDRES Query etree at level corresponding to resolution
    *   @li AVGRES Resolution corresponds to minimum period of waves;
-   *     etree is queried at lavel corresponding to minimum wavelength
-   *     for shear waves
+   *     etree is queried at level corresponding to minimum wavelength
+   *     for shear waves.
    *
    * @param res Resolution of query.
    */
