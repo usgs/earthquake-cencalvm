@@ -13,7 +13,7 @@
 /** @mainpage
  *
  * @author Brad Aagaard
- * @date 2005/07/20
+ * @date 2005/07/27
  * @version 0.2.0
  *
  * @section summary Summary
@@ -23,9 +23,10 @@
  * area (central California) developed by the United States Geological
  * Survey.
  *
- * Note that updates to the data in the velocity model (the etree
- * database file) are generally independent of updates to the querying
- * software. In other words, unless the velocity model undergoes
+ * @note Updates to the data in the velocity model (the etree database
+ * file) are generally independent of updates to the querying
+ * software. This means the version numbers are also independent of
+ * one another. In other words, unless the velocity model undergoes
  * fundamental changes in the way the data is stored, you can safely
  * use updated versions of the etree database without recompiling the
  * query software.
