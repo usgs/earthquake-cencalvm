@@ -344,8 +344,7 @@ cencalvm::query::VMQuery::_queryAvg(cencalvm::storage::PayloadStruct* pPayload,
 	 _pGeom->edgeLen(resAddr.level) / pPayload->Vs < minPeriod) {
     childProps = *pPayload;
     etree_addr_t parentAddr;
-    if (!_pGeom->findParent(&parentAddr, resAddr))
-      break;
+    _pGeom->findAncestor(&parentAddr, resAddr, resAddr.level-1);
     if (0 != etree_search(_db, parentAddr, &resAddr, "*", pPayload)) {
       std::ostringstream msg;
       msg
