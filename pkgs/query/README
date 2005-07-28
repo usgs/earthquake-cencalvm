@@ -61,6 +61,32 @@
  * contained in the header files. Pay special attention to the default
  * query parameters.
  *
+ * @subsection queryTypes Query types
+ *
+ * The query routine assigns values from the Etree database for a
+ * given location depending on the query type.
+ *
+ * @li When the query type is set to MAXRES, then the query routines will
+ * use values at the maximum resolution available.
+ *
+ * @li When the query type is set to FIXEDRES, values at the requested
+ * resolution will be used even if the database contains values at a
+ * higher resolution. This prevents aliasing the model for queries at
+ * a uniform spatial resolution. The requested resolution is set with
+ * cencalvm::query::queryRes() in C++, cencalvm_queryRes() in C, and
+ * cencalvm_queryres_f() in Fortran.
+ *
+ * @li When the query type is set to AVGRES, the requested resolution
+ * is the wavelength for shear waves at a given minimum period. The
+ * query routine first finds the maximum resolution available and
+ * traverses up the tree until the resolution is no greater than the
+ * requested resolution. This prevents aliasing the model for queries
+ * at variable spatial resolution but uniform resolution with respect
+ * to the wavelength of shear waves at a given period. The requested
+ * resolution is set by passing the minimum period as an argument to
+ * cencalvm::query::queryRes() in C++, cencalvm_queryRes() in C, and
+ * cencalvm_queryres_f() in Fortran.
+ *
  * @subsection f77notes Fortran 77 notes
  *
  * @li \b cencalvm_createquery_f()
@@ -75,10 +101,10 @@
  *
  * @li No Fortran 77 binding for cencalvm_queryVals()
  *
- * Because arrays of strings cannot be passed in a standard manner
- * from Fortran to C++, there is no Fortran 77 binding for
- * cencalvm_queryVals(). Instead, you must use the default behavior,
- * where all values are returned.
+ * Because arrays of strings cannot be passed from Fortran to C++ in a
+ * standard manner, there is no Fortran 77 binding for
+ * cencalvm_queryVals(). Instead, you must accept the default behavior
+ * in which all values are returned.
  */
 
 // version
