@@ -14,7 +14,7 @@
  * @anchor changes
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
- * \section ver020 Version 0.2.0, 2005/07/20
+ * \section ver020 Version 0.2.0, 2005/07/27
  *
  * @li Added error handler to allow queries to continue even when
  * values cannnot be found for locations. Coordinates of locations
@@ -22,6 +22,9 @@
  * @li Fixed bugs in C and C++ examples associated with setting values
  * to be returned in a query.
  * @li Fixed documentation for units of cache size. Units are MB.
+ * @li Added average package for creating database with spatial averaging.
+ * @li Finished implementing routines and unit testing of queries
+ * at fixed resolution or resolution based on wavelength of shear wave.
  *
  * \section ver011 Version 0.1.1, 2005/07/18
  *
