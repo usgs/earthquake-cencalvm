@@ -20,7 +20,7 @@ c
 	implicit none
 
 	character*128 filenameIn
-	parameter(filenameIn='../data/sample-1.0.0.in')
+	parameter(filenameIn='../data/sample-05.0.0.in')
 	integer unitIn
 	parameter(unitIn=10)
 
@@ -30,7 +30,7 @@ c
 	parameter(unitOut=11)
 
         character*64 filenameDB
-	parameter(filenameDB='data/ver-1.0.0/cencalvm-1.0.0.etree')
+	parameter(filenameDB='data/ver-05.0.0/USGSBayAreaVM-05.0.0.etree')
 
         character*64 filenameLog
 	parameter(filenameLog='test.log')
