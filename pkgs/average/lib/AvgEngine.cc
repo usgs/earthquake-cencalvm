@@ -323,12 +323,24 @@ cencalvm::average::AvgEngine::_processOctant(const int pendingLevel)
 
   cencalvm::storage::PayloadStruct payload;
   const int numChildren = pendingOctant.data.numChildren;
-  payload.Vp = pendingOctant.data.pSum->Vp / numChildren;
-  payload.Vs = pendingOctant.data.pSum->Vs / numChildren;
-  payload.Density = pendingOctant.data.pSum->Density / numChildren;
-  payload.Qp = pendingOctant.data.pSum->Qp / numChildren;
-  payload.Qs = pendingOctant.data.pSum->Qs / numChildren;
-  payload.DepthFreeSurf = pendingOctant.data.pSum->DepthFreeSurf / numChildren;
+  if (0 != numChildren) {
+    payload.Vp = pendingOctant.data.pSum->Vp / numChildren;
+    payload.Vs = pendingOctant.data.pSum->Vs / numChildren;
+    payload.Density = pendingOctant.data.pSum->Density / numChildren;
+    payload.Qp = pendingOctant.data.pSum->Qp / numChildren;
+    payload.Qs = pendingOctant.data.pSum->Qs / numChildren;
+    payload.DepthFreeSurf = 
+      pendingOctant.data.pSum->DepthFreeSurf / numChildren;
+  } else {
+    // If there are no children (water), then set payload values to
+    // 'NODATA' values
+    payload.Vp = _NODATA;
+    payload.Vs = _NODATA;
+    payload.Density = _NODATA;
+    payload.Qp = _NODATA;
+    payload.Qs = _NODATA;
+    payload.DepthFreeSurf = _NODATA;
+  } // if/else
   payload.FaultBlock = _NODATA;
   payload.Zone = _NODATA;
 
