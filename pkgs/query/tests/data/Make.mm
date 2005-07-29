@@ -13,6 +13,8 @@
 PROJECT = cencalvm
 PACKAGE = query/tests/data
 
+PROJ_CLEAN += leaf.etree full.etree
+
 default all:
 
 # ----------------------------------------------------------------------

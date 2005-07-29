@@ -341,10 +341,10 @@ cencalvm::query::VMQuery::_queryAvg(cencalvm::storage::PayloadStruct* pPayload,
   
   const double vertExag = cencalvm::storage::Geometry::vertExag();
   const double minPeriod = vertExag * _queryRes;
-  cencalvm::storage::PayloadStruct childProps = *pPayload;
+  cencalvm::storage::PayloadStruct childPayload = *pPayload;
   while (pPayload->Vs > 0.0 && 
 	 _pGeom->edgeLen(resAddr.level) / pPayload->Vs < minPeriod) {
-    childProps = *pPayload;
+    childPayload = *pPayload;
     etree_addr_t parentAddr;
     _pGeom->findAncestor(&parentAddr, resAddr, resAddr.level-1);
     if (0 != etree_search(_db, parentAddr, &resAddr, "*", pPayload)) {
@@ -368,6 +368,17 @@ cencalvm::query::VMQuery::_queryAvg(cencalvm::storage::PayloadStruct* pPayload,
     } // if
   } // while
   
+  // Values returned are averages between values in payload that first
+  // meets the wavelength criteria and the child that didn't. This
+  // helps reduce the bias towards faster wave speeds. Fault block
+  // values are taken from parent which is already in pPayload.
+  pPayload->Vp = 0.5 * (childPayload.Vp + pPayload->Vp);
+  pPayload->Vs = 0.5 * (childPayload.Vs + pPayload->Vs);
+  pPayload->Density = 0.5 * (childPayload.Density + pPayload->Density);
+  pPayload->Qp = 0.5 * (childPayload.Qp + pPayload->Qp);
+  pPayload->Qs = 0.5 * (childPayload.Qs + pPayload->Qs);
+  pPayload->DepthFreeSurf = 
+    0.5 * (childPayload.DepthFreeSurf + pPayload->DepthFreeSurf);
 } // _queryAvg
 
 // version

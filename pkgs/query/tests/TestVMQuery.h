@@ -88,23 +88,21 @@ private :
   /// Create etree database.
   void _createDB(void) const;
 
+  /** Get lon/lat/elev of octants in database.
+   *
+   * @param ppCoords Pointer to array of coordinates
+   */
+  void _dbLonLatElev(double** ppCoords) const;
+
   // PRIVATE METHODS ////////////////////////////////////////////////////
 private :
 
   static const double _OCTVALS[]; ///< Octant values in database
   static const double _RELPAY[]; ///< Relateive values of payload
-  static const int _LEVELS[]; ///< Levels of octants in database
   static const int _COORDS[]; ///< Coordinates of octants in database
   static const char* _DBFILENAME; ///< Filename of output etree database
   static const int _NUMOCTANTS; ///< Number of octants
   static const int _NUMOCTANTSLEAF; ///< Number of octants for input
-
-  // PRIVATE METHODS ////////////////////////////////////////////////////
-private :
-
-  static const double _VALUESMAX[]; ///< Values for test location
-  static const double _LONLATELEV[]; ///< Lon/Lat/Elev of test location
-  static const char* _FILENAME; ///< Filename for etree
 
 }; // class TestVMQuery
 

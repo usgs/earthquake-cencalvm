@@ -14,6 +14,7 @@
 
 #include "cencalvm/query/VMQuery.h" // USES VMQuery
 #include "cencalvm/average/Averager.h" // USES Averager
+#include "cencalvm/storage/Geometry.h" // USES Averager
 #include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 
 extern "C" {
@@ -132,19 +133,31 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
   query.queryType(cencalvm::query::VMQuery::MAXRES);
   query.open();
 
-#if 0
   const int numVals = 8;
   double* pVals = (numVals > 0) ? new double[numVals] : 0;
-  query.query(&pVals, numVals, _LONLATELEV[0], _LONLATELEV[1], _LONLATELEV[2]);
 
-  const double tolerance = 1.0e-6;
-  for (int i=0; i < numVals; ++i)
-    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[i]/_VALUESMAX[i], tolerance);
-#endif
+  double* pLonLatElev = 0;
+  _dbLonLatElev(&pLonLatElev);
+  const int numLocs = _NUMOCTANTSLEAF;
+  for (int iLoc=0, i=0; iLoc < numLocs; ++iLoc, i+=3) {
+    query.query(&pVals, numVals, 
+		pLonLatElev[i  ], pLonLatElev[i+1], pLonLatElev[i+2]);
+    
+    const double tolerance = 1.0e-06;
+    const double val = _OCTVALS[iLoc];
+    for (int iVal=0; iVal < 6; ++iVal) {
+      const double  valE = _RELPAY[iVal]*val;
+      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+    } // for
+    for (int iVal=6; iVal < 8; ++iVal) {
+      const double valE = (iLoc < _NUMOCTANTSLEAF) ? _RELPAY[iVal] : -999.0;
+      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+    } // for
+  } // for
 
   query.close();
 
-  CPPUNIT_ASSERT(false);
+  delete[] pLonLatElev; pLonLatElev = 0;
 } // testQueryMax
 
 // ----------------------------------------------------------------------
@@ -159,9 +172,43 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
   query.queryType(cencalvm::query::VMQuery::FIXEDRES);
   query.open();
 
-  CPPUNIT_ASSERT(false);
+  const int numVals = 8;
+  double* pVals = (numVals > 0) ? new double[numVals] : 0;
+
+  double* pLonLatElev = 0;
+  _dbLonLatElev(&pLonLatElev);
+
+  const int pOctIndices[] = { 3, 13, 17 };
+  const int numLocs = 3;
+  for (int iLoc=0; iLoc < numLocs; ++iLoc) {
+    const int iOctant = pOctIndices[iLoc];
+
+    const int numOctCoords = 4;
+    const int level = _COORDS[numOctCoords*iOctant+3];
+    const double res = cencalvm::storage::Geometry::edgeLen(level) /
+      cencalvm::storage::Geometry::vertExag();
+    
+    query.queryRes(res);
+    query.query(&pVals, numVals, 
+		pLonLatElev[3*iOctant  ], 
+		pLonLatElev[3*iOctant+1],
+		pLonLatElev[3*iOctant+2]);
+    
+    const double tolerance = 1.0e-06;
+    const double val = _OCTVALS[iOctant];
+    for (int iVal=0; iVal < 6; ++iVal) {
+      const double  valE = _RELPAY[iVal]*val;
+      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+    } // for
+    for (int iVal=6; iVal < 8; ++iVal) {
+      const double valE = (iOctant < _NUMOCTANTSLEAF) ? _RELPAY[iVal] : -999.0;
+      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+    } // for
+  } // for
 
   query.close();
+
+  delete[] pLonLatElev; pLonLatElev = 0;
 } // testQueryFixed
 
 // ----------------------------------------------------------------------
@@ -176,9 +223,44 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
   query.queryType(cencalvm::query::VMQuery::AVGRES);
   query.open();
 
-  CPPUNIT_ASSERT(false);
+  const int numVals = 8;
+  double* pVals = (numVals > 0) ? new double[numVals] : 0;
+
+  double* pLonLatElev = 0;
+  _dbLonLatElev(&pLonLatElev);
+
+  const int numLocs = 3;
+  const int pOctIndices[] = { 1, 7, 8 };
+  const double periodMin[] = { 800.0, 1.0, 4000.0 };
+  const double octValsAvg[] = { 5.79375, 9.9, 5.421875 };
+  const bool isResLeaf[] = { false, true, false };
+
+
+  for (int iLoc=0; iLoc < numLocs; ++iLoc) {
+    const int iOctant = pOctIndices[iLoc];
+    const double res = periodMin[iLoc];
+    
+    query.queryRes(res);
+    query.query(&pVals, numVals, 
+		pLonLatElev[3*iOctant  ], 
+		pLonLatElev[3*iOctant+1],
+		pLonLatElev[3*iOctant+2]);
+    
+    const double tolerance = 1.0e-06;
+    const double val = octValsAvg[iLoc];
+    for (int iVal=0; iVal < 6; ++iVal) {
+      const double  valE = _RELPAY[iVal]*val;
+      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+    } // for
+    for (int iVal=6; iVal < 8; ++iVal) {
+      const double valE = (isResLeaf[iLoc]) ? _RELPAY[iVal] : -999.0;
+      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+    } // for
+  } // for
 
   query.close();
+
+  delete[] pLonLatElev; pLonLatElev = 0;
 } // testQueryAvg
 
 // ----------------------------------------------------------------------
@@ -207,14 +289,14 @@ cencalvm::query::TestVMQuery::_createDB(void) const
   CPPUNIT_ASSERT(0 == err);
 
   const int numOctants = _NUMOCTANTSLEAF;
+  const int numCoords = 4;
   for (int iOctant=0; iOctant < numOctants; ++iOctant) {
     
     etree_addr_t addr;
-    addr.level = _LEVELS[iOctant];
+    addr.level = _COORDS[numCoords*iOctant+3];
     addr.type = ETREE_LEAF;
 
     const etree_tick_t tickLen = 0x80000000 >> addr.level;
-    const int numCoords = 3;
     addr.x = tickLen * _COORDS[numCoords*iOctant  ];
     addr.y = tickLen * _COORDS[numCoords*iOctant+1];
     addr.z = tickLen * _COORDS[numCoords*iOctant+2];
@@ -243,6 +325,40 @@ cencalvm::query::TestVMQuery::_createDB(void) const
   averager.filenameOut(_DBFILENAME);
   averager.average();  
 } // _createDB
+
+// ----------------------------------------------------------------------
+// Get lon/lat/elev of octants in database.
+void
+cencalvm::query::TestVMQuery::_dbLonLatElev(double** ppCoords) const
+{ // _dbLonLatElev
+  assert(0 != ppCoords);
+  const int numCoords = 3;
+  const int numOctants = _NUMOCTANTS;
+  delete[] *ppCoords; *ppCoords = new double[numCoords*numOctants];
+
+  const int numOctCoords = 4;
+  for (int iOctant=0, i=0; iOctant < numOctants; ++iOctant) {
+    etree_addr_t addr;
+    addr.level = _COORDS[numOctCoords*iOctant+3];
+    addr.type = ETREE_LEAF;
+
+    const etree_tick_t tickLen = 0x80000000 >> addr.level;
+    addr.x = tickLen * _COORDS[numOctCoords*iOctant  ];
+    addr.y = tickLen * _COORDS[numOctCoords*iOctant+1];
+    addr.z = tickLen * _COORDS[numOctCoords*iOctant+2];
+
+    double lon = 0;
+    double lat = 0;
+    double elev = 0;
+    cencalvm::storage::ErrorHandler errHandler;
+    cencalvm::storage::Geometry geom(errHandler);
+    geom.addrToLonLatElev(&lon, &lat, &elev, &addr);
+
+    (*ppCoords)[i++] = lon;
+    (*ppCoords)[i++] = lat;
+    (*ppCoords)[i++] = elev;    
+  } // for
+} // _dbLonLatElev
 
 // version
 // $Id$
