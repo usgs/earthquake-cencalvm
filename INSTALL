@@ -103,8 +103,11 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(ETREE_LIBDIR)
  *
  * <li> If the libraries and files are not installed in system
  * libraries, set the environment variables PROJ4_LIBDIR and
- * PROJ4_INCDIR accordingly. If libproj.so is in /home/tools/proj4/lib
- * and header files are in /home/tools/proj4/include, then:
+ * PROJ4_INCDIR accordingly (you probably want to do this in your
+ * .bashrc or .cshrc file or a file that is included by them so that
+ * these are set automatically every time you log in). If libproj.so
+ * is in /home/tools/proj4/lib and header files are in
+ * /home/tools/proj4/include, then:
  *
  * <ul>
  * <li> bash shell users
@@ -184,9 +187,6 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  *
  * Run 'make' and then 'make test' in each of the tests directories.
  *
- * As of Friday 8 July 2005, the testQueryFixed and testQueryAvg tests
- * will fail, because the tests haven't been implemented yet.
- *
  * <li> Download the velocity model from
  * ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database
  *
@@ -201,6 +201,32 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  * <li> The libraries, header files, and binaries are now in the
  * BLD_ROOT directory (defined in Makefile.config).
  *
+ * <li> Set environment variables to find libraries and executables
+ * that are in BLD_ROOT. If the libraries and executables are not
+ * installed in system libraries, set the environment variables
+ * LD_LIBRARY_PATH and PATH (or their equivalent) accordingly. You
+ * will probably want to do this in your .bashrc or .cshrc file or a
+ * file that is included by them so that these are set automatically
+ * every time you log in.
+ *
+ * <ul>
+ * <li> bash shell users
+ *
+\verbatim
+export CENCALVM_DIR=/home/johndoe/cencalvm/buildtmp/lib
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(CENCALVM_DIR)/lib
+export PATH=${PATH}:$(CENCALVM_DIR)/bin
+\endverbatim
+ *
+ * <li> tcsh shell users
+\verbatim
+setenv CENCALVM_DIR /home/johndoe/cencalvm/buildtmp/lib
+setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(CENCALVM_DIR)/lib
+setenv PATH ${PATH}:$(CENCALVM_DIR)/bin
+\endverbatim
+ *
+ * </ul>
+ * 
  * </ol>
  *
  * @section knownissues Known Issues
