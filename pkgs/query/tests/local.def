@@ -30,7 +30,7 @@ PROJ_LCXX_FLAGS += -L$(ETREE_LIBDIR)
 endif
 PROJ_LCXX_FLAGS += -letree
 
-PROJ_LCXX_FLAGS += -lcencalvmstorage -lcencalvmquery
+PROJ_LCXX_FLAGS += -lcencalvmstorage -lcencalvmquery -lcencalvmavg
 
 # version
 # $Id$
