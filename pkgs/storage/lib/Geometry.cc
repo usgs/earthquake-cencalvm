@@ -111,7 +111,38 @@ cencalvm::storage::Geometry::lonLatElevToAddr(etree_addr_t* pAddr,
   pAddr->x = tickLen*etree_tick_t(p / res);
   pAddr->y = tickLen*etree_tick_t(q / res);
   pAddr->z = tickLen*etree_tick_t(r / res);
+
+  _pProj->project(&x, &y, lon, lat);
 } // lonLatElevToAddr
+  
+// ----------------------------------------------------------------------
+// Get global coordinates of octant centroid.
+void
+cencalvm::storage::Geometry::addrToLonLatElev(double* pLon,
+					      double* pLat,
+					      double* pElev,
+					      etree_addr_t* pAddr)
+{ // addrToLonLatElev
+  assert(0 != _pProj);
+  assert(0 != pAddr);
+  assert(0 <= pAddr->level && 32 > pAddr->level);
+
+  // find coordinates in rotated projected space
+  const double res = _ROOTLEN / ((etree_tick_t) 1 << pAddr->level);
+  const etree_tick_t tickLen = 0x80000000 >> pAddr->level;
+  const double p = (pAddr->x / double(tickLen) + 0.5) * res;
+  const double q = (pAddr->y / double(tickLen) + 0.5) * res;
+  const double r = (pAddr->z / double(tickLen) + 0.5) * res;
+
+  // find projected coordinates
+  const double azR = _AZ * M_PI / 180.0;
+  const double x = _projXNWRoot + p * cos(azR) + q * sin(azR);
+  const double y = _projYNWRoot - p * sin(azR) + q * cos(azR);
+  *pElev = (r - _ROOTLEN) / _VERTEXAG + _MAXELEV;
+
+  // unproject to get geographic coordinates
+  _pProj->invProject(pLon, pLat, x, y);
+} // addrToLonLatElev
   
 // ----------------------------------------------------------------------
 // Compute address of ancestor at specified level of given octant.

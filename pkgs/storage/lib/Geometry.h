@@ -64,13 +64,25 @@ public :
 			const double lat,
 			const double elev);
   
-  /** Get length of octant edge.
+  /** Get global coordinates of octant centroid.
+   *
+   * @param pLon Pointer to longitude of location in degrees
+   * @param pLat Pointer to latitude of location in degrees
+   * @param pElev Pointer to elevation of location wrt MSL in meters
+   * @param pAddr Pointer to etree address
+   */
+  void addrToLonLatElev(double* pLon,
+			double* pLat,
+			double* pElev,
+			etree_addr_t* pAddr);
+  
+  /** Get length of octant edge (horizontal direction).
    *
    * @param level Level in etree
    */
   static double edgeLen(const etree_tick_t level);
 
-  /** Get level in etree corresponding to resolution.
+  /** Get level in etree corresponding to horizontal resolution.
    *
    * @param res Spatial resolution
    */

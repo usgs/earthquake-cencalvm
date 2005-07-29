@@ -69,6 +69,56 @@ cencalvm::storage::TestGeometry::testAddress(void)
 } // testAddress
 
 // ----------------------------------------------------------------------
+// Test addrToLonLatElev()
+void 
+cencalvm::storage::TestGeometry::testInvAddress(void)
+{ // testInvAddress
+  ErrorHandler errHandler;
+  Geometry geom(errHandler);
+
+  const int level = 6;
+  const double res = Geometry::_ROOTLEN / ((etree_tick_t) 1 << level);
+  const etree_tick_t tickLen = 0x80000000 >> level;
+
+  const double lonE = -123.653262;
+  const double latE = 38.400998;
+  const double elevE = 0.5*res/Geometry::_VERTEXAG;
+
+  const double p = Geometry::_BUFFERNW + 0.5*res;
+  const double q = Geometry::_BUFFERSW + 0.5*res;
+  const double r = Geometry::_ROOTLEN +
+    (0.5*res / Geometry::_VERTEXAG - Geometry::_MAXELEV) * Geometry::_VERTEXAG;
+
+  etree_addr_t addr;
+  addr.level = level;
+  addr.x = tickLen*int(p / res);
+  addr.y = tickLen*int(q / res);
+  addr.z = tickLen*int(r / res);
+    
+  double lon = 0;
+  double lat = 0;
+  double elev = 0;
+  geom.addrToLonLatElev(&lon, &lat, &elev, &addr);
+  
+  const double tolerance = 1.0e-6;
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, lon/lonE, tolerance);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, lat/latE, tolerance);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, elev/elevE, tolerance);
+
+  CPPUNIT_ASSERT(ErrorHandler::OK == errHandler.status());
+
+  // double check by going lon/lat/elev back to addr
+  etree_addr_t addrCheck;
+  addrCheck.level = level;
+  geom.lonLatElevToAddr(&addrCheck, lon, lat, elev);
+  CPPUNIT_ASSERT_EQUAL(addr.x, addrCheck.x);
+  CPPUNIT_ASSERT_EQUAL(addr.y, addrCheck.y);
+  CPPUNIT_ASSERT_EQUAL(addr.z, addrCheck.z);
+
+  CPPUNIT_ASSERT(ErrorHandler::OK == errHandler.status());
+} // testInvAddress
+
+// ----------------------------------------------------------------------
 // Test edgeLen()
 void 
 cencalvm::storage::TestGeometry::testEdgeLen(void)
