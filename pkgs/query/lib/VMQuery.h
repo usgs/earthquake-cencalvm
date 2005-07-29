@@ -29,7 +29,8 @@
  * <li> Create query object using cencalvm::query::VMQuery::VMQuery()
  * <li> Set filename of database using cencalvm::query::VMQuery::filename()
  * <li> Optionally, set cache size using cencalvm::query::VMQuery::cacheSize()
- * <li> Optionally, set values to return in query using cencalvm::query::VMQuery::queryVals()
+ * <li> Optionally, set values to return in query using 
+ *   cencalvm::query::VMQuery::queryVals()
  * <li> Open database using cencalvm::query::VMQuery::open()
  * <li> Query database using cencalvm::query::VMQuery::query()
  * <li> Close database using cencalvm::query::VMQuery::close()
@@ -92,7 +93,9 @@ class cencalvm::query::VMQuery
    */
   void queryType(const QueryEnum queryType);
 
-  /** Set query resolution.
+  /** Set query resolution. Resolution is associated with vertical
+   * resolution, which is 4 times greater than the horizontal
+   * resolution.
    *
    * Meaning depends on type of query:
    *   @li MAXRES Resolution is not applicable
@@ -207,7 +210,7 @@ private :
 private :
  // PRIVATE MEMBERS ////////////////////////////////////////////////////
   
-  double _queryRes; ///< Resolution of query (if specified)
+  double _queryRes; ///< Vertical resolution of query (if specified)
 
   etree_t* _db; ///< Database
   std::string _filename; ///< Name of database file

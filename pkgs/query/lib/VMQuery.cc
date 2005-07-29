@@ -258,7 +258,8 @@ cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload
   assert(0 != pPayload);
 
   etree_addr_t addr;
-  addr.level = _pGeom->level(_queryRes);
+  const double vertExag = cencalvm::storage::Geometry::vertExag();
+  addr.level = _pGeom->level(vertExag * _queryRes);
   addr.type = ETREE_LEAF;
   _pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
   if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
@@ -338,7 +339,8 @@ cencalvm::query::VMQuery::_queryAvg(cencalvm::storage::PayloadStruct* pPayload,
     return;
   } // if
   
-  const double minPeriod = _queryRes;
+  const double vertExag = cencalvm::storage::Geometry::vertExag();
+  const double minPeriod = vertExag * _queryRes;
   cencalvm::storage::PayloadStruct childProps = *pPayload;
   while (pPayload->Vs > 0.0 && 
 	 _pGeom->edgeLen(resAddr.level) / pPayload->Vs < minPeriod) {
