@@ -30,6 +30,12 @@
  * Use of the provided Makefiles requires GNU make. See \ref
  * knownissues "Known Issues" for more information.
  *
+ * <li> gzip software<br>
+ * version 1.3.3 is known to work
+ *
+ * Gzip is required to uncompress the database file and the software
+ * tar ball. See \ref knownissues "Known Issues" for more information.
+ *
  * </ol>
  *
  * @subsection euclid Euclid - Etree database library
@@ -266,6 +272,13 @@ make: Fatal error in reader: ./config/rules-targets.def, line 14: Unexpected end
  * directory.
  *
  * </ul>
+ *
+ * <li> Uncompressing the database file gives a 'File too large'
+ * error.
+ *
+ * Older versions of gzip may not be able to uncompress the large
+ * etree database file with is 7.5 GB uncompressed. The workaround is
+ * to get gzip version 1.3.3 or later.
  *
  * </ul>
  */
