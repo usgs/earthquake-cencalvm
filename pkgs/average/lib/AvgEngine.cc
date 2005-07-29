@@ -27,7 +27,7 @@ extern "C" {
 // ----------------------------------------------------------------------
 const etree_tick_t cencalvm::average::AvgEngine::_LEFTMOSTONE =
   ~(~((etree_tick_t)0) >> 1);
-const short cencalvm::average::AvgEngine::_NODATA = 999;
+const short cencalvm::average::AvgEngine::_NODATA = -999;
 
 // ----------------------------------------------------------------------
 // Default constructor
