@@ -63,8 +63,29 @@
  *
  * @subsection queryTypes Query types
  *
+ * The etree database is a fully populated etree, meaning data is
+ * stored at the leaves of the tree as well as in the interior. The
+ * values at the interior octants at each level are the average values
+ * of the values of its children. Because averaging fault block and
+ * zone values is not meaningful, those values are set to -999 in the
+ * interior octants. Values at the different levels of the etree
+ * correspond to material properties at different spatial resolutions,
+ * for example the P wave speed on a scale of 25 meters versus the P
+ * wave speed on a scale of 400 meters.
+ *
+ * @note In the database, the value for Vs in water is -999. In order
+ * to prevent nonphysical values for solid material near the
+ * solid/water interface, all values for water (Vp, Vs, density, etc)
+ * are ignored in the averaging. In the cases where all of an interior
+ * octant's children are associated with water, the material
+ * properties are set to -999.
+ *
  * The query routine assigns values from the Etree database for a
  * given location depending on the query type.
+ *
+ * @note Resolution in the discussion that follows refers to the
+ * vertical resolution which is greater than the horizontal
+ * resolution.
  *
  * @li When the query type is set to MAXRES, then the query routines will
  * use values at the maximum resolution available.
