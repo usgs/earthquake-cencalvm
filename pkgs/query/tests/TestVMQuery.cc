@@ -13,7 +13,12 @@
 #include "TestVMQuery.h" // Implementation of class methods
 
 #include "cencalvm/query/VMQuery.h" // USES VMQuery
+#include "cencalvm/average/Averager.h" // USES Averager
 #include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
+
+extern "C" {
+#include "etree.h"
+}
 
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::query::TestVMQuery );
@@ -35,8 +40,8 @@ void
 cencalvm::query::TestVMQuery::testFilename(void)
 { // testFilename
   VMQuery query;
-  query.filename(_FILENAME);
-  CPPUNIT_ASSERT(0 == strcmp(_FILENAME, query._filename.c_str()));
+  query.filename(_DBFILENAME);
+  CPPUNIT_ASSERT(0 == strcmp(_DBFILENAME, query._filename.c_str()));
 } // testFilename
 
 // ----------------------------------------------------------------------
@@ -45,7 +50,7 @@ void
 cencalvm::query::TestVMQuery::testOpenClose(void)
 { // testOpenClose
   VMQuery query;
-  query.filename(_FILENAME);
+  query.filename(_DBFILENAME);
   query.open();
   CPPUNIT_ASSERT(0 != query._db);
   query.close();
@@ -120,11 +125,14 @@ cencalvm::query::TestVMQuery::testCacheSize(void)
 void 
 cencalvm::query::TestVMQuery::testQueryMax(void)
 { // testQuerymax
+  _createDB();
+
   VMQuery query;
-  query.filename(_FILENAME);
+  query.filename(_DBFILENAME);
   query.queryType(cencalvm::query::VMQuery::MAXRES);
   query.open();
 
+#if 0
   const int numVals = 8;
   double* pVals = (numVals > 0) ? new double[numVals] : 0;
   query.query(&pVals, numVals, _LONLATELEV[0], _LONLATELEV[1], _LONLATELEV[2]);
@@ -132,8 +140,11 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
   const double tolerance = 1.0e-6;
   for (int i=0; i < numVals; ++i)
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[i]/_VALUESMAX[i], tolerance);
+#endif
 
   query.close();
+
+  CPPUNIT_ASSERT(false);
 } // testQueryMax
 
 // ----------------------------------------------------------------------
@@ -141,8 +152,10 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
 void 
 cencalvm::query::TestVMQuery::testQueryFixed(void)
 { // testQueryFixed
+  _createDB();
+
   VMQuery query;
-  query.filename(_FILENAME);
+  query.filename(_DBFILENAME);
   query.queryType(cencalvm::query::VMQuery::FIXEDRES);
   query.open();
 
@@ -156,8 +169,10 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
 void 
 cencalvm::query::TestVMQuery::testQueryAvg(void)
 { // testQueryAvg
+  _createDB();
+
   VMQuery query;
-  query.filename(_FILENAME);
+  query.filename(_DBFILENAME);
   query.queryType(cencalvm::query::VMQuery::AVGRES);
   query.open();
 
@@ -177,6 +192,57 @@ cencalvm::query::TestVMQuery::testErrorHandler(void)
   CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
 		       pHandler->status());
 } // testErrorHandler
+
+// ----------------------------------------------------------------------
+// Create etree with desired number of octants.
+void
+cencalvm::query::TestVMQuery::_createDB(void) const
+{ // _createDB
+  const char* filenameTmp = "data/leaf.etree";
+
+  etree_t* db = etree_open(filenameTmp, O_CREAT|O_RDWR|O_TRUNC, 0, 0, 3);
+  CPPUNIT_ASSERT(0 != db);
+
+  int err = etree_registerschema(db, cencalvm::storage::SCHEMA);
+  CPPUNIT_ASSERT(0 == err);
+
+  const int numOctants = _NUMOCTANTSLEAF;
+  for (int iOctant=0; iOctant < numOctants; ++iOctant) {
+    
+    etree_addr_t addr;
+    addr.level = _LEVELS[iOctant];
+    addr.type = ETREE_LEAF;
+
+    const etree_tick_t tickLen = 0x80000000 >> addr.level;
+    const int numCoords = 3;
+    addr.x = tickLen * _COORDS[numCoords*iOctant  ];
+    addr.y = tickLen * _COORDS[numCoords*iOctant+1];
+    addr.z = tickLen * _COORDS[numCoords*iOctant+2];
+
+    const double val = _OCTVALS[iOctant];
+    cencalvm::storage::PayloadStruct payload;
+    int i=0;
+    payload.Vp = _RELPAY[i++]*val;
+    payload.Vs = _RELPAY[i++]*val;
+    payload.Density = _RELPAY[i++]*val;
+    payload.Qp = _RELPAY[i++]*val;
+    payload.Qs = _RELPAY[i++]*val;
+    payload.DepthFreeSurf = _RELPAY[i++]*val;
+    payload.FaultBlock = int(_RELPAY[i++]);
+    payload.Zone = int(_RELPAY[i++]);
+
+    err = etree_insert(db, addr, &payload);
+    CPPUNIT_ASSERT(0 == err);
+  } // for
+
+  err = etree_close(db);
+  CPPUNIT_ASSERT(0 == err);
+
+  cencalvm::average::Averager averager;
+  averager.filenameIn(filenameTmp);
+  averager.filenameOut(_DBFILENAME);
+  averager.average();  
+} // _createDB
 
 // version
 // $Id$

@@ -10,15 +10,57 @@
 // ----------------------------------------------------------------------
 //
 
-const char* cencalvm::query::TestVMQuery::_FILENAME = "data/one.etree";
-
-const double cencalvm::query::TestVMQuery::_VALUESMAX[] = {
-  1.0, 2.0, 3.0, 4.0, 5.0, 6.0, 1.0, 2.0
+const int cencalvm::query::TestVMQuery::_NUMOCTANTS = 21;
+const int cencalvm::query::TestVMQuery::_NUMOCTANTSLEAF = 12;
+const int cencalvm::query::TestVMQuery::_LEVELS[] = {
+  7, 7, 7, 7, 7, 7, 7, 7, 7, 7, 7,
+  6, 6, 6, 6,
+  5,
+  4,
+  3,
+  2,
+  1,
+  0 };
+const int cencalvm::query::TestVMQuery::_COORDS[] = {
+  40, 16, 90,
+  41, 16, 90,
+  42, 16, 90,
+  40, 17, 90,
+  41, 17, 90,
+  42, 17, 90,
+  40, 16, 91,
+  41, 16, 91,
+  40, 17, 91,
+  41, 17, 91,
+  40, 18, 90,
+  20, 8, 45,
+  20, 8, 44,
+  21, 8, 44,
+  20, 9, 44,
+  10, 4, 22,
+  5, 2, 11,
+  2, 1, 5,
+  1, 0, 2,
+  0, 0, 1,
+  0, 0, 0
 };
 
-const double cencalvm::query::TestVMQuery::_LONLATELEV[] = {
- -123.85829, 38.42416, 0.0
+const double cencalvm::query::TestVMQuery::_OCTVALS[] = {
+  7.9, 4.3, 7.8, 6.3, 8.8, 3.8, 4.8, 9.9, 8.9, 7.4, 4.9,
+  3.7, 6.7, 8.15, 4.9,
+  5.8625,
+  5.8625,
+  5.8625,
+  5.8625,
+  5.8625,
+  5.8625
 };
+
+const double cencalvm::query::TestVMQuery::_RELPAY[] = {
+  10.0, 1.0, 0.1, 0.01, 0.001, 100.0, 1.0, 1.0
+};
+
+const char* cencalvm::query::TestVMQuery::_DBFILENAME = "data/full.etree";
 
 // version
 // $Id$

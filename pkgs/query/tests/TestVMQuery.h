@@ -82,6 +82,23 @@ public :
   /// Test errorHandler()
   void testErrorHandler(void);
 
+  // PRIVATE MEMBERS ////////////////////////////////////////////////////
+private :
+
+  /// Create etree database.
+  void _createDB(void) const;
+
+  // PRIVATE METHODS ////////////////////////////////////////////////////
+private :
+
+  static const double _OCTVALS[]; ///< Octant values in database
+  static const double _RELPAY[]; ///< Relateive values of payload
+  static const int _LEVELS[]; ///< Levels of octants in database
+  static const int _COORDS[]; ///< Coordinates of octants in database
+  static const char* _DBFILENAME; ///< Filename of output etree database
+  static const int _NUMOCTANTS; ///< Number of octants
+  static const int _NUMOCTANTSLEAF; ///< Number of octants for input
+
   // PRIVATE METHODS ////////////////////////////////////////////////////
 private :
 
