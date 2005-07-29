@@ -200,8 +200,12 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  * Create symbolic links to the USGS central CA velocity model from
  * each of the examples directories (cpp, c, f77) and run 'make' and
  * 'make test' in each of the directories. The output (test.out)
- * should be identical to the corresponding sample-VERSION.out file in the
- * examples/data directory.
+ * should be identical to the corresponding sample-VERSION.out file in
+ * the examples/data directory. The 'test' target assumes that the
+ * velocity models are stored in data/ver-VERSION/, so the symbolic
+ * links need to be set accordingly (if in doubt do a 'make -n test'
+ * to see what the filenames the target is using and then setup the
+ * links accordingly).
  *
  * <li> The libraries, header files, and binaries are now in the
  * BLD_ROOT directory (defined in Makefile.config).
