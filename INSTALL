@@ -64,9 +64,11 @@
  *
  * If the libraries and header files are not installed in system
  * directories, set the environment variables ETREE_LIBDIR,
- * ETREE_INCDIR, and LD_LIBRARY_PATH (or the equivalent)
- * accordingly. If libetree.so is in /home/tools/etree/lib and header
- * files are in /home/tools/etree/include, then:
+ * ETREE_INCDIR, and LD_LIBRARY_PATH (or the equivalent) accordingly
+ * (you probably want to do this in your .bashrc or .cshrc file or a
+ * file that is included by them so that these are set automatically
+ * every time you log in). If libetree.so is in /home/tools/etree/lib
+ * and header files are in /home/tools/etree/include, then:
  *
  * <ul>
  * <li> bash shell users
@@ -88,7 +90,7 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(ETREE_LIBDIR)
  *
  * </ol>
  *
- * @subsection proj4 proj4 - Cartographic projections library<br>
+ * @subsection proj4 proj4 - Cartographic projections library
  * http://proj.maptools.org/<br>
  * version 4.4.9 is known to work
  *
@@ -137,7 +139,7 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  *
  * This library is used in the unit testing of the code. It is only
  * used for testing and skipping this step will not affect the
- * functioning of the velocity model software.
+ * functionality of the velocity model software.
  *
  * <ol>
  *
@@ -179,13 +181,16 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  * model database and the examples. This includes C and Fortran 77
  * bindings for the query routines. 
  *
- * <li> Run make in pkgs/storage/lib and pkgs/query/lib.
+ * <li> Run make in pkgs/storage/lib, pkgs/query/lib, and pkgs/query/liblang.
  *
  * </ul>
  *
  * <li> OPTIONAL
  *
- * Run 'make' and then 'make test' in each of the tests directories.
+ * Run 'make' and then 'make test' in each of the tests
+ * directories. If you didn't run make in the top level directory, you
+ * will need to run make in pkgs/average/lib to run the tests in
+ * pkgs/query/lib.
  *
  * <li> Download the velocity model from
  * ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database
@@ -195,8 +200,8 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  * Create symbolic links to the USGS central CA velocity model from
  * each of the examples directories (cpp, c, f77) and run 'make' and
  * 'make test' in each of the directories. The output (test.out)
- * should be identical to the file sample.out in the examples/data
- * directory.
+ * should be identical to the corresponding sample-VERSION.out file in the
+ * examples/data directory.
  *
  * <li> The libraries, header files, and binaries are now in the
  * BLD_ROOT directory (defined in Makefile.config).
@@ -233,7 +238,7 @@ setenv PATH ${PATH}:$(CENCALVM_DIR)/bin
  *
  * <ul>
  *
- * <li> Compiling velocity model querying software without a recent
+ * <li> Compiling the velocity model querying software without a recent
  * version of GNU make.
  *
  * <ul>
@@ -253,7 +258,7 @@ BLD_ACTION="all" make recurse
 make: Fatal error in reader: ./config/rules-targets.def, line 14: Unexpected end of line seen
 \endverbatim
  *
- * Workaround is to get newer version of GNU make or run make in each
+ * Workaround is to get newer version of GNU make or run gmake in each
  * directory.
  *
  * </ul>

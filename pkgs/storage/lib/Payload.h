@@ -32,12 +32,29 @@ struct cencalvm::storage::PayloadStruct {
   float Qp; ///< Q for P waves
   float Qs; ///< Q for S waves
   float DepthFreeSurf; ///< Depth wrt free surface (burial depth) in m
-  int16_t FaultBlock; ///< Fault block identifier
-  int16_t Zone; ///< Zone identifier
+
+  /** Fault block identifier.
+   *
+   * @li Set to fault block for location in Earth Vision model
+   * @li Set to 0 for locations outside the domain.
+   * @li Set to -999 for interior octants that contain values
+   *  that are the average of its children.
+   */
+  int16_t FaultBlock;
+
+  /** Zone identifier. 
+   *
+   * @li Set to zone for location in Earth Vision model
+   * @li Set to 0 for locations outside the domain.
+   * @li Set to -999 for interior octants that contain values that are the
+   *  averages of its children.
+   */
+  int16_t Zone;
 }; // struct PayloadStruct
 
 namespace cencalvm {
   namespace storage {
+    /// Database schema
     static const char* cencalvm::storage::SCHEMA = 
       "float32_t Vp; "
       "float32_t Vs; "

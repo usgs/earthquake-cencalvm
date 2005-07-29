@@ -16,7 +16,9 @@
  *
  * <ol>
  *
- * <li> None
+ * <li> Create application to extract subset of fully populated
+ * etree. It should be easy to cutoff the etree at a given
+ * level. Trimming the bounding box would be more complex.
  *
  * </ol>
  */

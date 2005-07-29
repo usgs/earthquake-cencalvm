@@ -13,7 +13,7 @@
 /** @mainpage
  *
  * @author Brad Aagaard
- * @date 2005/07/27
+ * @date 2005/07/29
  * @version 0.2.0
  *
  * @section summary Summary
@@ -29,7 +29,7 @@
  * one another. In other words, unless the velocity model undergoes
  * fundamental changes in the way the data is stored, you can safely
  * use updated versions of the etree database without recompiling the
- * query software.
+ * query software, and vice versa.
  *
  * @section installation Installation
  *
@@ -46,6 +46,12 @@
  *
  * @li \b pkgs Packages comprising cencalvm
  *
+ * @subsection create Package 'average'
+ *
+ * This package is used to populate the interior octants of the etree
+ * with averages of the children. In general, it is for internal use
+ * only.
+ *
  * @subsection create Package 'create'
  *
  * This package is used to create the etree database from Earth Vision
@@ -61,9 +67,8 @@
  *
  * This package defines the geometry of the velocity model and
  * performs transformation of geographic coordinates to the etree
- * ticks. This package is used by the 'create' and 'query'
- * packages. You should never need to call the routines in this
- * library directly.
+ * ticks. This package is used by the other packages. You should never
+ * need to call the routines in this library directly.
  *
  * @section version Version history
  *
