@@ -56,6 +56,18 @@ public :
 	       const double lon,
 	       const double lat) const;
 
+  /** Apply inverse projection.
+   *
+   * @param pLon Pointer to longitude of location in degrees
+   * @param pLat Pointer to latitude of location in degrees
+   * @param x Projected X coordinate
+   * @param y Projected Y coordinate
+   */
+  void invProject(double* pLon,
+		  double* pLat,
+		  const double x,
+		  const double y) const;
+
  private :
   // PRIVATE METHODS ////////////////////////////////////////////////////
 

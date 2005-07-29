@@ -92,6 +92,36 @@ cencalvm::storage::Projector::project(double* pX,
   *pY = xy.v;
 } // project
 
+// ----------------------------------------------------------------------
+// Apply inverse projection.
+void
+cencalvm::storage::Projector::invProject(double* pLon,
+					 double* pLat,
+					 const double x,
+					 const double y) const
+{ // invProject
+  assert(0 != pLon);
+  assert(0 != pLat);
+  assert(0 != _pProj);
+
+  const double radToDeg = 180.0 / M_PI;
+
+  projUV xy;
+  xy.u = x;
+  xy.v = y;
+  projUV lonlat = pj_inv(xy, _pProj);
+  if (HUGE_VAL == lonlat.u) {
+    std::ostringstream msg;
+    msg << "Error while projecting location.\n"
+	<< "  " << pj_strerrno(pj_errno) << "\n"
+	<< "  x: " << x << "\n"
+	<< "  y: " << y << "\n";
+    _errHandler.error(msg.str().c_str());
+  } // if
+  *pLon = lonlat.u * radToDeg;
+  *pLat = lonlat.v * radToDeg;
+} // invProject
+
 // version
 // $Id$
 
