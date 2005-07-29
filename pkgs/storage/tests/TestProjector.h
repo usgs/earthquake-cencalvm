@@ -36,6 +36,7 @@ class cencalvm::storage::TestProjector : public CppUnit::TestFixture
   CPPUNIT_TEST_SUITE( TestProjector );
   CPPUNIT_TEST( testConstructor );
   CPPUNIT_TEST( testProject );
+  CPPUNIT_TEST( testInvProject );
   CPPUNIT_TEST_SUITE_END();
 
   // PUBLIC METHODS /////////////////////////////////////////////////////
@@ -46,6 +47,9 @@ public :
 
   /// Test project()
   void testProject(void);
+
+  /// Test invProject()
+  void testInvProject(void);
 
   // PRIVATE METHODS ////////////////////////////////////////////////////
 private :
