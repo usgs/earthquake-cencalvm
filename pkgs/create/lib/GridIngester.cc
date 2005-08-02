@@ -127,7 +127,8 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
       
       // convert Vp & Vs from km/s to m/s
       payload.Vp *= 1.0e+3;
-      payload.Vs *= 1.0e+3;
+      if (payload.Vs != -999.0)
+	payload.Vs *= 1.0e+3;
       
       // convert Density from g/cm^3 to kg/m^3
       payload.Density *= 1.0e+3;
