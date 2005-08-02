@@ -14,6 +14,11 @@
  * @anchor changes
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
+ * \section ver021 Version 0.2.1, 2005/08/02
+ *
+ * @li Fixed bug in creation routine where Vs for water (-999) was
+ * scaled. 'Invalid' values should not be scaled.
+ *
  * \section ver020 Version 0.2.0, 2005/07/29
  *
  * @li Added error handler to allow queries to continue even when
