@@ -43,10 +43,13 @@ public :
    * @param pDB Pointer to database
    * @param filename Filename of gridded data
    * @param errHandler Error handler
+   * @param quiet True to run without progress reports, false to report 
+   *   progress
    */
   static void addGrid(etree_t** pDB,
 		      const char* filename,
-		      cencalvm::storage::ErrorHandler& errHandler);
+		      cencalvm::storage::ErrorHandler& errHandler,
+		      const bool quiet =false);
 }; // GridIngester
 
 #endif // cencalvm_create_gridingester  

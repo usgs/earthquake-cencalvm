@@ -31,7 +31,8 @@ extern "C" {
 void
 cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 					const char* filename,
-				  cencalvm::storage::ErrorHandler& errHandler)
+				  cencalvm::storage::ErrorHandler& errHandler,
+					const bool quiet)
 { // addGrid
   assert(0 != pDB);
 
@@ -51,7 +52,9 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
 
   cencalvm::storage::Geometry vmgeom(errHandler);
 
-  std::cout << "Beginning processing of '" << filename << "'..." << std::endl;
+  if (!quiet)
+    std::cout
+      << "Beginning processing of '" << filename << "'..." << std::endl;
 
   double resHoriz = 0.0;
   double resVert = 0.0;
@@ -191,10 +194,11 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
     return;
   } // if
 
-  std::cout << "Done procesing '" << filename << "'."
-	    << "  # points added: " << numAdded
-	    << ",  # points ignored: " << numIgnored
-	    << std::endl;
+  if (!quiet)
+    std::cout << "Done procesing '" << filename << "'."
+	      << "  # points added: " << numAdded
+	      << ",  # points ignored: " << numIgnored
+	      << std::endl;
 } // addGrid
 
 // version

@@ -36,7 +36,8 @@ cencalvm::create::VMCreator::VMCreator(void) :
   _filenameParams(""),
   _filenameOut(""),
   _filenameTmp(""),
-  _pErrHandler(new cencalvm::storage::ErrorHandler)
+  _pErrHandler(new cencalvm::storage::ErrorHandler),
+  _quiet(false)
 { // constructor
 } // constructor
 
@@ -115,7 +116,8 @@ cencalvm::create::VMCreator::_createDB(void) const
   int numGrids = 0;
   _readParams(&pGridFilenames, &numGrids);
 
-  std::cout << "Preparing etree database for data..." << std::endl;
+  if (!_quiet)
+    std::cout << "Preparing etree database for data..." << std::endl;
   const int cacheSize = 64;
   const int numDims = 3;
   const int payloadSize = sizeof(cencalvm::storage::PayloadStruct);
@@ -152,13 +154,14 @@ cencalvm::create::VMCreator::_createDB(void) const
     return;
   } // if
 
-  std::cout
-    << "Finished preparing database. Starting processing of " << numGrids
-    << " files." << std::endl;
+  if (!_quiet)
+    std::cout
+      << "Finished preparing database. Starting processing of " << numGrids
+      << " files." << std::endl;
 
   for (int iGrid=0; iGrid < numGrids; ++iGrid)
     GridIngester::addGrid(&etreedb, pGridFilenames[iGrid].c_str(),
-			  *_pErrHandler);
+			  *_pErrHandler, _quiet);
   
   if (0 != etree_close(etreedb))
     _pErrHandler->error("Could not close etree database.");
@@ -169,7 +172,8 @@ cencalvm::create::VMCreator::_createDB(void) const
 void
 cencalvm::create::VMCreator::_packDB(void) const
 { // _packDB
-  std::cout << "Packing etree database..." << std::endl;
+  if (!_quiet)
+    std::cout << "Packing etree database..." << std::endl;
 
   const int cacheSize = 64;
   const int numDims = 3;
@@ -246,7 +250,8 @@ cencalvm::create::VMCreator::_packDB(void) const
     return; 
   } // if
 
-  std::cout << "Done packing etree database." << std::endl;
+  if (!_quiet)
+    std::cout << "Done packing etree database." << std::endl;
 } // _packDB
 
 // version

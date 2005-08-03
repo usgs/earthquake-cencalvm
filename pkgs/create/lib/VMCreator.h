@@ -72,6 +72,14 @@ public :
    */
   cencalvm::storage::ErrorHandler* errorHandler(void);
 
+  /** Set flag indicating creation should be quiet (no progress reports).
+   *
+   * Default behavior is for to give progress reports.
+   *
+   * @param flag True for quiet operation, false to give progress reports
+   */
+  void quiet(const bool flag);
+
 private :
   // PRIVATE METHODS ////////////////////////////////////////////////////
 
@@ -103,6 +111,8 @@ private :
   std::string _filenameTmp; ///< Filename for temporary file
 
   cencalvm::storage::ErrorHandler* _pErrHandler; ///< Error handler
+
+  bool _quiet; ///< Flag to eliminate progress reports
 
 }; // VMCreator
 
