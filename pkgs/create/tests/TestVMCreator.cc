@@ -47,6 +47,11 @@ cencalvm::create::TestVMCreator::testFilenameParams(void)
   VMCreator creator;
   creator.filenameParams(filename);
   CPPUNIT_ASSERT_EQUAL(std::string(filename), creator._filenameParams);
+
+  const cencalvm::storage::ErrorHandler* pHandler = creator.errorHandler();
+  CPPUNIT_ASSERT(0 != pHandler);
+  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
+		       pHandler->status());
 } // testFilenameParams
 
 // ----------------------------------------------------------------------
@@ -59,6 +64,11 @@ cencalvm::create::TestVMCreator::testFilenameOut(void)
   VMCreator creator;
   creator.filenameOut(filename);
   CPPUNIT_ASSERT_EQUAL(std::string(filename), creator._filenameOut);
+
+  const cencalvm::storage::ErrorHandler* pHandler = creator.errorHandler();
+  CPPUNIT_ASSERT(0 != pHandler);
+  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
+		       pHandler->status());
 } // testFilenameOut
 
 // ----------------------------------------------------------------------
@@ -71,6 +81,11 @@ cencalvm::create::TestVMCreator::testFilenameTmp(void)
   VMCreator creator;
   creator.filenameTmp(filename);
   CPPUNIT_ASSERT_EQUAL(std::string(filename), creator._filenameTmp);
+
+  const cencalvm::storage::ErrorHandler* pHandler = creator.errorHandler();
+  CPPUNIT_ASSERT(0 != pHandler);
+  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
+		       pHandler->status());
 } // testFilenameTmp
 
 // ----------------------------------------------------------------------
@@ -86,6 +101,7 @@ cencalvm::create::TestVMCreator::testRun(void)
   creator.filenameParams(filenameParams);
   creator.filenameOut(filenameOut);
   creator.filenameTmp(filenameTmp);
+  creator.quiet(true);
   creator.run();
 
 
@@ -129,6 +145,11 @@ cencalvm::create::TestVMCreator::testRun(void)
 			       tolerance);
   CPPUNIT_ASSERT_EQUAL(_PAYLOAD.FaultBlock, payload.FaultBlock);
   CPPUNIT_ASSERT_EQUAL(_PAYLOAD.Zone, payload.Zone);
+
+  const cencalvm::storage::ErrorHandler* pHandler = creator.errorHandler();
+  CPPUNIT_ASSERT(0 != pHandler);
+  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
+		       pHandler->status());
 } // testRun
 
 // ----------------------------------------------------------------------
@@ -142,6 +163,19 @@ cencalvm::create::TestVMCreator::testErrorHandler(void)
   CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
 		       pHandler->status());
 } // testErrorHandler
+
+// ----------------------------------------------------------------------
+// Test quiet()
+void
+cencalvm::create::TestVMCreator::testQuiet(void)
+{ // testQuiet
+  VMCreator creator;
+  CPPUNIT_ASSERT(!creator._quiet); // default is not quiet
+  creator.quiet(true);
+  CPPUNIT_ASSERT(creator._quiet);
+  creator.quiet(false);
+  CPPUNIT_ASSERT(!creator._quiet);
+} // testQuiet
 
 // version
 // $Id$
