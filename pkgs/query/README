@@ -46,6 +46,10 @@
  * This application dumps the metadata, database schema, and number of
  * octants in an etree database to stdout.
  *
+ * @note This number of octants will be incorrect on big endian
+ * machines. This is a bug in the Euclid library (I have sent a bug
+ * report to the Euclid authors).
+ *
  * @section Examples
  *
  * The data directory contains sample input and output for the
@@ -93,7 +97,9 @@
  * vertical resolution which is greater than the horizontal
  * resolution.
  *
- * @li When the query type is set to MAXRES, then the query routines
+ * @subsubsection maxres MAXRES query
+ *
+ * When the query type is set to MAXRES, then the query routines
  * will use values at the maximum resolution available. The query
  * values will be set to -999.0 if the etree was not populated with
  * data at that location even if averaged values are available; this
@@ -101,23 +107,35 @@
  * surface. If you want averaged values, use one of the other query
  * types.
  *
- * @li When the query type is set to FIXEDRES, values at the requested
+ * @subsubsection fixedres FIXEDRES query
+ *
+ * When the query type is set to FIXEDRES, values at the requested
  * resolution will be used even if the database contains values at a
  * higher resolution. This prevents aliasing the model for queries at
  * a uniform spatial resolution. The requested resolution is set with
  * cencalvm::query::VMQuery::queryRes() in C++, cencalvm_queryRes() in
  * C, and cencalvm_queryres_f() in Fortran.
  *
- * @li When the query type is set to AVGRES, the requested resolution
- * is the wavelength for shear waves at a given minimum period. The
- * query routine first finds the maximum resolution available and
- * traverses up the tree until the resolution is no greater than the
- * requested resolution. This prevents aliasing the model for queries
- * at variable spatial resolution but uniform resolution with respect
- * to the wavelength of shear waves at a given period. The requested
+ * @note On big endian machines, this query type may or may not work
+ * due to a bug in the Euclid library. I have submitted a bug report
+ * to the authors of the Euclid library.
+ *
+ * @subsubsection avgres AVGRES query
+ *
+ * When the query type is set to AVGRES, the requested resolution is
+ * the wavelength for shear waves at a given minimum period. The query
+ * routine first finds the maximum resolution available and traverses
+ * up the tree until the resolution is no greater than the requested
+ * resolution. This prevents aliasing the model for queries at
+ * variable spatial resolution but uniform resolution with respect to
+ * the wavelength of shear waves at a given period. The requested
  * resolution is set by passing the minimum period as an argument to
  * cencalvm::query::VMQuery::queryRes() in C++, cencalvm_queryRes() in
  * C, and cencalvm_queryres_f() in Fortran.
+ *
+ * @note On big endian machines, this query type may or may not work
+ * due to a bug in the Euclid library. I have submitted a bug report
+ * to the authors of the Euclid library.
  *
  * @subsection f77notes Fortran 77 notes
  *
@@ -137,6 +155,7 @@
  * standard manner, there is no Fortran 77 binding for
  * cencalvm_queryVals(). Instead, you must accept the default behavior
  * in which all values are returned.
+ *
  */
 
 // version
