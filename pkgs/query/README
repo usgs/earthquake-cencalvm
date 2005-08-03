@@ -93,8 +93,13 @@
  * vertical resolution which is greater than the horizontal
  * resolution.
  *
- * @li When the query type is set to MAXRES, then the query routines will
- * use values at the maximum resolution available.
+ * @li When the query type is set to MAXRES, then the query routines
+ * will use values at the maximum resolution available. The query
+ * values will be set to -999.0 if the etree was not populated with
+ * data at that location even if averaged values are available; this
+ * happens when one queries at locations above topography or the water
+ * surface. If you want averaged values, use one of the other query
+ * types.
  *
  * @li When the query type is set to FIXEDRES, values at the requested
  * resolution will be used even if the database contains values at a
