@@ -354,6 +354,7 @@ cencalvm::query::TestVMQuery::_createDB(void) const
   cencalvm::average::Averager averager;
   averager.filenameIn(filenameTmp);
   averager.filenameOut(_DBFILENAME);
+  averager.quiet(true);
   averager.average();  
 
   const cencalvm::storage::ErrorHandler* pHandler = averager.errorHandler();
