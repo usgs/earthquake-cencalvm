@@ -68,6 +68,8 @@ namespace cencalvm {
     static const float cencalvm::storage::NODATAVAL = -999.0;
     static const short cencalvm::storage::NODATABLOCK = 0;
     static const short cencalvm::storage::NODATAZONE = 0;
+
+    /// Database values for interior (average) octants
     static const short cencalvm::storage::INTERIORBLOCK = -999;
     static const short cencalvm::storage::INTERIORZONE = -999;
   }; // namespace storage
