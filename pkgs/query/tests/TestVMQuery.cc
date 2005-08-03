@@ -155,10 +155,16 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
       const double  valE = _RELPAY[iVal]*val;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
     } // for
-    for (int iVal=6; iVal < 8; ++iVal) {
-      const double valE = (iLoc < _NUMOCTANTSLEAF) ? _RELPAY[iVal] : -999.0;
-      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
-    } // for
+    int iVal = 6; // Block
+    double valE = (iLoc < _NUMOCTANTSLEAF) ? 
+      _RELPAY[iVal] :
+      cencalvm::storage::INTERIORBLOCK;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+    iVal = 7; // Zone
+    valE = (iLoc < _NUMOCTANTSLEAF) ? 
+      _RELPAY[iVal] :
+      cencalvm::storage::INTERIORZONE;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
   } // for
 
   query.close();
@@ -211,10 +217,16 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
       const double  valE = _RELPAY[iVal]*val;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
     } // for
-    for (int iVal=6; iVal < 8; ++iVal) {
-      const double valE = (iOctant < _NUMOCTANTSLEAF) ? _RELPAY[iVal] : -999.0;
-      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
-    } // for
+    int iVal = 6; // Block
+    double valE = (iOctant < _NUMOCTANTSLEAF) ? 
+      _RELPAY[iVal] :
+      cencalvm::storage::INTERIORBLOCK;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+    iVal = 7; // Zone
+    valE = (iOctant < _NUMOCTANTSLEAF) ? 
+      _RELPAY[iVal] :
+      cencalvm::storage::INTERIORZONE;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
   } // for
 
   query.close();
@@ -267,10 +279,13 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
       const double  valE = _RELPAY[iVal]*val;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
     } // for
-    for (int iVal=6; iVal < 8; ++iVal) {
-      const double valE = (isResLeaf[iLoc]) ? _RELPAY[iVal] : -999.0;
-      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
-    } // for
+    int iVal = 6; // Block
+    double valE = 
+      isResLeaf[iLoc] ? _RELPAY[iVal] : cencalvm::storage::INTERIORBLOCK;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+    iVal = 7; // Zone
+    valE = isResLeaf[iLoc] ? _RELPAY[iVal] : cencalvm::storage::INTERIORZONE;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
   } // for
 
   query.close();

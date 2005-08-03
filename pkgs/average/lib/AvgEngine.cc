@@ -27,7 +27,6 @@ extern "C" {
 // ----------------------------------------------------------------------
 const etree_tick_t cencalvm::average::AvgEngine::_LEFTMOSTONE =
   ~(~((etree_tick_t)0) >> 1);
-const short cencalvm::average::AvgEngine::_NODATA = -999;
 
 // ----------------------------------------------------------------------
 // Default constructor
@@ -334,17 +333,17 @@ cencalvm::average::AvgEngine::_processOctant(const int pendingLevel)
     payload.DepthFreeSurf = 
       pendingOctant.data.pSum->DepthFreeSurf / numChildren;
   } else {
-    // If there are no children (water), then set payload values to
-    // 'NODATA' values
-    payload.Vp = _NODATA;
-    payload.Vs = _NODATA;
-    payload.Density = _NODATA;
-    payload.Qp = _NODATA;
-    payload.Qs = _NODATA;
-    payload.DepthFreeSurf = _NODATA;
+    // If there are no contributing children (water), then set payload
+    // values to 'NODATA' values
+    payload.Vp = cencalvm::storage::NODATAVAL;
+    payload.Vs = cencalvm::storage::NODATAVAL;
+    payload.Density = cencalvm::storage::NODATAVAL;
+    payload.Qp = cencalvm::storage::NODATAVAL;
+    payload.Qs = cencalvm::storage::NODATAVAL;
+    payload.DepthFreeSurf = cencalvm::storage::NODATAVAL;
   } // if/else
-  payload.FaultBlock = _NODATA;
-  payload.Zone = _NODATA;
+  payload.FaultBlock = cencalvm::storage::INTERIORBLOCK;
+  payload.Zone = cencalvm::storage::INTERIORZONE;
 
   _updateOctant(pendingOctant.pAddr, payload);
   if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
@@ -480,8 +479,10 @@ cencalvm::average::AvgEngine::_createOctant(etree_addr_t* pAddr)
   _pPendingOctants[pendingLevel].data.pSum->Qp = 0;
   _pPendingOctants[pendingLevel].data.pSum->Qs = 0;
   _pPendingOctants[pendingLevel].data.pSum->DepthFreeSurf = 0;
-  _pPendingOctants[pendingLevel].data.pSum->FaultBlock = 0;
-  _pPendingOctants[pendingLevel].data.pSum->Zone = 0;
+  _pPendingOctants[pendingLevel].data.pSum->FaultBlock = 
+    cencalvm::storage::INTERIORBLOCK;
+  _pPendingOctants[pendingLevel].data.pSum->Zone = 
+    cencalvm::storage::INTERIORZONE;
   _pendingCursor = pendingLevel;
 
   ++_octantCounter.output;

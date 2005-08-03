@@ -228,8 +228,6 @@ private :
 
   cencalvm::storage::Geometry* _pGeom; ///< Velocity model geometry
 
-  static const double _NODATAVAL; ///< Value assigned when no data is available
-
 }; // class VMQuery 
 
 #include "VMQuery.icc" // inline methods

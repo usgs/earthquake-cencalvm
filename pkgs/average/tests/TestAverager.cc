@@ -97,9 +97,9 @@ cencalvm::average::TestAverager::testFillOctants(void)
       valE = _RELPAY[i++];
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.Zone/valE, tolerance);
     } else {
-      valE = -999.0;
+      valE = cencalvm::storage::INTERIORBLOCK;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.FaultBlock/valE, tolerance);
-      valE = -999.9;
+      valE = cencalvm::storage::INTERIORZONE;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.Zone/valE, tolerance);
     } // if/else
   } // for

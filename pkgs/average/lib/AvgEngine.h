@@ -190,7 +190,6 @@ private :
 
 
   static const etree_tick_t _LEFTMOSTONE; ///< first bit is 1, others 0
-  static const short _NODATA; ///< Value for fault block and zone in avg octant
 
 }; // AvgEngine
 

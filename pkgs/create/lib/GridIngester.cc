@@ -120,18 +120,23 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
       errHandler.error("Couldn't parse line.");
       break;
     } // if
-    if (payload.FaultBlock > 0 && payload.Zone > 0) {
+    if (payload.FaultBlock != cencalvm::storage::NODATABLOCK &&
+	payload.Zone != cencalvm::storage::NODATAZONE) {
       // convert elev and depth from km to m
-      elev *= 1.0e+3;
-      payload.DepthFreeSurf *= 1.0e+3;
+      if (elev != cencalvm::storage::NODATAVAL)
+	elev *= 1.0e+3;
+      if (payload.DepthFreeSurf != cencalvm::storage::NODATAVAL)
+	payload.DepthFreeSurf *= 1.0e+3;
       
       // convert Vp & Vs from km/s to m/s
-      payload.Vp *= 1.0e+3;
-      if (payload.Vs != -999.0)
+      if (payload.Vp != cencalvm::storage::NODATAVAL)
+	payload.Vp *= 1.0e+3;
+      if (payload.Vs != cencalvm::storage::NODATAVAL)
 	payload.Vs *= 1.0e+3;
       
       // convert Density from g/cm^3 to kg/m^3
-      payload.Density *= 1.0e+3;
+      if (payload.Density != cencalvm::storage::NODATAVAL)
+	payload.Density *= 1.0e+3;
       
       // add data to etree
       etree_addr_t addr;
@@ -146,10 +151,12 @@ cencalvm::create::GridIngester::addGrid(etree_t** pDB,
       numAdded++;
     } else {
       // convert elev and depth from km to m
-      elev *= 1.0e+3;
-      payload.DepthFreeSurf *= 1.0e+3;
+      if (elev != cencalvm::storage::NODATAVAL)
+	elev *= 1.0e+3;
+      if (payload.DepthFreeSurf != cencalvm::storage::NODATAVAL)
+	payload.DepthFreeSurf *= 1.0e+3;
 
-      if (payload.FaultBlock > 0) {
+      if (payload.FaultBlock != cencalvm::storage::NODATABLOCK) {
 	std::ostringstream msg;
 	msg
 	  << std::resetiosflags(std::ios::fixed)
