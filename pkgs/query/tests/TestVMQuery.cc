@@ -146,8 +146,6 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
   for (int iLoc=0, i=0; iLoc < numLocs; ++iLoc, i+=3) {
     query.query(&pVals, numVals, 
 		pLonLatElev[i  ], pLonLatElev[i+1], pLonLatElev[i+2]);
-    CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       pHandler->status());
     
     const double tolerance = 1.0e-06;
     const double val = _OCTVALS[iLoc];
@@ -168,6 +166,8 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
   } // for
 
   query.close();
+
+  CPPUNIT_ASSERT(cencalvm::storage::ErrorHandler::OK == pHandler->status());
 
   delete[] pLonLatElev; pLonLatElev = 0;
 } // testQueryMax
@@ -208,8 +208,6 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
 		pLonLatElev[3*iOctant  ], 
 		pLonLatElev[3*iOctant+1],
 		pLonLatElev[3*iOctant+2]);
-    CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       pHandler->status());
     
     const double tolerance = 1.0e-06;
     const double val = _OCTVALS[iOctant];
@@ -230,6 +228,8 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
   } // for
 
   query.close();
+
+  CPPUNIT_ASSERT(cencalvm::storage::ErrorHandler::OK == pHandler->status());
 
   delete[] pLonLatElev; pLonLatElev = 0;
 } // testQueryFixed
@@ -270,8 +270,6 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
 		pLonLatElev[3*iOctant  ], 
 		pLonLatElev[3*iOctant+1],
 		pLonLatElev[3*iOctant+2]);
-    CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-			 pHandler->status());
     
     const double tolerance = 1.0e-06;
     const double val = octValsAvg[iLoc];
@@ -289,6 +287,8 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
   } // for
 
   query.close();
+
+  CPPUNIT_ASSERT(cencalvm::storage::ErrorHandler::OK == pHandler->status());
 
   delete[] pLonLatElev; pLonLatElev = 0;
 } // testQueryAvg
@@ -355,6 +355,11 @@ cencalvm::query::TestVMQuery::_createDB(void) const
   averager.filenameIn(filenameTmp);
   averager.filenameOut(_DBFILENAME);
   averager.average();  
+
+  const cencalvm::storage::ErrorHandler* pHandler = averager.errorHandler();
+  CPPUNIT_ASSERT(0 != pHandler);
+  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
+		       pHandler->status());
 } // _createDB
 
 // ----------------------------------------------------------------------
