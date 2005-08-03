@@ -13,8 +13,8 @@
 /** @mainpage
  *
  * @author Brad Aagaard
- * @date 2005/07/29
- * @version 0.2.0
+ * @date 2005/08/03
+ * @version 0.2.1
  *
  * @section summary Summary
  *
@@ -46,7 +46,7 @@
  *
  * @li \b pkgs Packages comprising cencalvm
  *
- * @subsection create Package 'average'
+ * @subsection average Package 'average'
  *
  * This package is used to populate the interior octants of the etree
  * with averages of the children. In general, it is for internal use
