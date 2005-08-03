@@ -21,7 +21,8 @@ extern "C" {
 #include "etree.h" // USES etree
 }
 
-#include <iostream>
+#include <iostream> // USES std::cerr
+
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::average::TestAverager );
 
@@ -47,6 +48,7 @@ cencalvm::average::TestAverager::testFillOctants(void)
   Averager averager;
   averager.filenameIn(_DBFILENAMEIN);
   averager.filenameOut(_DBFILENAMEOUT);
+  averager.quiet(true);
   averager.average();
 
   const cencalvm::storage::ErrorHandler* pHandler = averager.errorHandler();

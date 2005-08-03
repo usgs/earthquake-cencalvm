@@ -138,7 +138,8 @@ cencalvm::average::Averager::average(void)
 
   AvgEngine engine(_dbAvg, _dbIn, *_pErrHandler);
   engine.fillOctants();
-  engine.printOctantInfo();
+  if (!_quiet)
+    engine.printOctantInfo();
 
   etree_close(_dbIn); _dbIn = 0;
   etree_close(_dbAvg); _dbAvg = 0;
