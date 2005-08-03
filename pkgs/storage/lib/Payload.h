@@ -64,6 +64,12 @@ namespace cencalvm {
       "float32_t DepthFreeSurf; "
       "int16_t FaultBlock; "
       "int16_t Zone;";
+    /// Database values for no data
+    static const float cencalvm::storage::NODATAVAL = -999.0;
+    static const short cencalvm::storage::NODATABLOCK = 0;
+    static const short cencalvm::storage::NODATAZONE = 0;
+    static const short cencalvm::storage::INTERIORBLOCK = -999;
+    static const short cencalvm::storage::INTERIORZONE = -999;
   }; // namespace storage
 }; // namespace cencalvm
 
