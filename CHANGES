@@ -14,10 +14,24 @@
  * @anchor changes
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
- * \section ver021 Version 0.2.1, 2005/08/02
+ * \section ver021 Version 0.2.1, 2005/08/03
  *
  * @li Fixed bug in creation routine where Vs for water (-999) was
- * scaled. 'Invalid' values should not be scaled.
+ * scaled. 'No data' values should not be scaled. The query routine
+ * was adjusted to undo this scaling, so 'no data' values will now be
+ * consistent.
+ * @li Fixed bug in MAXRES query routine. Interior octants were
+ * returned in search of etree. Now if an interior octant is returned,
+ * the values are set to 'no data'. This only occurred when querying
+ * the etree at locations above topography and the water surface.
+ * @li Added 'no data' and water points to examples for illustration
+ * of those cases.
+ * @li Added ability to make creation/averaging routines run quietly
+ * (no progress reports).
+ * @li Fixed bug in cencalvmcquery where filenames were not
+ * initialized to empty string. This created filenames from garbage
+ * and log files tended to created by default which is not the desired
+ * behavior.
  *
  * \section ver020 Version 0.2.0, 2005/07/29
  *
