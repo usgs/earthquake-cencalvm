@@ -219,7 +219,13 @@ cencalvm::query::VMQuery::_queryMax(cencalvm::storage::PayloadStruct* pPayload,
     return;
 
   etree_addr_t resAddr;
-  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload)) {
+  const int err = etree_search(_db, addr, &resAddr, "*", pPayload);
+  // If search returned interior octant (averaged), return no data
+  // instead of averaged values since query request is for maximum
+  // resolution and we don't have a leaf octant (data) at that
+  // location.
+  if (0 != err ||
+      ETREE_INTERIOR == resAddr.type) {
     std::ostringstream msg;
     msg
       << std::resetiosflags(std::ios::fixed)
@@ -348,20 +354,21 @@ cencalvm::query::VMQuery::_queryAvg(cencalvm::storage::PayloadStruct* pPayload,
     etree_addr_t parentAddr;
     _pGeom->findAncestor(&parentAddr, resAddr, resAddr.level-1);
     if (0 != etree_search(_db, parentAddr, &resAddr, "*", pPayload)) {
-      std::ostringstream msg;
-      msg
+      std::ostringstream msgLog;
+      msgLog
 	<< std::resetiosflags(std::ios::fixed)
 	<< std::setiosflags(std::ios::scientific)
 	<< std::setprecision(6)
 	<< lon << ", " << lat << ", " << elev << ", No parent\n";
-      _pErrHandler->log(msg.str().c_str());
+      _pErrHandler->log(msgLog.str().c_str());
       char buf[ETREE_MAXBUF];
+      std::ostringstream msg;
       msg
 	<< "Could not find parent octant " << 
 	etree_straddr(_db, buf, parentAddr)
-	<< "of child octant " << etree_straddr(_db, buf, resAddr) << "\n"
+	<< "\nof child octant " << etree_straddr(_db, buf, resAddr) << "\n"
 	<< "for location " << lon << ", " << lat << ", " << elev
-	<< ". Using values from child octant.";
+	<< ".\nUsing values from child octant.";
       _pErrHandler->warning(msg.str().c_str());
       etree_search(_db, addr, &resAddr, "*", pPayload);
       return;
