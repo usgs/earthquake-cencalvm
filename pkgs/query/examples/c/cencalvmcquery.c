@@ -103,6 +103,11 @@ main(int argc,
   char filenameOut[256];
   char filenameDB[256];
   char filenameLog[256];
+
+  strcpy(filenameIn, "");
+  strcpy(filenameOut, "");
+  strcpy(filenameDB, "");
+  strcpy(filenameLog, "");
   
   /* Parse command line arguments */
   parseArgs(filenameIn, filenameOut, filenameDB, filenameLog, argc, argv);
