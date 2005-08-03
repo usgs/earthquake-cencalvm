@@ -30,7 +30,8 @@ cencalvm::average::Averager::Averager(void) :
   _dbAvg(0),
   _filenameIn(""),
   _filenameOut(""),
-  _pErrHandler(new cencalvm::storage::ErrorHandler)
+  _pErrHandler(new cencalvm::storage::ErrorHandler),
+  _quiet(false)
 { // constructor
 } // constructor
   
