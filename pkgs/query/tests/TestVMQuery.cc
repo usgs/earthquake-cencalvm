@@ -50,6 +50,8 @@ cencalvm::query::TestVMQuery::testFilename(void)
 void
 cencalvm::query::TestVMQuery::testOpenClose(void)
 { // testOpenClose
+  _createDB();  
+
   VMQuery query;
   query.filename(_DBFILENAME);
   query.open();
@@ -133,6 +135,8 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
   query.queryType(cencalvm::query::VMQuery::MAXRES);
   query.open();
 
+  const cencalvm::storage::ErrorHandler* pHandler = query.errorHandler();
+
   const int numVals = 8;
   double* pVals = (numVals > 0) ? new double[numVals] : 0;
 
@@ -142,6 +146,8 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
   for (int iLoc=0, i=0; iLoc < numLocs; ++iLoc, i+=3) {
     query.query(&pVals, numVals, 
 		pLonLatElev[i  ], pLonLatElev[i+1], pLonLatElev[i+2]);
+    CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
+		       pHandler->status());
     
     const double tolerance = 1.0e-06;
     const double val = _OCTVALS[iLoc];
@@ -172,14 +178,17 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
   query.queryType(cencalvm::query::VMQuery::FIXEDRES);
   query.open();
 
+  cencalvm::storage::ErrorHandler* pHandler = query.errorHandler();
+//   pHandler->logFilename("fixed.log");
+
   const int numVals = 8;
   double* pVals = (numVals > 0) ? new double[numVals] : 0;
 
   double* pLonLatElev = 0;
   _dbLonLatElev(&pLonLatElev);
 
-  const int pOctIndices[] = { 3, 13, 17 };
-  const int numLocs = 3;
+  const int pOctIndices[] = { 3, 13, 17, 10, 12, 14, 15, 18 };
+  const int numLocs = 8;
   for (int iLoc=0; iLoc < numLocs; ++iLoc) {
     const int iOctant = pOctIndices[iLoc];
 
@@ -193,6 +202,8 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
 		pLonLatElev[3*iOctant  ], 
 		pLonLatElev[3*iOctant+1],
 		pLonLatElev[3*iOctant+2]);
+    CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
+		       pHandler->status());
     
     const double tolerance = 1.0e-06;
     const double val = _OCTVALS[iOctant];
@@ -222,7 +233,9 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
   query.filename(_DBFILENAME);
   query.queryType(cencalvm::query::VMQuery::AVGRES);
   query.open();
-
+  cencalvm::storage::ErrorHandler* pHandler = query.errorHandler();
+  //  pHandler->logFilename("avg.log");
+  
   const int numVals = 8;
   double* pVals = (numVals > 0) ? new double[numVals] : 0;
 
@@ -230,7 +243,7 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
   _dbLonLatElev(&pLonLatElev);
 
   const int numLocs = 3;
-  const int pOctIndices[] = { 1, 7, 8 };
+  const int pOctIndices[] = { 1, 7, 11 };
   const double periodMin[] = { 800.0, 1.0, 4000.0 };
   const double octValsAvg[] = { 5.79375, 9.9, 5.421875 };
   const bool isResLeaf[] = { false, true, false };
@@ -245,6 +258,8 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
 		pLonLatElev[3*iOctant  ], 
 		pLonLatElev[3*iOctant+1],
 		pLonLatElev[3*iOctant+2]);
+    CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
+			 pHandler->status());
     
     const double tolerance = 1.0e-06;
     const double val = octValsAvg[iLoc];
@@ -300,6 +315,7 @@ cencalvm::query::TestVMQuery::_createDB(void) const
     addr.x = tickLen * _COORDS[numCoords*iOctant  ];
     addr.y = tickLen * _COORDS[numCoords*iOctant+1];
     addr.z = tickLen * _COORDS[numCoords*iOctant+2];
+    addr.t = 0;
 
     const double val = _OCTVALS[iOctant];
     cencalvm::storage::PayloadStruct payload;
