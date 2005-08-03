@@ -21,6 +21,8 @@ extern "C" {
 #include "etree.h"
 }
 
+#include <iostream> // USES std::cerr
+
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::query::TestVMQuery );
 
@@ -208,6 +210,8 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
 		pLonLatElev[3*iOctant  ], 
 		pLonLatElev[3*iOctant+1],
 		pLonLatElev[3*iOctant+2]);
+    if (cencalvm::storage::ErrorHandler::OK != pHandler->status())
+      std::cerr << pHandler->message() << std::endl;
     
     const double tolerance = 1.0e-06;
     const double val = _OCTVALS[iOctant];
@@ -270,6 +274,8 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
 		pLonLatElev[3*iOctant  ], 
 		pLonLatElev[3*iOctant+1],
 		pLonLatElev[3*iOctant+2]);
+    if (cencalvm::storage::ErrorHandler::OK != pHandler->status())
+      std::cerr << pHandler->message() << std::endl;
     
     const double tolerance = 1.0e-06;
     const double val = octValsAvg[iLoc];
