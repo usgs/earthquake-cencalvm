@@ -190,7 +190,7 @@ main(int argc,
 #if !defined(ALLVALS)
     fprintf(fileOut, "%4d%4d\n", (int)pVals[0], (int)pVals[1]);
 #else
-    fprintf(fileOut, "%8.1f%8.1f%8.1f%7.1f%7.1f%9.1f%4d%4d\n",
+    fprintf(fileOut, "%8.1f%8.1f%8.1f%9.1f%9.1f%9.1f%4d%4d\n",
 	    pVals[0], pVals[1], pVals[2], pVals[3], pVals[4], pVals[5],
 	    (int) pVals[6], (int) pVals[7]);
 #endif

@@ -97,7 +97,7 @@ c          If query generated an error, then bail out, otherwise reset status
 c       Write values returned by query to output file
 	write(unitOut,20) lon,lat,elev,vals(1),vals(2),vals(3),
        1 vals(4),vals(5),vals(6),int(vals(7)),int(vals(8))
- 20	format(f9.4,f8.4,f9.1,f8.1,f8.1,f8.1,f7.1,f7.1,f9.1,i4,i4)
+ 20	format(f9.4,f8.4,f9.1,f8.1,f8.1,f8.1,f9.1,f9.1,f9.1,i4,i4)
 
 	goto 10
 

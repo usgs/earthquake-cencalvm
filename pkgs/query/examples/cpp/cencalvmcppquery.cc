@@ -219,8 +219,8 @@ main(int argc,
       << std::setw(8) << pVals[0]
       << std::setw(8) << pVals[1]
       << std::setw(8) << pVals[2]
-      << std::setw(7) << pVals[3]
-      << std::setw(7) << pVals[4]
+      << std::setw(9) << pVals[3]
+      << std::setw(9) << pVals[4]
       << std::setw(9) << pVals[5]
       << std::setw(4) << int(pVals[6])
       << std::setw(4) << int(pVals[7])
