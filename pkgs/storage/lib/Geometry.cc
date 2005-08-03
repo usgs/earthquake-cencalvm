@@ -111,6 +111,7 @@ cencalvm::storage::Geometry::lonLatElevToAddr(etree_addr_t* pAddr,
   pAddr->x = tickLen*etree_tick_t(p / res);
   pAddr->y = tickLen*etree_tick_t(q / res);
   pAddr->z = tickLen*etree_tick_t(r / res);
+  pAddr->t = 0;
 
   _pProj->project(&x, &y, lon, lat);
 } // lonLatElevToAddr
@@ -157,6 +158,7 @@ cencalvm::storage::Geometry::findAncestor(etree_addr_t* pAncestorAddr,
   pAncestorAddr->x = childAddr.x & mask;
   pAncestorAddr->y = childAddr.y & mask;
   pAncestorAddr->z = childAddr.z & mask;
+  pAncestorAddr->t = 0;
   pAncestorAddr->level = ancestorLevel;
   pAncestorAddr->type  = ETREE_INTERIOR;
 } // findParent

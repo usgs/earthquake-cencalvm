@@ -50,6 +50,7 @@ cencalvm::average::AvgEngine::AvgEngine(etree_t* dbOut,
     _pPendingOctants[i].pAddr->x = 0;
     _pPendingOctants[i].pAddr->y = 0;
     _pPendingOctants[i].pAddr->z = 0;
+    _pPendingOctants[i].pAddr->t = 0;
     _pPendingOctants[i].pAddr->level = 0;
     _pPendingOctants[i].processedChildren = 0x00;
     _pPendingOctants[i].isValid = false;
@@ -94,6 +95,7 @@ cencalvm::average::AvgEngine::fillOctants(void)
   cursor.x = 0;
   cursor.y = 0;
   cursor.z = 0;
+  cursor.t = 0;
   cursor.level = ETREE_MAXLEVEL;
 
   int eof = etree_initcursor(_dbIn, cursor);
@@ -513,6 +515,7 @@ cencalvm::average::AvgEngine::_sameAddr(etree_addr_t* pA,
   return (pA->x == pB->x &&
 	  pA->y == pB->y &&
 	  pA->z == pB->z &&
+	  pA->t == pB->t &&
 	  pA->level == pB->level);
 } // _sameAddr
   
