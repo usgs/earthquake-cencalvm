@@ -46,10 +46,6 @@
  * This application dumps the metadata, database schema, and number of
  * octants in an etree database to stdout.
  *
- * @note This number of octants will be incorrect on big endian
- * machines. This is a bug in the Euclid library (I have sent a bug
- * report to the Euclid authors).
- *
  * @section Examples
  *
  * The data directory contains sample input and output for the
@@ -116,10 +112,6 @@
  * cencalvm::query::VMQuery::queryRes() in C++, cencalvm_queryRes() in
  * C, and cencalvm_queryres_f() in Fortran.
  *
- * @note On big endian machines, this query type may or may not work
- * due to a bug in the Euclid library. I have submitted a bug report
- * to the authors of the Euclid library.
- *
  * @subsubsection avgres AVGRES query
  *
  * When the query type is set to AVGRES, the requested resolution is
@@ -132,10 +124,6 @@
  * resolution is set by passing the minimum period as an argument to
  * cencalvm::query::VMQuery::queryRes() in C++, cencalvm_queryRes() in
  * C, and cencalvm_queryres_f() in Fortran.
- *
- * @note On big endian machines, this query type may or may not work
- * due to a bug in the Euclid library. I have submitted a bug report
- * to the authors of the Euclid library.
  *
  * @subsection f77notes Fortran 77 notes
  *

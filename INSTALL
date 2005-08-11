@@ -53,7 +53,9 @@
  * Go to the libsrc directory. Edit the Makefile to suit your
  * system. Some example Makefiles can be found on the USGS EHZ ftp
  * server
- * (ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/euclid3/Makefiles).
+ * (ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/euclid3/Makefiles). These
+ * examples assume the environment variable ETREE_LIBDIR has been set
+ * (see below).
  *
  * Note: The '-DALIGNMENT' flag appears to be required on all big
  * endian systems. The code will compile without it, but you will get
@@ -80,16 +82,16 @@
  * <li> bash shell users
  *
 \verbatim
-export ETREE_LIBDIR=/usr/local/etree/lib
-export ETREE_INCDIR=/usr/local/etree/include
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(ETREE_LIBDIR)
+export ETREE_LIBDIR=/home/tools/etree/libsrc
+export ETREE_INCDIR=/home/tools/etree/libsrc
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${ETREE_LIBDIR}
 \endverbatim
  *
  * <li> tcsh shell users
 \verbatim
-setenv ETREE_LIBDIR /usr/local/etree/lib
-setenv ETREE_INCDIR /usr/local/etree/include
-setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(ETREE_LIBDIR)
+setenv ETREE_LIBDIR /home/tools/etree/libsrc
+setenv ETREE_INCDIR /home/tools/etree/libsrc
+setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${ETREE_LIBDIR}
 \endverbatim
  *
  * </ul>
@@ -107,7 +109,8 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(ETREE_LIBDIR)
  *
  * Although not required, it is useful to download the NAD datum
  * corrections, so that you can use proj4 to convert b/t NAD27 and
- * NAD83/WGS84 datums.
+ * NAD83/WGS84 datums. These corrections are in proj-nad27-1.2.tar.gz,
+ * which should be unpacked into the nad directory.
  *
  * <li> If the libraries and files are not installed in system
  * libraries, set the environment variables PROJ4_LIBDIR and
@@ -123,14 +126,14 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(ETREE_LIBDIR)
 \verbatim
 export PROJ4_LIBDIR=/usr/local/proj4/lib
 export PROJ4_INCDIR=/usr/local/proj4/include
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${PROJ4_LIBDIR}
 \endverbatim
  *
  * <li> tcsh shell users
 \verbatim
 setenv PROJ4_LIBDIR /usr/local/proj4/lib
 setenv PROJ4_INCDIR /usr/local/proj4/include
-setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
+setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${PROJ4_LIBDIR}
 \endverbatim
  *
  * </ul>
@@ -179,13 +182,15 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  *
  * <li> Build the software.
  *
- * Pick one of these:
+ * EITHER
  * <ul>
  *
  * <li> Run make in the top level directory. This will build libraries
  * related to the storage, creation, and querying of the velocity
  * model database and the examples. This includes C and Fortran 77
  * bindings for the query routines. 
+ *
+ * OR
  *
  * <li> Run make in pkgs/storage/lib, pkgs/query/lib, and pkgs/query/liblang.
  *
@@ -201,17 +206,28 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  * <li> Download the velocity model from
  * ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database
  *
+ * Download the MD5SUM files and check to the integrity of the
+ * downloaded file by running 'md5sum -c MD5SUMS_GZIPPED'. After
+ * gunzipping the file, you can again check the integrity of the file
+ * by running 'md5sum -c MD5SUMS'. Each time you should get output
+ * reporting that the file is OK.
+ *
  * <li> OPTIONAL
  *
  * Create symbolic links to the USGS central CA velocity model from
- * each of the examples directories (cpp, c, f77) and run 'make' and
- * 'make test' in each of the directories. The output (test.out)
- * should be identical to the corresponding sample-VERSION.out file in
- * the examples/data directory. The 'test' target assumes that the
- * velocity models are stored in data/ver-VERSION/, so the symbolic
- * links need to be set accordingly (if in doubt do a 'make -n test'
- * to see what the filenames the target is using and then setup the
- * links accordingly).
+ * each of the examples directories (cpp, c, f77 which are in
+ * pkgs/query/examples) and run 'make' and 'make test' in each of the
+ * directories. The 'test' target assumes that the velocity models are
+ * stored in data/ver-VERSION/, so the symbolic links need to be set
+ * accordingly (if in doubt do a 'make -n test' to see what the
+ * filenames the target is using and then setup the links
+ * accordingly).  The output (test.out) should be identical to the
+ * corresponding sample-VERSION.out file in the examples/data
+ * directory. Note that the examples are setup to dump warnings to the
+ * screen, so when it encounters the point in air where there is no
+ * data it will dump a warning to the screen that can be ignored; the
+ * material property values will be -999 for this point in the output
+ * file.
  *
  * <li> The libraries, header files, and binaries are now in the
  * BLD_ROOT directory (defined in Makefile.config).
@@ -229,15 +245,15 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(PROJ4_LIBDIR)
  *
 \verbatim
 export CENCALVM_DIR=/home/johndoe/cencalvm/buildtmp/lib
-export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:$(CENCALVM_DIR)/lib
-export PATH=${PATH}:$(CENCALVM_DIR)/bin
+export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CENCALVM_DIR}/lib
+export PATH=${PATH}:${CENCALVM_DIR}/bin
 \endverbatim
  *
  * <li> tcsh shell users
 \verbatim
 setenv CENCALVM_DIR /home/johndoe/cencalvm/buildtmp/lib
-setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:$(CENCALVM_DIR)/lib
-setenv PATH ${PATH}:$(CENCALVM_DIR)/bin
+setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${CENCALVM_DIR}/lib
+setenv PATH ${PATH}:${CENCALVM_DIR}/bin
 \endverbatim
  *
  * </ul>
