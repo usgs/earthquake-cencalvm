@@ -18,6 +18,7 @@
 
 #include <stdlib.h> // USES exit()
 #include <unistd.h> // USES getopt()
+#include <assert.h> // USES assert()
 
 #include <iostream> // USES std::cerr
 #include <stdexcept> // USES std::exception

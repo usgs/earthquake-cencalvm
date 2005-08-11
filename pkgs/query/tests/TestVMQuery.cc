@@ -22,6 +22,7 @@ extern "C" {
 }
 
 #include <iostream> // USES std::cerr
+#include <assert.h> // USES assert()
 
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::query::TestVMQuery );

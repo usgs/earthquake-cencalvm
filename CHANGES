@@ -14,6 +14,12 @@
  * @anchor changes
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
+ * \section ver022 Version 0.2.2, 2005/08/10
+ *
+ * @li Fixed bug where inclusion of assert header file was missing in
+ * several source files. This resulted in compiler errors in some
+ * cases.
+ *
  * \section ver021 Version 0.2.1, 2005/08/03
  *
  * @li Fixed bug in creation routine where Vs for water (-999) was

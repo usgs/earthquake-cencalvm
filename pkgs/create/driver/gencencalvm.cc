@@ -21,6 +21,7 @@
 
 #include <iostream> // USES std::cerr
 #include <stdexcept> // USES std::exception
+#include <assert.h> // USES assert()
 
 // ----------------------------------------------------------------------
 void

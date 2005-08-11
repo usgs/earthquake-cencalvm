@@ -27,6 +27,7 @@
 
 #include <iostream> // USES std::cerr
 #include <sstream> // USES std::ostringstream
+#include <assert.h> // USES assert()
 
 #include <vector> // USES std::vector
 #include <string> // USES std::string

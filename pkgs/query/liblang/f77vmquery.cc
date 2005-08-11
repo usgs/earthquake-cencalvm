@@ -22,6 +22,7 @@ extern "C" {
 
 #include <sstream> // USES std::istringstream
 #include <string.h> // USE strncpy
+#include <assert.h> // USES assert()
 
 // ----------------------------------------------------------------------
 // Create velocity model query object.

@@ -18,6 +18,7 @@ extern "C" {
 
 #include <iostream> // USES std::cout, std::cerr
 #include <stdlib.h> // USES exit()
+#include <assert.h> // USES assert()
 
 // ----------------------------------------------------------------------
 void
