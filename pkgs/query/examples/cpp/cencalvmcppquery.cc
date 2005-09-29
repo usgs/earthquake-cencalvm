@@ -39,11 +39,13 @@ usage(void)
 { // usage
   std::cerr
     << "usage: cencalvmcppquery [-h] -i fileIn -o fileOut -d dbfile [-l logfile]\n"
-    << "  -i fileIn   File containing list of locations: 'lon lat elev'.\n"
-    << "  -o fileOut  Output file with locations and material properties.\n"
-    << "  -d dbfile   Etree database file to query.\n"
-    << "  -h          Display usage and exit.\n"
-    << "  -l logfile  Log file for warnings about no data for locations.\n";
+    << "  -i fileIn     File containing list of locations: 'lon lat elev'.\n"
+    << "  -o fileOut    Output file with locations and material properties.\n"
+    << "  -d dbfile     Etree database file to query.\n"
+    << "  -t queryType  Type of query {'maxres', 'fixedres', 'avgres'}\n"
+    << "  -r res        Resolution for query (not needed for maxres queries\n"
+    << "  -h            Display usage and exit.\n"
+    << "  -l logfile    Log file for warnings about no data for locations.\n";
 } // usage
 
 // ----------------------------------------------------------------------
@@ -53,6 +55,8 @@ parseArgs(std::string* pFilenameIn,
 	  std::string* pFilenameOut,
 	  std::string* pFilenameDB,
 	  std::string* pFilenameLog,
+	  std::string* pQueryType,
+	  double* pQueryRes,
 	  int argc,
 	  char** argv)
 { // parseArgs
@@ -60,6 +64,8 @@ parseArgs(std::string* pFilenameIn,
   assert(0 != pFilenameOut);
   assert(0 != pFilenameDB);
   assert(0 != pFilenameLog);
+  assert(0 != pQueryType);
+  assert(0 != pQueryRes);
 
   extern char* optarg;
 
@@ -69,34 +75,42 @@ parseArgs(std::string* pFilenameIn,
   *pFilenameDB = "";
   *pFilenameLog = "";
   int c = EOF;
-  while ( (c = getopt(argc, argv, "hi:l:o:d:") ) != EOF) {
+  while ( (c = getopt(argc, argv, "hi:l:o:d:r:t:") ) != EOF) {
     switch (c)
       { // switch
-	case 'i' : // process -i option
-	  *pFilenameIn = optarg;
-	  nparsed += 2;
-	  break;
-	case 'o' : // process -o option
-	  *pFilenameOut = optarg;
-	  nparsed += 2;
-	  break;
-	case 'd' : // process -d option
-	  *pFilenameDB = optarg;
-	  nparsed += 2;
-	  break;
-	case 'h' : // process -h option
-	  nparsed += 1;
-	  usage();
-	  exit(0);
-	  break;
-	case 'l' : // process -l option
-	  *pFilenameLog = optarg;
-	  nparsed += 2;
-	  break;
-	default :
-	  usage();
-	} // switch
-    } // while
+      case 'i' : // process -i option
+	*pFilenameIn = optarg;
+	nparsed += 2;
+	break;
+      case 'o' : // process -o option
+	*pFilenameOut = optarg;
+	nparsed += 2;
+	break;
+      case 'd' : // process -d option
+	*pFilenameDB = optarg;
+	nparsed += 2;
+	break;
+      case 'h' : // process -h option
+	nparsed += 1;
+	usage();
+	exit(0);
+	break;
+      case 'l' : // process -l option
+	*pFilenameLog = optarg;
+	nparsed += 2;
+	break;
+      case 't' : // process -t option
+	*pQueryType = optarg;
+	nparsed += 2;
+	break;
+      case 'r': // process -r option
+	*pQueryRes = atof(optarg);
+	nparsed += 2;
+	break;
+      default :
+	usage();
+      } // switch
+  } // while
   if (nparsed != argc || 
       0 == pFilenameIn->length() ||
       0 == pFilenameOut->length() ||
@@ -104,6 +118,7 @@ parseArgs(std::string* pFilenameIn,
     usage();
     exit(1);
   } // if
+  
 } // parseArgs
 
 // ----------------------------------------------------------------------
@@ -116,9 +131,13 @@ main(int argc,
   std::string filenameOut = "";
   std::string filenameDB = "";
   std::string filenameLog = "";
+  std::string queryType = "maxres";
+  double queryRes = 0.0;
   
   // Parse command line arguments
-  parseArgs(&filenameIn, &filenameOut, &filenameDB, &filenameLog, argc, argv);
+  parseArgs(&filenameIn, &filenameOut, &filenameDB, &filenameLog, 
+	    &queryType, &queryRes,
+	    argc, argv);
 
   // Create query
   cencalvm::query::VMQuery query;
@@ -160,6 +179,28 @@ main(int argc,
     std::cerr << pErrHandler->message();
     return 1;
   } // if
+
+  // Set query type and resolution
+  if (0 == strcasecmp(queryType.c_str(), "maxres"))
+    query.queryType(cencalvm::query::VMQuery::MAXRES);
+  else {
+    if (queryRes < 0.0) {
+      std::cerr << "Query resolution must be a positive value.";
+      usage();
+      return 1;
+    } // if
+    query.queryRes(queryRes);
+    if (0 == strcasecmp(queryType.c_str(), "fixedres"))
+      query.queryType(cencalvm::query::VMQuery::FIXEDRES);
+    else if (0 == strcasecmp(queryType.c_str(), "avgres"))
+      query.queryType(cencalvm::query::VMQuery::AVGRES);
+    else {
+      std::cerr << "Could not parse query resolution string '" << queryRes
+		<< "' into a known type of query.";
+      usage();
+      return 1;
+    } // else
+  } // else
 
   // Open input file to read locations
   std::ifstream fileIn(filenameIn.c_str());
