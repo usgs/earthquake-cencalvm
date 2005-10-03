@@ -11,12 +11,11 @@
 //
 
 /**
- * @anchor install
  * @file INSTALL
  * 
  * @brief Installation instructions
  *
- * See \ref queryREADME "pkgs/query/README" for a description of the
+ * See \link pkgs/query/README pkgs/query/README \endlink for a description of the
  * velocity model querying software and how to use it.
  *
  * @section prerequisites Software Prerequisites

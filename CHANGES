@@ -11,7 +11,6 @@
 //
 
 /**
- * @anchor changes
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
  * \section ver022 Version 0.2.2, 2005/08/10
@@ -44,8 +43,8 @@
  * @li Added error handler to allow queries to continue even when
  * values cannnot be found for locations. Coordinates of locations
  * where data was not found can be written to a log file. Values for
- * locations not found are set to predefined value (see \ref
- * queryREADME "pkgs/query/README" for details).
+ * locations not found are set to predefined value (see \link
+ * pkgs/query/README pkgs/query/README \endlink for details).
  * @li Fixed bugs in C and C++ examples associated with setting values
  * to be returned in a query.
  * @li Fixed documentation for units of cache size. Units are MB.

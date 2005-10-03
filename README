@@ -13,8 +13,8 @@
 /** @mainpage
  *
  * @author Brad Aagaard
- * @date 2005/08/09
- * @version 0.2.1
+ * @date 2005/08/10
+ * @version 0.2.2
  *
  * @section summary Summary
  *
@@ -43,13 +43,13 @@
  *
  * @section installation Installation
  *
- * For installation instructions, see \ref install "INSTALL".
+ * For installation instructions, see \link INSTALL INSTALL \endlink.
  *
  * @section dirs Directories
  *
  * @li \b doc Directory where the documentation for the query API
  * resides. The documentation is available online at
- * http://pasadena.wr.usgs.gov/office/baagaard/research/software/cencalvm/. You
+ * http://www.sf06simulation.org/geology/velocitymodel/querydoc/. You
  * can generate the documentation if you have doxygen installed by
  * running 'make' in the doc directory. The routines associated with
  * the user interface are labeled as such in the html documentation.
@@ -70,7 +70,7 @@
  * @subsection query Package 'query'
  *
  * This package is used to query the etree database holding the
- * velocity model. See \ref queryREADME "pkgs/query/README" for
+ * velocity model. See \link pkgs/query/README pkgs/query/README \endlink for
  * additional information on the query routines.
  *
  * @subsection storage Package 'storage'
@@ -83,7 +83,7 @@
  * @section version Version history
  *
  * For information regarding changes, enhancements, significant bug
- * fixes, etc. see \ref changes "CHANGES".
+ * fixes, etc. see \link CHANGES CHANGES \endlink.
  * 
  */
 
