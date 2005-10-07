@@ -13,6 +13,21 @@
 /**
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
+ * \section ver030 Version 0.3.0, 2005/10/07
+ *
+ * @li Changed examples to include FIXEDRES and WAVERES query
+ * types. Improved instructions for the examples.
+ * @li Turned on averaging of water points but do not allow mixing of
+ * averaging of water and solid material points in averaging by giving
+ * solid material points precedence (if attempting to mix the two,
+ * ignore the water values).
+ * @li Fixed FIXEDRES and WAVERES queries so averaged values aren't
+ * used when query wants finer resolution than available. For example,
+ * if you want values at 200m resolution and a search says only values
+ * at 800m are available, then this location is a "void" at 200m
+ * resolution so "NODATA" should be returned instead of the values at
+ * 800m. Previous versions would return values at the 800m resolution.
+ *
  * \section ver022 Version 0.2.2, 2005/08/10
  *
  * @li Fixed bug where inclusion of assert header file was missing in
