@@ -237,16 +237,46 @@ cencalvm::average::AvgEngine::_addToParent(OctantPendingStruct* pPendingParent,
 
   pPendingParent->processedChildren |= childBit;
 
-  // exclude water (Vs=-999)
-  if (childPayload.Vs > 0.0) {
-    ++pPendingParent->data.numChildren;
-    pPendingParent->data.pSum->Vp += childPayload.Vp;
-    pPendingParent->data.pSum->Vs += childPayload.Vs;
-    pPendingParent->data.pSum->Density += childPayload.Density;
-    pPendingParent->data.pSum->Qp += childPayload.Qp;
-    pPendingParent->data.pSum->Qs += childPayload.Qs;
-    pPendingParent->data.pSum->DepthFreeSurf += childPayload.DepthFreeSurf;
-  } // if
+  // We allow averaging of both water and solid material properties,
+  // but we don't permit mixing the two in the averaging. During the
+  // averaging of the octants, a child with solid properties takes
+  // precendence over children with water properties, so a parent
+  // octant will have solid properties if any of its children do.
+  if (childPayload.Vs > 0.0) { // if not water
+    // check to see if another child added water material properties
+    if (pPendingParent->data.pSum->Vs > 0.0) {
+      // normal solid properties
+      ++pPendingParent->data.numChildren;
+      pPendingParent->data.pSum->Vp += childPayload.Vp;
+      pPendingParent->data.pSum->Vs += childPayload.Vs;
+      pPendingParent->data.pSum->Density += childPayload.Density;
+      pPendingParent->data.pSum->Qp += childPayload.Qp;
+      pPendingParent->data.pSum->Qs += childPayload.Qs;
+      pPendingParent->data.pSum->DepthFreeSurf += childPayload.DepthFreeSurf;
+    } else {
+      // replace average values with our values (force solid properties)
+      pPendingParent->data.numChildren = 1;
+      pPendingParent->data.pSum->Vp = childPayload.Vp;
+      pPendingParent->data.pSum->Vs = childPayload.Vs;
+      pPendingParent->data.pSum->Density = childPayload.Density;
+      pPendingParent->data.pSum->Qp = childPayload.Qp;
+      pPendingParent->data.pSum->Qs = childPayload.Qs;
+      pPendingParent->data.pSum->DepthFreeSurf = childPayload.DepthFreeSurf;
+    } // else
+  } else if (childPayload.Vp > 0.0) {
+    // if water and children with solid material properties have not
+    // added their contributions, then add water contributions
+    if (pPendingParent->data.numChildren >= 0 &&
+	pPendingParent->data.pSum->Vs <= 0) {
+      ++pPendingParent->data.numChildren;
+      pPendingParent->data.pSum->Vp += childPayload.Vp;
+      pPendingParent->data.pSum->Vs += childPayload.Vs;
+      pPendingParent->data.pSum->Density += childPayload.Density;
+      pPendingParent->data.pSum->Qp += childPayload.Qp;
+      pPendingParent->data.pSum->Qs += childPayload.Qs;
+      pPendingParent->data.pSum->DepthFreeSurf += childPayload.DepthFreeSurf;
+    } // if
+  } // else
 } // _addToParent
 		    
 // ----------------------------------------------------------------------
@@ -324,7 +354,7 @@ cencalvm::average::AvgEngine::_processOctant(const int pendingLevel)
 
   cencalvm::storage::PayloadStruct payload;
   const int numChildren = pendingOctant.data.numChildren;
-  if (0 != numChildren) {
+  if (numChildren > 0) {
     payload.Vp = pendingOctant.data.pSum->Vp / numChildren;
     payload.Vs = pendingOctant.data.pSum->Vs / numChildren;
     payload.Density = pendingOctant.data.pSum->Density / numChildren;
@@ -333,8 +363,9 @@ cencalvm::average::AvgEngine::_processOctant(const int pendingLevel)
     payload.DepthFreeSurf = 
       pendingOctant.data.pSum->DepthFreeSurf / numChildren;
   } else {
-    // If there are no contributing children (water), then set payload
+    // If there are no contributing children, then set payload
     // values to 'NODATA' values
+
     payload.Vp = cencalvm::storage::NODATAVAL;
     payload.Vs = cencalvm::storage::NODATAVAL;
     payload.Density = cencalvm::storage::NODATAVAL;
