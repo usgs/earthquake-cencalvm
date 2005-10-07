@@ -38,11 +38,13 @@ void
 usage(void)
 { // usage
   std::cerr
-    << "usage: cencalvmcppquery [-h] -i fileIn -o fileOut -d dbfile [-l logfile]\n"
+    << "usage: cencalvmcppquery [-h] -i fileIn -o fileOut -d dbfile\n"
+    << "       [-l logfile] [-t queryType] [-r res]\n"
+    << "\n"
     << "  -i fileIn     File containing list of locations: 'lon lat elev'.\n"
     << "  -o fileOut    Output file with locations and material properties.\n"
     << "  -d dbfile     Etree database file to query.\n"
-    << "  -t queryType  Type of query {'maxres', 'fixedres', 'avgres'}\n"
+    << "  -t queryType  Type of query {'maxres', 'fixedres', 'waveres'}\n"
     << "  -r res        Resolution for query (not needed for maxres queries\n"
     << "  -h            Display usage and exit.\n"
     << "  -l logfile    Log file for warnings about no data for locations.\n";
@@ -192,10 +194,10 @@ main(int argc,
     query.queryRes(queryRes);
     if (0 == strcasecmp(queryType.c_str(), "fixedres"))
       query.queryType(cencalvm::query::VMQuery::FIXEDRES);
-    else if (0 == strcasecmp(queryType.c_str(), "avgres"))
-      query.queryType(cencalvm::query::VMQuery::AVGRES);
+    else if (0 == strcasecmp(queryType.c_str(), "waveres"))
+      query.queryType(cencalvm::query::VMQuery::WAVERES);
     else {
-      std::cerr << "Could not parse query resolution string '" << queryRes
+      std::cerr << "Could not parse query string '" << queryType
 		<< "' into a known type of query.";
       usage();
       return 1;
@@ -252,8 +254,8 @@ main(int argc,
       << std::setprecision(1) << std::setw(9) << elev;
 #if !defined(ALLVALS)
     fileOut
-      << std::setw(4) << int(pVals[0])
-      << std::setw(4) << int(pVals[1])
+      << std::setw(5) << int(pVals[0])
+      << std::setw(5) << int(pVals[1])
       << "\n";
 #else
     fileOut
@@ -264,8 +266,8 @@ main(int argc,
       << std::setw(9) << pVals[3]
       << std::setw(9) << pVals[4]
       << std::setw(9) << pVals[5]
-      << std::setw(4) << int(pVals[6])
-      << std::setw(4) << int(pVals[7])
+      << std::setw(5) << int(pVals[6])
+      << std::setw(5) << int(pVals[7])
       << "\n";
 #endif
     
