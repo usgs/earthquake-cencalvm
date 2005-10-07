@@ -100,8 +100,8 @@ cencalvm::query::VMQuery::queryType(const QueryEnum queryType)
     case FIXEDRES :
       _queryFn = &cencalvm::query::VMQuery::_queryFixed;
       break;
-    case AVGRES :
-      _queryFn = &cencalvm::query::VMQuery::_queryAvg;
+    case WAVERES :
+      _queryFn = &cencalvm::query::VMQuery::_queryWave;
       break;
     default :
       _pErrHandler->error("Could not find query function for requested "
@@ -309,11 +309,11 @@ cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload
 // Query database at resolution specified by wavelength. Resolution
 // is specified by queryRes().
 void
-cencalvm::query::VMQuery::_queryAvg(cencalvm::storage::PayloadStruct* pPayload,
-				    const double lon,
-				    const double lat,
-				    const double elev)
-{ // _queryAvg
+cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
+				     const double lon,
+				     const double lat,
+				     const double elev)
+{ // _queryWave
   etree_addr_t addr;
 
   addr.level = ETREE_MAXLEVEL;
@@ -391,7 +391,7 @@ cencalvm::query::VMQuery::_queryAvg(cencalvm::storage::PayloadStruct* pPayload,
   pPayload->Qs = 0.5 * (childPayload.Qs + pPayload->Qs);
   pPayload->DepthFreeSurf = 
     0.5 * (childPayload.DepthFreeSurf + pPayload->DepthFreeSurf);
-} // _queryAvg
+} // _queryWave
 
 // version
 // $Id$

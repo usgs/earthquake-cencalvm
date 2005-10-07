@@ -69,7 +69,7 @@ class cencalvm::query::VMQuery
   enum QueryEnum { 
     MAXRES=0, ///< Query at maximum resolution
     FIXEDRES=1, ///< Query at fixed resolution
-    AVGRES=2 ///< Query at resolution tuned to wavelength of shear waves
+    WAVERES=2 ///< Query at resolution tuned to wavelength of shear waves
   };
 
  public :
@@ -100,7 +100,7 @@ class cencalvm::query::VMQuery
    * Meaning depends on type of query:
    *   @li MAXRES Resolution is not applicable
    *   @li FIXEDRES Query etree at level corresponding to resolution
-   *   @li AVGRES Resolution corresponds to minimum period of waves;
+   *   @li WAVERES Resolution corresponds to minimum period of waves;
    *     etree is queried at level corresponding to minimum wavelength
    *     for shear waves.
    *
@@ -196,10 +196,10 @@ private :
    * @param lat Latitude of location for query in degrees
    * @param elev Elevation of location for query in meters
    */
-  void _queryAvg(cencalvm::storage::PayloadStruct*,
-		 const double lon,
-		 const double lat,
-		 const double elev);
+  void _queryWave(cencalvm::storage::PayloadStruct*,
+		  const double lon,
+		  const double lat,
+		  const double elev);
 
  private :
   // PRIVATE METHODS ////////////////////////////////////////////////////
