@@ -37,8 +37,8 @@ struct cencalvm::storage::PayloadStruct {
    *
    * @li Set to fault block for location in Earth Vision model
    * @li Set to 0 for locations outside the domain.
-   * @li Set to -999 for interior octants that contain values
-   *  that are the average of its children.
+   * @li Set to INTERIORBLOCK for interior octants that contain values
+   *   that are the average of its children.
    */
   int16_t FaultBlock;
 
@@ -46,8 +46,8 @@ struct cencalvm::storage::PayloadStruct {
    *
    * @li Set to zone for location in Earth Vision model
    * @li Set to 0 for locations outside the domain.
-   * @li Set to -999 for interior octants that contain values that are the
-   *  averages of its children.
+   * @li Set to INTERIORZONE for interior octants that contain values 
+   *   that are the averages of its children.
    */
   int16_t Zone;
 }; // struct PayloadStruct
