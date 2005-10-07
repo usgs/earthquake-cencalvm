@@ -76,7 +76,8 @@
  * the arithmetic means of the values of its children. 
  *
  * @note Because averaging fault block and zone values is not
- * meaningful, those values are set to -999 in the interior octants.
+ * meaningful, the fault block and zone values are set to -999 in the
+ * interior octants.
  *
  * @note In the database, the value for Vs in water is -999. In order
  * to prevent nonphysical values for solid material near the
