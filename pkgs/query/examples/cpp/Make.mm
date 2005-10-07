@@ -21,9 +21,27 @@ PROJ_SRCS = \
 
 PROJ_BIN = $(PROJ_BINDIR)/cencalvmcppquery
 
-TEST_PRE1.0_ARGS = -d data/ver-pre1.0/cencalvm-pre1.0.etree -i ../data/sample-pre1.0.in -o test.out -l test.log
+TEST_ARGS = \
+	-d USGSBayAreaVM-05.0.1.etree \
+	-i ../data/sample-05.0.x.in \
+	-o test.out \
+	-l test.log
 
-TEST_05.0.0_ARGS = -d data/ver-05.0.0/USGSBayAreaVM-05.0.0.etree -i ../data/sample-05.0.0.in -o test.out -l test.log
+TEST_ARGS_FIXEDRES = \
+	-d USGSBayAreaVM-05.0.1.etree \
+	-i ../data/sample-05.0.x.in \
+	-o test_fixedres.out \
+	-l test.log \
+	-t fixedres \
+	-r 200
+
+TEST_ARGS_WAVERES = \
+	-d USGSBayAreaVM-05.0.1.etree \
+	-i ../data/sample-05.0.x.in \
+	-o test_waveres.out \
+	-l test.log \
+	-t waveres \
+	-r 0.2
 
 # ----------------------------------------------------------------------
 all: $(PROJ_BIN)
@@ -31,11 +49,14 @@ all: $(PROJ_BIN)
 $(PROJ_BIN):: product_dirs $(PROJ_OBJS)
 	$(CXX) -o $@ $(LCXXFLAGS) $(PROJ_OBJS)
 
-test-pre1.0:
-	@LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(BLD_LIBDIR) $(PROJ_BIN) $(TEST_PRE1.0_ARGS)
+test:
+	@LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(BLD_LIBDIR) $(PROJ_BIN) $(TEST_ARGS)
 
-test test-05.0.0:
-	@LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(BLD_LIBDIR) $(PROJ_BIN) $(TEST_05.0.0_ARGS)
+testfixedres:
+	@LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(BLD_LIBDIR) $(PROJ_BIN) $(TEST_ARGS_FIXEDRES)
+
+testwaveres:
+	@LD_LIBRARY_PATH=$$LD_LIBRARY_PATH:$(BLD_LIBDIR) $(PROJ_BIN) $(TEST_ARGS_WAVERES)
 
 export:: export-binaries
 

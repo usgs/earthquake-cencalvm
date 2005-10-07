@@ -20,20 +20,23 @@ c
 	implicit none
 
 	character*128 filenameIn
-	parameter(filenameIn='../data/sample-05.0.0.in')
+	parameter(filenameIn='../data/sample-05.0.x.in')
 	integer unitIn
 	parameter(unitIn=10)
 
         character*64 filenameOut
-	parameter(filenameOut='test.out')
 	integer unitOut
 	parameter(unitOut=11)
 
         character*64 filenameDB
-	parameter(filenameDB='data/ver-05.0.0/USGSBayAreaVM-05.0.0.etree')
+	parameter(filenameDB='USGSBayAreaVM-05.0.1.etree')
 
         character*64 filenameLog
 	parameter(filenameLog='test.log')
+
+        character*64 queryType
+
+	real*8 queryRes
 
 	character*256 errorMsg
 
@@ -44,6 +47,27 @@ c
 	real*8 lon, lat, elev
 
 	integer ok
+
+c       ****************************************************************
+c	Uncomment one of the following sets of 3 lines
+c
+c       Note: Only 1 set can be uncommented at a time.
+c       ****************************************************************
+
+c       SET1 = Parameters for sample MAXRES query
+	parameter(filenameOut='test.out')
+	parameter(queryType='maxres')
+	parameter(queryRes=0)
+
+c       SET2 = Query resolution for fixedres query (dx=200m)
+c	parameter(filenameOut='test_fixedres.out')
+c	parameter(queryType='fixedres')
+c	parameter(queryRes=200.0)
+
+c       SET3 = Query resolution for waveres query (T=0.2s)
+c	parameter(filenameOut='test_waveres.out')
+c	parameter(queryType='waveres')
+c	parameter(queryRes=0.2)
 
 c       ****************************************************************
 c       Size of query and errHandler MUST match sizeof(void*) in C
@@ -73,6 +97,30 @@ c       Open database for querying
 	call cencalvm_open_f(query, ok)
 	if(ok.ne.0) goto 998
 
+c       Set query type and resolution
+	if(queryType(1:6).eq.'maxres') then
+	   call cencalvm_querytype_f(query, 0, ok)
+	   if(ok.ne.0) goto 998
+	else
+	   if(queryRes.lt.0.0) then
+	      write(6,*) 'Query resolution must be a positive value.'
+	      goto 999
+	   endif
+	   call cencalvm_queryres_f(query, queryRes, ok)
+	   if(ok.ne.0) goto 998
+	   if(queryType(1:8).eq.'fixedres') then
+	      call cencalvm_querytype_f(query, 1, ok)
+	      if(ok.ne.0) goto 998
+	   else
+	      if(queryType(1:7).eq.'waveres') then
+		 call cencalvm_querytype_f(query, 2, ok)
+	      else
+		 write(6,*) 'Could not parse query resolution string.'
+		 goto 999
+	      endif
+	   endif
+	endif
+
 c       Open input file to read locations
 	open(unitIn,file=filenameIn,status='old')
 
@@ -97,7 +145,7 @@ c          If query generated an error, then bail out, otherwise reset status
 c       Write values returned by query to output file
 	write(unitOut,20) lon,lat,elev,vals(1),vals(2),vals(3),
        1 vals(4),vals(5),vals(6),int(vals(7)),int(vals(8))
- 20	format(f9.4,f8.4,f9.1,f8.1,f8.1,f8.1,f9.1,f9.1,f9.1,i4,i4)
+ 20	format(f9.4,f8.4,f9.1,f8.1,f8.1,f8.1,f9.1,f9.1,f9.1,i5,i5)
 
 	goto 10
 
