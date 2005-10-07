@@ -277,7 +277,13 @@ cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload
     return;
 
   etree_addr_t resAddr;
-  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload)) {
+  const int err = etree_search(_db, addr, &resAddr, "*", pPayload);
+  // if search returned interior octant at coarser resolution than
+  // what we want, return no data instead of averaged octant since
+  // query request was for a given resolution and we don't have a leaf
+  // octant at that resolution or one higher.
+  if (0 != err ||
+      (ETREE_INTERIOR == resAddr.type && addr.level > resAddr.level)) {
     std::ostringstream msg;
     msg
       << std::resetiosflags(std::ios::fixed)
@@ -323,7 +329,16 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
     return;
 
   etree_addr_t resAddr;
-  if (0 != etree_search(_db, addr, &resAddr, "*", pPayload)) {
+  const int err = etree_search(_db, addr, &resAddr, "*", pPayload);
+
+  const double vertExag = cencalvm::storage::Geometry::vertExag();
+  const double minPeriod = vertExag * _queryRes;
+
+  // If search returned interior octant (averaged), return no data
+  // instead of averaged values if interior octant is coarser than we want
+  if (0 != err ||
+      (ETREE_INTERIOR == resAddr.type &&
+       _pGeom->edgeLen(resAddr.level) / pPayload->Vs > minPeriod)) {
     std::ostringstream msg;
     msg
       << std::resetiosflags(std::ios::fixed)
@@ -350,11 +365,10 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
     return;
   } // if
   
-  const double vertExag = cencalvm::storage::Geometry::vertExag();
-  const double minPeriod = vertExag * _queryRes;
   cencalvm::storage::PayloadStruct childPayload = *pPayload;
   while (pPayload->Vs > 0.0 && 
-	 _pGeom->edgeLen(resAddr.level) / pPayload->Vs < minPeriod) {
+	 _pGeom->edgeLen(resAddr.level) / pPayload->Vs < minPeriod &&
+	 resAddr.level > 0) {
     childPayload = *pPayload;
     etree_addr_t parentAddr;
     _pGeom->findAncestor(&parentAddr, resAddr, resAddr.level-1);
