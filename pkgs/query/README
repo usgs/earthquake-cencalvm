@@ -52,7 +52,9 @@
  * machine to make sure the example ran properly.
  *
  * The cpp, c, and f77 directories contain the examples of how to
- * query the database from C++, C, and Fortran, respectively.
+ * query the database from C++, C, and Fortran, respectively. See
+ * \link pkgs/query/examples/README pkgs/query/examples/README
+ * \endlink for more information.
  *
  * @section Querying routines
  *
@@ -78,10 +80,12 @@
  *
  * @note In the database, the value for Vs in water is -999. In order
  * to prevent nonphysical values for solid material near the
- * solid/water interface, all values for water (Vp, Vs, density, etc)
- * are ignored in the averaging. In the cases where all of an interior
- * octant's children are associated with water, the material
- * properties are set to -999.
+ * solid/water interface, mixing of solid and water material
+ * properties is not permitted and solid material properties take
+ * precedence. In other words, if an interior octant has both children
+ * with water properties and children wich solid material properties,
+ * the solid material properties will be averaged and the water
+ * properties will be ignored.
  *
  * @subsubsection setQueryType Setting the query type
  * 
@@ -89,7 +93,7 @@
  * given location depending on the query type.
  *
  * @note Resolution in the discussion that follows refers to the
- * vertical resolution which is greater than the horizontal
+ * vertical resolution which is finer than the horizontal
  * resolution.
  *
  * @subsubsection maxres MAXRES query
@@ -111,9 +115,9 @@
  * cencalvm::query::VMQuery::queryRes() in C++, cencalvm_queryRes() in
  * C, and cencalvm_queryres_f() in Fortran.
  *
- * @subsubsection avgres AVGRES query
+ * @subsubsection waveres WAVERES query
  *
- * When the query type is set to AVGRES, the requested resolution is
+ * When the query type is set to WAVERES, the requested resolution is
  * the wavelength for shear waves at a given minimum period. The query
  * routine first finds the maximum resolution available and traverses
  * up the tree until the resolution is no greater than the requested
