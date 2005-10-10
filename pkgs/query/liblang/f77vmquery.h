@@ -51,7 +51,7 @@
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_createquery_f \
-  FORTRAN_NAME_(cencalvm_createquery_f, CENCALVM_CREATEQUERY_F)
+  FC_FUNC_(cencalvm_createquery_f, CENCALVM_CREATEQUERY_F)
 /** Create velocity model query object.
  *
  * Create handle to velocity model query object. If creation fails
@@ -65,7 +65,7 @@ void cencalvm_createquery_f(size_t* handleAddr);
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_destroyquery_f \
-  FORTRAN_NAME_(cencalvm_destroyquery_f, CENCALVM_DESTROYQUERY_F)
+  FC_FUNC_(cencalvm_destroyquery_f, CENCALVM_DESTROYQUERY_F)
 /** Destroy velocity model query object.
  *
  * Calls ~VMQuery().
@@ -80,7 +80,7 @@ void cencalvm_destroyquery_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_open_f \
-  FORTRAN_NAME_(cencalvm_open_f, CENCALVM_OPEN_F)
+  FC_FUNC_(cencalvm_open_f, CENCALVM_OPEN_F)
 /** Open database for querying.
  *
  * @param handleAddr Address of handle to VMQuery object
@@ -93,7 +93,7 @@ void cencalvm_open_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_close_f \
-  FORTRAN_NAME_(cencalvm_close_f, CENCALVM_CLOSE_F)
+  FC_FUNC_(cencalvm_close_f, CENCALVM_CLOSE_F)
 /** Close the database.
  *
  * @param handleAddr Address of handle to VMQuery object
@@ -106,7 +106,7 @@ void cencalvm_close_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_querytype_f \
-  FORTRAN_NAME_(cencalvm_querytype_f, CENCALVM_QUERYTYPE_F)
+  FC_FUNC_(cencalvm_querytype_f, CENCALVM_QUERYTYPE_F)
 /** Set query type.
  *
  * Queries other than maximum resolution require an etree database
@@ -128,7 +128,7 @@ void cencalvm_querytype_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_queryres_f \
-  FORTRAN_NAME_(cencalvm_queryres_f, CENCALVM_QUERYRES_F)
+  FC_FUNC_(cencalvm_queryres_f, CENCALVM_QUERYRES_F)
 /** Set query resolution.
  *
  * Meaning depends on type of query:
@@ -150,7 +150,7 @@ void cencalvm_queryres_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_filename_f \
-  FORTRAN_NAME_(cencalvm_filename_f, CENCALVM_FILENAME_F)
+  FC_FUNC_(cencalvm_filename_f, CENCALVM_FILENAME_F)
 /** Set the database filename.
  *
  * @param handleAddr Address of handle to VMQuery object
@@ -167,7 +167,7 @@ void cencalvm_filename_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_cachesize_f \
-  FORTRAN_NAME_(cencalvm_cachesize_f, CENCALVM_CACHESIZE_F)
+  FC_FUNC_(cencalvm_cachesize_f, CENCALVM_CACHESIZE_F)
 /** Set size of cache during queries.
  *
  * @param handleAddr Address of handle to VMQuery object
@@ -182,7 +182,7 @@ void cencalvm_cachesize_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_query_f \
-  FORTRAN_NAME_(cencalvm_query_f, CENCALVM_QUERY_F)
+  FC_FUNC_(cencalvm_query_f, CENCALVM_QUERY_F)
 /** Query the database.
  *
  * @warning Array for values to be returned must be allocated BEFORE
@@ -216,7 +216,7 @@ void cencalvm_query_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_errorhandler_f \
-  FORTRAN_NAME_(cencalvm_errorhandler_f, CENCALVM_ERRORHANDLER_F)
+  FC_FUNC_(cencalvm_errorhandler_f, CENCALVM_ERRORHANDLER_F)
 /** Get handle to error handler.
  *
  * Create handle to velocity model query object. If creation fails

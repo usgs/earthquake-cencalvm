@@ -36,7 +36,7 @@
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_error_logfilename_f \
-  FORTRAN_NAME_(cencalvm_error_logfilename_f, CENCALVM_ERROR_LOGFILENAME_F)
+  FC_FUNC_(cencalvm_error_logfilename_f, CENCALVM_ERROR_LOGFILENAME_F)
 /** Set the filename for logging and enable logging.
  *
  * Calls logFilename().
@@ -55,7 +55,7 @@ void cencalvm_error_logfilename_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_error_loggingon_f \
-  FORTRAN_NAME_(cencalvm_error_loggingon_f, CENCALVM_ERROR_LOGGINGON_F)
+  FC_FUNC_(cencalvm_error_loggingon_f, CENCALVM_ERROR_LOGGINGON_F)
 /** Turn logging on or off.
  *
  * @pre The log filename must have been set for logging to work if
@@ -76,7 +76,7 @@ void cencalvm_error_loggingon_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_error_resetstatus_f					\
-  FORTRAN_NAME_(cencalvm_error_resetstatus_f, CENCALVM_ERROR_RESETSTATUS_F)
+  FC_FUNC_(cencalvm_error_resetstatus_f, CENCALVM_ERROR_RESETSTATUS_F)
 /** Reset error status and clear any error message.
  *
  * @param handleAddr Handle to error handler
@@ -89,7 +89,7 @@ void cencalvm_error_resetstatus_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_error_status_f \
-  FORTRAN_NAME_(cencalvm_error_status_f, CENCALVM_ERROR_STATUS_F)
+  FC_FUNC_(cencalvm_error_status_f, CENCALVM_ERROR_STATUS_F)
 /** Get status of error handler.
  *
  * @param handleAddr Handle to error handler
@@ -102,7 +102,7 @@ void cencalvm_error_status_f(size_t* handleAddr,
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
 #define cencalvm_error_message_f \
-  FORTRAN_NAME_(cencalvm_error_message_f, CENCALVM_ERROR_MESSAGE_F)
+  FC_FUNC_(cencalvm_error_message_f, CENCALVM_ERROR_MESSAGE_F)
 /** Get warning/error message.
  *
  * @param handleAddr Handle to error handler

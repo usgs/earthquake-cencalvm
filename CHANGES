@@ -27,6 +27,9 @@
  * at 800m are available, then this location is a "void" at 200m
  * resolution so "NODATA" should be returned instead of the values at
  * 800m. Previous versions would return values at the 800m resolution.
+ * @li Switched to GNU build system for easier installtion and
+ * portability. Users now run configure to generate Makefiles instead
+ * of creating them by hand.
  *
  * \section ver022 Version 0.2.2, 2005/08/10
  *

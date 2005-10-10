@@ -45,7 +45,7 @@ class cencalvm::query::TestVMQuery : public CppUnit::TestFixture
   CPPUNIT_TEST( testCacheSize );
   CPPUNIT_TEST( testQueryMax );
   CPPUNIT_TEST( testQueryFixed );
-  CPPUNIT_TEST( testQueryAvg );
+  CPPUNIT_TEST( testQueryWave );
   CPPUNIT_TEST( testErrorHandler );
   CPPUNIT_TEST_SUITE_END();
 
@@ -76,8 +76,8 @@ public :
   /// Test query() with fixed query
   void testQueryFixed(void);
 
-  /// Test query() for avg query
-  void testQueryAvg(void);
+  /// Test query() for wave query
+  void testQueryWave(void);
 
   /// Test errorHandler()
   void testErrorHandler(void);

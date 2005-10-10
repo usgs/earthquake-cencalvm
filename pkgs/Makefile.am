@@ -1,0 +1,22 @@
+# -*- Makefile -*-
+#
+# ----------------------------------------------------------------------
+#
+#                           Brad T. Aagaard
+#                        U.S. Geological Survey
+#
+# <LicenseText>
+#
+# ----------------------------------------------------------------------
+#
+
+SUBDIRS = \
+	storage \
+	create \
+	average \
+	query
+
+# version
+# $Id$
+
+# End of file 

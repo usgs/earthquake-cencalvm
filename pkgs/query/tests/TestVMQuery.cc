@@ -78,9 +78,9 @@ cencalvm::query::TestVMQuery::testQueryType(void)
   query.queryType(queryType);
   CPPUNIT_ASSERT(&cencalvm::query::VMQuery::_queryFixed == query._queryFn);
 
-  queryType = cencalvm::query::VMQuery::AVGRES;
+  queryType = cencalvm::query::VMQuery::WAVERES;
   query.queryType(queryType);
-  CPPUNIT_ASSERT(&cencalvm::query::VMQuery::_queryAvg == query._queryFn);
+  CPPUNIT_ASSERT(&cencalvm::query::VMQuery::_queryWave == query._queryFn);
 
   queryType = cencalvm::query::VMQuery::MAXRES;
   query.queryType(queryType);
@@ -240,18 +240,18 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
 } // testQueryFixed
 
 // ----------------------------------------------------------------------
-// Test query() with avg query
+// Test query() with wave query
 void 
-cencalvm::query::TestVMQuery::testQueryAvg(void)
-{ // testQueryAvg
+cencalvm::query::TestVMQuery::testQueryWave(void)
+{ // testQueryWave
   _createDB();
 
   VMQuery query;
   query.filename(_DBFILENAME);
-  query.queryType(cencalvm::query::VMQuery::AVGRES);
+  query.queryType(cencalvm::query::VMQuery::WAVERES);
   query.open();
   cencalvm::storage::ErrorHandler* pHandler = query.errorHandler();
-  //  pHandler->logFilename("avg.log");
+  //  pHandler->logFilename("wave.log");
   
   const int numVals = 8;
   double* pVals = (numVals > 0) ? new double[numVals] : 0;
@@ -262,7 +262,7 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
   const int numLocs = 3;
   const int pOctIndices[] = { 1, 7, 11 };
   const double periodMin[] = { 800.0, 1.0, 4000.0 };
-  const double octValsAvg[] = { 5.79375, 9.9, 5.421875 };
+  const double octValsWave[] = { 5.79375, 9.9, 5.421875 };
   const bool isResLeaf[] = { false, true, false };
 
 
@@ -279,7 +279,7 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
       std::cerr << pHandler->message() << std::endl;
     
     const double tolerance = 1.0e-06;
-    const double val = octValsAvg[iLoc];
+    const double val = octValsWave[iLoc];
     for (int iVal=0; iVal < 6; ++iVal) {
       const double  valE = _RELPAY[iVal]*val;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
@@ -298,7 +298,7 @@ cencalvm::query::TestVMQuery::testQueryAvg(void)
   CPPUNIT_ASSERT(cencalvm::storage::ErrorHandler::OK == pHandler->status());
 
   delete[] pLonLatElev; pLonLatElev = 0;
-} // testQueryAvg
+} // testQueryWave
 
 // ----------------------------------------------------------------------
 // Test errorHandler()
