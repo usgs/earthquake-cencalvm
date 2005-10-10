@@ -20,7 +20,7 @@
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::storage::TestErrorHandler );
 
 // ----------------------------------------------------------------------
-const char* cencalvm::storage::TestErrorHandler::_LOGFILENAME = "test.log";
+const char* cencalvm::storage::TestErrorHandler::_LOGFILENAME = "data/test.log";
 
 // ----------------------------------------------------------------------
 // Test constructor
