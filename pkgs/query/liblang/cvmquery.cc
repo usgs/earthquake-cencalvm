@@ -25,7 +25,7 @@ extern "C" {
 void*
 cencalvm_createQuery(void)
 { // createQuery
-  void* handle = (void*) new cencalvm::query::VMQuery::VMQuery;
+  void* handle = (void*) new cencalvm::query::VMQuery;
   return handle;
 } // createQuery
 

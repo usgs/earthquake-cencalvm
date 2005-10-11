@@ -144,7 +144,7 @@ c          If query generated an error, then bail out, otherwise reset status
 
 c       Write values returned by query to output file
 	write(unitOut,20) lon,lat,elev,vals(1),vals(2),vals(3),
-       1 vals(4),vals(5),vals(6),int(vals(7)),int(vals(8))
+     &    vals(4),vals(5),vals(6),int(vals(7)),int(vals(8))
  20	format(f9.4,f8.4,f9.1,f8.1,f8.1,f8.1,f9.1,f9.1,f9.1,i5,i5)
 
 	goto 10
@@ -172,8 +172,7 @@ c       Destroy query handle
 	write(6,*) errorMsg
 	goto 999
  999	write(6,*) 'ERROR'
- 100	return
-	end
+ 100	end
 
 c version
 c $Id$
