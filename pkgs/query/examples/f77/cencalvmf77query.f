@@ -55,7 +55,7 @@ c       Note: Only 1 set can be uncommented at a time.
 c       ****************************************************************
 
 c       SET1 = Parameters for sample MAXRES query
-	parameter(filenameOut='test.out')
+	parameter(filenameOut='test_maxres.out')
 	parameter(queryType='maxres')
 	parameter(queryRes=0)
 
