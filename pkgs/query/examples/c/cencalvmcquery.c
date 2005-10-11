@@ -34,7 +34,7 @@ void
 usage(void)
 { /* usage */
   fprintf(stderr,
-	  "usage: cencalvmcppquery [-h] -i fileIn -o fileOut -d dbfile\n"
+	  "usage: cencalvmcquery [-h] -i fileIn -o fileOut -d dbfile\n"
 	  "       [-l logfile] [-t queryType] [-r res]\n"
 	  "\n"
 	  "  -i fileIn   File containing list of locations: 'lon lat elev'.\n"
