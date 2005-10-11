@@ -28,8 +28,8 @@
 namespace cencalvm {
   namespace create {
     class TestVMCreator;
-  }; // create
-}; // cencalvm
+  } // create
+} // cencalvm
 
 /// C++ unit testing for VMCreator
 class cencalvm::create::TestVMCreator : public CppUnit::TestFixture

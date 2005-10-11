@@ -48,13 +48,13 @@ namespace cencalvm {
   namespace query {
     class VMQuery;
     class TestVMQuery; // friend
-  }; // query
+  } // query
   namespace storage {
     class Geometry; // HOLDSA geometry
     class ErrorHandler; // HOLDA ErrorHandler
     struct PayloadStruct; // USES PayloadStruct
-  }; // storage
-}; // cencalvm
+  } // storage
+} // cencalvm
 
 /// C++ manager for querying the USGS central CA velocity model (USER
 /// INTERFACE).

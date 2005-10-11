@@ -177,7 +177,7 @@ cencalvm::query::VMQuery::query(double** ppVals,
 	// KLUDGE UNTIL ETREE IS RECREATED
 	// Create routine shouldn't have converted km/s to m/s for NODATAVAL
 	if (payload.Vs == -999000.0)
-	  payload.Vs = cencalvm::storage::NODATAVAL;
+	  payload.Vs = cencalvm::storage::Payload::NODATAVAL;
 	// TEMPORARY END
 
 	(*ppVals)[i] = payload.Vs;
@@ -246,14 +246,14 @@ cencalvm::query::VMQuery::_queryMax(cencalvm::storage::PayloadStruct* pPayload,
       << std::setprecision(6)
       << lon << ", " << lat << ", " << elev << ".\n";
     _pErrHandler->warning(warning.str().c_str());
-    pPayload->Vp = cencalvm::storage::NODATAVAL;
-    pPayload->Vs = cencalvm::storage::NODATAVAL;
-    pPayload->Density = cencalvm::storage::NODATAVAL;
-    pPayload->Qp = cencalvm::storage::NODATAVAL;
-    pPayload->Qs = cencalvm::storage::NODATAVAL;
-    pPayload->DepthFreeSurf = cencalvm::storage::NODATAVAL;
-    pPayload->FaultBlock = cencalvm::storage::NODATABLOCK;
-    pPayload->Zone = cencalvm::storage::NODATAZONE;
+    pPayload->Vp = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Vs = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Density = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Qp = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Qs = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->DepthFreeSurf = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->FaultBlock = cencalvm::storage::Payload::NODATABLOCK;
+    pPayload->Zone = cencalvm::storage::Payload::NODATAZONE;
     return;
   } // if
 } // _queryMax
@@ -299,14 +299,14 @@ cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload
       << std::setprecision(6)
       << lon << ", " << lat << ", " << elev << ".\n";
     _pErrHandler->warning(warning.str().c_str());
-    pPayload->Vp = cencalvm::storage::NODATAVAL;
-    pPayload->Vs = cencalvm::storage::NODATAVAL;
-    pPayload->Density = cencalvm::storage::NODATAVAL;
-    pPayload->Qp = cencalvm::storage::NODATAVAL;
-    pPayload->Qs = cencalvm::storage::NODATAVAL;
-    pPayload->DepthFreeSurf = cencalvm::storage::NODATAVAL;
-    pPayload->FaultBlock = cencalvm::storage::NODATABLOCK;
-    pPayload->Zone = cencalvm::storage::NODATAZONE;
+    pPayload->Vp = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Vs = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Density = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Qp = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Qs = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->DepthFreeSurf = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->FaultBlock = cencalvm::storage::Payload::NODATABLOCK;
+    pPayload->Zone = cencalvm::storage::Payload::NODATAZONE;
     return;
   } // if
 } // _queryFixed
@@ -354,14 +354,14 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
       << std::setprecision(6)
       << lon << ", " << lat << ", " << elev << ".\n";
     _pErrHandler->warning(warning.str().c_str());
-    pPayload->Vp = cencalvm::storage::NODATAVAL;
-    pPayload->Vs = cencalvm::storage::NODATAVAL;
-    pPayload->Density = cencalvm::storage::NODATAVAL;
-    pPayload->Qp = cencalvm::storage::NODATAVAL;
-    pPayload->Qs = cencalvm::storage::NODATAVAL;
-    pPayload->DepthFreeSurf = cencalvm::storage::NODATAVAL;
-    pPayload->FaultBlock = cencalvm::storage::NODATABLOCK;
-    pPayload->Zone = cencalvm::storage::NODATAZONE;
+    pPayload->Vp = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Vs = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Density = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Qp = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->Qs = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->DepthFreeSurf = cencalvm::storage::Payload::NODATAVAL;
+    pPayload->FaultBlock = cencalvm::storage::Payload::NODATABLOCK;
+    pPayload->Zone = cencalvm::storage::Payload::NODATAZONE;
     return;
   } // if
   

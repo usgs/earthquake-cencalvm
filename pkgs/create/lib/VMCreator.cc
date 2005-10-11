@@ -130,7 +130,7 @@ cencalvm::create::VMCreator::_createDB(void) const
   } // if
   
   // Register schema
-  if (0 != etree_registerschema(etreedb, cencalvm::storage::SCHEMA)) {
+  if (0 != etree_registerschema(etreedb, cencalvm::storage::Payload::SCHEMA)) {
     _pErrHandler->error(etree_strerror(etree_errno(etreedb)));
     etree_close(etreedb);
     return;
@@ -193,7 +193,7 @@ cencalvm::create::VMCreator::_packDB(void) const
     return;
   } // if
   
-  if (0 != etree_registerschema(packeddb, cencalvm::storage::SCHEMA)) {
+  if (0 != etree_registerschema(packeddb, cencalvm::storage::Payload::SCHEMA)) {
     _pErrHandler->error(etree_strerror(etree_errno(packeddb)));
     return;
   } // if

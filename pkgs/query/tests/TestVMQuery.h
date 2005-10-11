@@ -28,8 +28,8 @@
 namespace cencalvm {
   namespace query {
     class TestVMQuery;
-  }; // query
-}; // cencalvm
+  } // query
+} // cencalvm
 
 /// C++ unit testing for VMQuery
 class cencalvm::query::TestVMQuery : public CppUnit::TestFixture

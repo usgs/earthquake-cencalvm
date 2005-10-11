@@ -24,11 +24,11 @@
 namespace cencalvm {
   namespace create {
     class GridIngester;
-  }; // namespace create
+  } // namespace create
   namespace storage {
     class ErrorHandler; // USES ErrorHandler
-  }; // namespace storage
-}; // namespace cencalvm
+  } // namespace storage
+} // namespace cencalvm
 
 /// C++ object for reading input grids containing velocity model data
 /// and inserting them into the database.

@@ -25,11 +25,11 @@ namespace cencalvm {
   namespace create {
     class VMCreator;
     class TestVMCreator; // friend
-  }; // namespace create
+  } // namespace create
   namespace storage {
     class ErrorHandler; // HOLDS ErrorHandler
-  }; // namespace storage
-}; // namespace cencalvm
+  } // namespace storage
+} // namespace cencalvm
 
 /// C++ manager for creating the velocity model database.
 class cencalvm::create::VMCreator

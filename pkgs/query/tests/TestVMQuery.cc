@@ -159,12 +159,12 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
     int iVal = 6; // Block
     double valE = (iLoc < _NUMOCTANTSLEAF) ? 
       _RELPAY[iVal] :
-      cencalvm::storage::INTERIORBLOCK;
+      cencalvm::storage::Payload::INTERIORBLOCK;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
     iVal = 7; // Zone
     valE = (iLoc < _NUMOCTANTSLEAF) ? 
       _RELPAY[iVal] :
-      cencalvm::storage::INTERIORZONE;
+      cencalvm::storage::Payload::INTERIORZONE;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
   } // for
 
@@ -223,12 +223,12 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
     int iVal = 6; // Block
     double valE = (iOctant < _NUMOCTANTSLEAF) ? 
       _RELPAY[iVal] :
-      cencalvm::storage::INTERIORBLOCK;
+      cencalvm::storage::Payload::INTERIORBLOCK;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
     iVal = 7; // Zone
     valE = (iOctant < _NUMOCTANTSLEAF) ? 
       _RELPAY[iVal] :
-      cencalvm::storage::INTERIORZONE;
+      cencalvm::storage::Payload::INTERIORZONE;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
   } // for
 
@@ -286,10 +286,10 @@ cencalvm::query::TestVMQuery::testQueryWave(void)
     } // for
     int iVal = 6; // Block
     double valE = 
-      isResLeaf[iLoc] ? _RELPAY[iVal] : cencalvm::storage::INTERIORBLOCK;
+      isResLeaf[iLoc] ? _RELPAY[iVal] : cencalvm::storage::Payload::INTERIORBLOCK;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
     iVal = 7; // Zone
-    valE = isResLeaf[iLoc] ? _RELPAY[iVal] : cencalvm::storage::INTERIORZONE;
+    valE = isResLeaf[iLoc] ? _RELPAY[iVal] : cencalvm::storage::Payload::INTERIORZONE;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
   } // for
 
@@ -322,7 +322,7 @@ cencalvm::query::TestVMQuery::_createDB(void) const
   etree_t* db = etree_open(filenameTmp, O_CREAT|O_RDWR|O_TRUNC, 0, 0, 3);
   CPPUNIT_ASSERT(0 != db);
 
-  int err = etree_registerschema(db, cencalvm::storage::SCHEMA);
+  int err = etree_registerschema(db, cencalvm::storage::Payload::SCHEMA);
   CPPUNIT_ASSERT(0 == err);
 
   const int numOctants = _NUMOCTANTSLEAF;
