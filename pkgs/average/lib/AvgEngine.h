@@ -68,13 +68,17 @@ private :
   AvgEngine(const AvgEngine& e); ///< Not implemented
   const AvgEngine& operator=(const AvgEngine& e); ///< Not implemented
   
-private :
+  // KLUDGE TO WORK ON SUN
+public :
   // PRIVATE STRUCTS ////////////////////////////////////////////////////
 
   struct PendingDataStruct {
     cencalvm::storage::PayloadStruct* pSum;
     size_t numChildren;
   }; // PendingDataStruct
+
+private :
+  // PRIVATE STRUCTS ////////////////////////////////////////////////////
 
   struct OctantPendingStruct {
     PendingDataStruct data;
