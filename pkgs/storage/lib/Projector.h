@@ -25,8 +25,8 @@ namespace cencalvm {
   namespace storage {
     class Projector;
     class ErrorHandler; // HOLDSA ErrorHandler
-  }; // namespace storage
-}; // namespace cencalvm
+  } // namespace storage
+} // namespace cencalvm
 
 /// C++ manager for projecting to/from 3-D geologic model.
 class cencalvm::storage::Projector

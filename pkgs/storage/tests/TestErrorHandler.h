@@ -25,8 +25,8 @@
 namespace cencalvm {
   namespace storage {
     class TestErrorHandler;
-  }; // storage
-}; // cencalvm
+  } // storage
+} // cencalvm
 
 /// C++ unit testing for ErrorHandler
 class cencalvm::storage::TestErrorHandler : public CppUnit::TestFixture

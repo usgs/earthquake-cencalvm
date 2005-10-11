@@ -29,8 +29,8 @@ namespace cencalvm {
     class Projector; // HOLDSA Projector
     class ErrorHandler; // HOLDSA ErrorHandler
     class TestGeometry; // friend
-  }; // namespace storage
-}; // namespace cencalvm
+  } // namespace storage
+} // namespace cencalvm
 
 /// C++ manager for geometry of the USGS central CA velocity
 /// model.

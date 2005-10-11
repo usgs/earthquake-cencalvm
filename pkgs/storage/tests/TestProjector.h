@@ -25,8 +25,8 @@
 namespace cencalvm {
   namespace storage {
     class TestProjector;
-  }; // storage
-}; // cencalvm
+  } // storage
+} // cencalvm
 
 /// C++ unit testing for Projector
 class cencalvm::storage::TestProjector : public CppUnit::TestFixture

@@ -38,8 +38,8 @@ namespace cencalvm {
   namespace storage {
     class ErrorHandler;
     class TestErrorHandler; // friend
-  }; // namespace storage
-}; // namespace cencalvm
+  } // namespace storage
+} // namespace cencalvm
 
 /// C++ error handler associated with the USGS central CA velocity model.
 class cencalvm::storage::ErrorHandler

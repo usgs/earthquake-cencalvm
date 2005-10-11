@@ -25,8 +25,8 @@
 namespace cencalvm {
   namespace storage {
     class TestGeometry;
-  }; // storage
-}; // cencalvm
+  } // storage
+} // cencalvm
 
 /// C++ unit testing for Geometry
 class cencalvm::storage::TestGeometry : public CppUnit::TestFixture
