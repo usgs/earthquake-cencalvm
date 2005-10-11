@@ -25,8 +25,8 @@
 namespace cencalvm {
   namespace average {
     class TestAverager;
-  }; // query
-}; // cencalvm
+  } // query
+} // cencalvm
 
 /// C++ unit testing for Averager
 class cencalvm::average::TestAverager : public CppUnit::TestFixture

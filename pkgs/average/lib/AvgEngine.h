@@ -29,12 +29,12 @@
 namespace cencalvm {
   namespace average {
     class AvgEngine;
-  }; // namespace average
+  } // namespace average
   namespace storage {
     struct PayloadStruct; // USES PayloadStruct
     class ErrorHandler; // HOLDSA ErrorHandler
-  }; // namespace storage
-}; // namespace cencalvm
+  } // namespace storage
+} // namespace cencalvm
 
 /// C++ enginer for doing averaging over an etree database
 class cencalvm::average::AvgEngine

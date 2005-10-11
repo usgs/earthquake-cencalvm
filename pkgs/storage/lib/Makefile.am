@@ -18,6 +18,7 @@ lib_LTLIBRARIES = libcencalvmstorage.la
 libcencalvmstorage_la_SOURCES = \
 	ErrorHandler.cc \
 	Geometry.cc \
+	Payload.cc \
 	Projector.cc
 
 libcencalvmstorage_la_LDFLAGS =

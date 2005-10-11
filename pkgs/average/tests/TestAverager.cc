@@ -99,9 +99,9 @@ cencalvm::average::TestAverager::testFillOctants(void)
       valE = _RELPAY[i++];
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.Zone/valE, tolerance);
     } else {
-      valE = cencalvm::storage::INTERIORBLOCK;
+      valE = cencalvm::storage::Payload::INTERIORBLOCK;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.FaultBlock/valE, tolerance);
-      valE = cencalvm::storage::INTERIORZONE;
+      valE = cencalvm::storage::Payload::INTERIORZONE;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payload.Zone/valE, tolerance);
     } // if/else
   } // for
@@ -118,7 +118,7 @@ cencalvm::average::TestAverager::_createDB(void) const
   etree_t* db = etree_open(_DBFILENAMEIN, O_CREAT|O_RDWR|O_TRUNC, 0, 0, 3);
   CPPUNIT_ASSERT(0 != db);
 
-  int err = etree_registerschema(db, cencalvm::storage::SCHEMA);
+  int err = etree_registerschema(db, cencalvm::storage::Payload::SCHEMA);
   CPPUNIT_ASSERT(0 == err);
 
   const int numOctants = _NUMOCTANTSIN;

@@ -12,17 +12,20 @@
 
 /** @file lib/Payload.h
  *
- * @brief Definition of structure of velocity model data.
+ * @brief C++ manager of data structures for velocity model.
  */
 
 #if !defined(cencalvm_storage_payload_h)
 #define cencalvm_storage_payload_h
 
+#include <inttypes.h>
+
 namespace cencalvm {
   namespace storage {
     struct PayloadStruct;
-  }; // namespace storage
-}; // namespace cencalvm
+    class Payload;
+  } // namespace storage
+} // namespace cencalvm
 
 /// Data stored in velocity model database
 struct cencalvm::storage::PayloadStruct {
@@ -52,28 +55,22 @@ struct cencalvm::storage::PayloadStruct {
   int16_t Zone;
 }; // struct PayloadStruct
 
-namespace cencalvm {
-  namespace storage {
-    /// Database schema
-    static const char* cencalvm::storage::SCHEMA = 
-      "float32_t Vp; "
-      "float32_t Vs; "
-      "float32_t Density; "
-      "float32_t Qp; "
-      "float32_t Qs; "
-      "float32_t DepthFreeSurf; "
-      "int16_t FaultBlock; "
-      "int16_t Zone;";
-    /// Database values for no data
-    static const float cencalvm::storage::NODATAVAL = -999.0;
-    static const short cencalvm::storage::NODATABLOCK = 0;
-    static const short cencalvm::storage::NODATAZONE = 0;
+/// C++ manager of data structures for velocity model.
+class cencalvm::storage::Payload
+{ // Payload
+public :
+  // PUBLIC MEMBERS /////////////////////////////////////////////////////
 
-    /// Database values for interior (average) octants
-    static const short cencalvm::storage::INTERIORBLOCK = -999;
-    static const short cencalvm::storage::INTERIORZONE = -999;
-  }; // namespace storage
-}; // namespace cencalvm
+  static const char* SCHEMA; ///< Database schema
+
+  static const float NODATAVAL; ///< Database flags for no data
+  static const short NODATABLOCK; ///< Database flags for no data
+  static const short NODATAZONE; ///< Database flags for no data
+  
+  static const short INTERIORBLOCK; ///< Database flags for interior octants
+  static const short INTERIORZONE; ///< Database flags for interior octants
+
+}; // Payload
 
 #endif // cencalvm_storage_payload_h
 

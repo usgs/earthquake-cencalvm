@@ -88,12 +88,12 @@ cencalvm::average::Averager::average(void)
     return;
   } // if
   const char* schema = etree_getschema(_dbIn);
-  if (0 != strcmp(schema, cencalvm::storage::SCHEMA)) {
+  if (0 != strcmp(schema, cencalvm::storage::Payload::SCHEMA)) {
     std::ostringstream msg;
     msg
       << "Schema of input etree database '" << _filenameIn
       << "' doesn't match the expected schema.\n"
-      << "Expected schema is\n'" << cencalvm::storage::SCHEMA
+      << "Expected schema is\n'" << cencalvm::storage::Payload::SCHEMA
       << "'\nand database schema is\n'" << schema << "'";
     _pErrHandler->error(msg.str().c_str());
     return;
@@ -112,7 +112,7 @@ cencalvm::average::Averager::average(void)
   } // if
 
   // Register schema in output database
-  if (0 != etree_registerschema(_dbAvg, cencalvm::storage::SCHEMA)) {
+  if (0 != etree_registerschema(_dbAvg, cencalvm::storage::Payload::SCHEMA)) {
     _pErrHandler->error(etree_strerror(etree_errno(_dbAvg)));
     etree_close(_dbAvg);
     return;

@@ -366,15 +366,15 @@ cencalvm::average::AvgEngine::_processOctant(const int pendingLevel)
     // If there are no contributing children, then set payload
     // values to 'NODATA' values
 
-    payload.Vp = cencalvm::storage::NODATAVAL;
-    payload.Vs = cencalvm::storage::NODATAVAL;
-    payload.Density = cencalvm::storage::NODATAVAL;
-    payload.Qp = cencalvm::storage::NODATAVAL;
-    payload.Qs = cencalvm::storage::NODATAVAL;
-    payload.DepthFreeSurf = cencalvm::storage::NODATAVAL;
+    payload.Vp = cencalvm::storage::Payload::NODATAVAL;
+    payload.Vs = cencalvm::storage::Payload::NODATAVAL;
+    payload.Density = cencalvm::storage::Payload::NODATAVAL;
+    payload.Qp = cencalvm::storage::Payload::NODATAVAL;
+    payload.Qs = cencalvm::storage::Payload::NODATAVAL;
+    payload.DepthFreeSurf = cencalvm::storage::Payload::NODATAVAL;
   } // if/else
-  payload.FaultBlock = cencalvm::storage::INTERIORBLOCK;
-  payload.Zone = cencalvm::storage::INTERIORZONE;
+  payload.FaultBlock = cencalvm::storage::Payload::INTERIORBLOCK;
+  payload.Zone = cencalvm::storage::Payload::INTERIORZONE;
 
   _updateOctant(pendingOctant.pAddr, payload);
   if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
@@ -511,9 +511,9 @@ cencalvm::average::AvgEngine::_createOctant(etree_addr_t* pAddr)
   _pPendingOctants[pendingLevel].data.pSum->Qs = 0;
   _pPendingOctants[pendingLevel].data.pSum->DepthFreeSurf = 0;
   _pPendingOctants[pendingLevel].data.pSum->FaultBlock = 
-    cencalvm::storage::INTERIORBLOCK;
+    cencalvm::storage::Payload::INTERIORBLOCK;
   _pPendingOctants[pendingLevel].data.pSum->Zone = 
-    cencalvm::storage::INTERIORZONE;
+    cencalvm::storage::Payload::INTERIORZONE;
   _pendingCursor = pendingLevel;
 
   ++_octantCounter.output;

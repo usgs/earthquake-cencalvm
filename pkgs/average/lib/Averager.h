@@ -28,11 +28,11 @@
 namespace cencalvm {
   namespace average {
     class Averager;
-  }; // namespace average
+  } // namespace average
   namespace storage {
     class ErrorHandler; // HOLDSA ErrorHandler
-  }; // namespace storage
-}; // namespace cencalvm
+  } // namespace storage
+} // namespace cencalvm
 
 /// C++ manager for spatial averaging of an etree database containing
 /// the USGS central CA velocity model
