@@ -10,6 +10,10 @@
 # ----------------------------------------------------------------------
 #
 
+# Link using C++ compiler to make sure we satisfy all of the C++
+# symbols in the C++ query library which this program uses
+F77LD = @CXX@
+
 subpackage = query
 include $(top_srcdir)/pkgs/subpackage.am
 
@@ -23,7 +27,8 @@ cencalvmf77query_LDFLAGS =
 INCLUDES +=
 
 cencalvmf77query_LDADD = \
-	$(top_builddir)/pkgs/query/liblang/libcencalvmquerylang.la
+	$(top_builddir)/pkgs/query/liblang/libcencalvmquerylang.la \
+	$(FCLIBS)
 
 CLEANFILES = \
 	test_maxres.out \

@@ -10,6 +10,10 @@
 # ----------------------------------------------------------------------
 #
 
+# Link using C++ compiler to make sure we satisfy all of the C++
+# symbols in the C++ query library which this program uses
+CCLD = @CXX@
+
 subpackage = query
 include $(top_srcdir)/pkgs/subpackage.am
 
