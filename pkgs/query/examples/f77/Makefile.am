@@ -25,6 +25,12 @@ INCLUDES +=
 cencalvmf77query_LDADD = \
 	$(top_builddir)/pkgs/query/liblang/libcencalvmquerylang.la
 
+CLEANFILES = \
+	test_maxres.out \
+	test_fixedres.out \
+	test_waveres.out \
+	test.log
+
 # version
 # $Id$
 
