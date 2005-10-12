@@ -254,7 +254,27 @@ setenv PATH ${PATH}:${CENCALVM_DIR}/bin
  * etree database file with is 7.5 GB uncompressed. The workaround is
  * to get gzip version 1.3.3 or later.
  *
+ * <li> Configure warning 'WARNING: etree.h: present but cannot be compiled'.
+ *
+ * The Sunpro compiler chokes on the btree.h header file because it contains an empty declaration. The workaround is to change line 39 of btree.h from
+\verbatim
+typedef struct btree_t {} btree_t;
+\endverbatim
+to
+\verbatim
+typedef struct btree_t { int a; } btree_t;
+\endverbatim
+ *
  * </ul>
+ *
+ * @section help Getting Help
+ *
+ * If you run into problems installing this software, please send an
+ * email to Brad Aagaard and include (1) config.log from the top level
+ * directory (generated when running configure), (2) a copy of the
+ * output showing the error (i.e., dump the output from the command to
+ * a file), and (3) a complete description of the problem.
+ *
  */
 
 // version
