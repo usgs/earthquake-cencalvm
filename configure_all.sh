@@ -1,4 +1,4 @@
-../src/configure --prefix=/Users/brad/src/scratch/cencalvm-configure/dest \
+../src/configure --prefix=/home/tools/cencalvm \
     --enable-testing \
     --enable-documentation \
     --config-cache \
