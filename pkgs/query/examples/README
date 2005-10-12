@@ -57,8 +57,8 @@ ln -s /home/data/USGSBayAreaVM-05.0.1.etree .
  *
  * <li> Run 'make'
  *
- * <li> Run 'make test' for the sample MAXRES query. The output
- * (test.out) should be identical to the corresponding
+ * <li> Run 'make testmaxres' for the sample MAXRES query. The output
+ * (test_maxres.out) should be identical to the corresponding
  * sample-VERSION.out file in the data directory.
  *
  * <li> Run 'make testfixedres' for the sample FIXEDRES query. The output
@@ -78,11 +78,11 @@ ln -s /home/data/USGSBayAreaVM-05.0.1.etree .
  * <li> Edit the source file 'cencalvmf77query.f' to select the type
  * of query that you want.
  *
- * <li> Run 'make' and then 'make test'.
+ * <li> Run 'make' and then './cencalvmf77query'.
  *
  * <ul>
  *
- * <li> For the sample MAXRES query. The output (test.out) should be
+ * <li> For the sample MAXRES query. The output (test_maxres.out) should be
  * identical to the corresponding sample-VERSION.out file in the data
  * directory.
  *

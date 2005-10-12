@@ -15,20 +15,15 @@
  * 
  * @brief Installation instructions
  *
- * See \link pkgs/query/README pkgs/query/README \endlink for a description of the
- * velocity model querying software and how to use it.
+ * See \link pkgs/query/README pkgs/query/README \endlink for a
+ * description of the velocity model querying software and how to use
+ * it.
  *
  * @section prerequisites Software Prerequisites
  *
  * @subsection general General
  * 
  * <ol>
- * <li> GNU make (not essential but helpful)<br>
- * version 3.79 and later are known to work without any problems
- *
- * Use of the provided Makefiles requires GNU make. See \ref
- * knownissues "Known Issues" for more information.
- *
  * <li> gzip software<br>
  * version 1.3.3 is known to work
  *
@@ -41,12 +36,8 @@
  * http://www-2.cs.cmu.edu/~euclid/
  *
  * <ol>
- * <li> Download the euclid source code.
+ * <li> Download the euclid source code from http://www-2.cs.cmu.edu/~euclid.
  *
- *  As of Monday 11 July 2005, the version of Euclid on CMU website
- *  (http://www-2.cs.cmu.edu/~euclid/) IS the latest
- *  version.
-
  * <li> Edit the Makefile.
  *
  * Go to the libsrc directory. Edit the Makefile to suit your
@@ -170,37 +161,43 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${PROJ4_LIBDIR}
  *
  * <ol>
  *
- * <li> Set architecture, compiler and directory variables in
- * config/Makefile.config.
+ * <li> Run 'configure' and then 'make' and 'make install'.
  *
- * <li> If files appropriate for your system do not exist (see the
- * Makefile.config file), create your own using the other files as a
- * template. If you create your own files, I would appreciate it if
- * you could send them to me so I can add them to the source code
- * distribution.
+ * Use 'configure --help' to see all of the arguments configure
+ * accepts. After 'make install', the header files, libraries, and
+ * executables can be found under the PREFIX directory (defined by
+ * --prefix=PREFIX when running configure).
  *
- * <li> Build the software.
- *
- * EITHER
  * <ul>
  *
- * <li> Run make in the top level directory. This will build libraries
- * related to the storage, creation, and querying of the velocity
- * model database and the examples. This includes C and Fortran 77
- * bindings for the query routines. 
+ * <li> Euclid and Proj4 not in default paths
  *
- * OR
+ * Configure will fail if it cannot find the header files and
+ * libraries for Euclid and Proj4. You will need to set CPPFLAGS and
+ * LDFLAGS when running configure. For example if you have defined the
+ * environment variables as suggested above, you can simply run
+ * configure using
+\verbatim
+configure \
+    CPPFLAGS="-I${ETREE_INCDIR} -I${PROJ4_INCDIR}" \
+    LDFLAGS="-L${ETREE_LIBDIR} -L${PROJ4_LIBDIR}"
+\endverbatim
  *
- * <li> Run make in pkgs/storage/lib, pkgs/query/lib, and pkgs/query/liblang.
+ * <li> Changing the compilers.
+ *
+ * You can change the compilers configure will use by setting CC (C),
+ * CXX (C++), and FC (Fortran) when running configure. For example, to
+ * build using the Sunpro compilers
+\verbatim
+configure FC=f95 CC=cc CXX=CC
+\endverbatim
  *
  * </ul>
  *
  * <li> OPTIONAL
  *
- * Run 'make' and then 'make test' in each of the tests
- * directories. If you didn't run make in the top level directory, you
- * will need to run make in pkgs/average/lib to run the tests in
- * pkgs/query/lib.
+ * If you have cppunit and enabled testing (--enable-testing), then
+ * you can run 'make check' to run the unit tests.
  *
  * <li> Download the velocity model from
  * ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database
@@ -218,11 +215,8 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${PROJ4_LIBDIR}
  * pkgs/query/examples/README pkgs/query/examples/README \endlink for
  * more information.
  *
- * <li> The libraries, header files, and binaries are now in the
- * BLD_ROOT directory (defined in Makefile.config).
- *
  * <li> Set environment variables to find libraries and executables
- * that are in BLD_ROOT. If the libraries and executables are not
+ * that are in PREFIX. If the libraries and executables are not
  * installed in system libraries, set the environment variables
  * LD_LIBRARY_PATH and PATH (or their equivalent) accordingly. You
  * will probably want to do this in your .bashrc or .cshrc file or a
@@ -233,14 +227,14 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${PROJ4_LIBDIR}
  * <li> bash shell users
  *
 \verbatim
-export CENCALVM_DIR=/home/johndoe/cencalvm/buildtmp/lib
+export CENCALVM_DIR=/home/johndoe/cencalvm
 export LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:${CENCALVM_DIR}/lib
 export PATH=${PATH}:${CENCALVM_DIR}/bin
 \endverbatim
  *
  * <li> tcsh shell users
 \verbatim
-setenv CENCALVM_DIR /home/johndoe/cencalvm/buildtmp/lib
+setenv CENCALVM_DIR /home/johndoe/cencalvm
 setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${CENCALVM_DIR}/lib
 setenv PATH ${PATH}:${CENCALVM_DIR}/bin
 \endverbatim
@@ -252,31 +246,6 @@ setenv PATH ${PATH}:${CENCALVM_DIR}/bin
  * @section knownissues Known Issues
  *
  * <ul>
- *
- * <li> Compiling the velocity model querying software without a recent
- * version of GNU make.
- *
- * <ul>
- *
- * <li> solaris make
- *
-\verbatim
-make: Fatal error in reader: ./config/rules-targets.def, line 14: Unexpected end of line seen
-\endverbatim
- *
- * Workaround is to use GNU make.
- *
- * <li> gmake (versions 3.76.1 and 3.80, at least) on a solaris system,
- *
-\verbatim
-BLD_ACTION="all" make recurse
-make: Fatal error in reader: ./config/rules-targets.def, line 14: Unexpected end of line seen
-\endverbatim
- *
- * Workaround is to get newer version of GNU make or run gmake in each
- * directory.
- *
- * </ul>
  *
  * <li> Uncompressing the database file gives a 'File too large'
  * error.
