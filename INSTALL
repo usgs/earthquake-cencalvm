@@ -256,7 +256,9 @@ setenv PATH ${PATH}:${CENCALVM_DIR}/bin
  *
  * <li> Configure warning 'WARNING: etree.h: present but cannot be compiled'.
  *
- * The Sunpro compiler chokes on the btree.h header file because it contains an empty declaration. The workaround is to change line 39 of btree.h from
+ * The Sunpro compiler chokes on the btree.h header file because it
+ * contains an empty declaration. The workaround is to change line 39
+ * of btree.h from
 \verbatim
 typedef struct btree_t {} btree_t;
 \endverbatim
