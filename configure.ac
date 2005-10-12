@@ -19,13 +19,13 @@ AM_INIT_AUTOMAKE([foreign])
 # ----------------------------------------------------------------------
 # TESTING w/cppunit
 AC_ARG_ENABLE([testing],
-	[  --enable-testing        Enable unit testing with cppunit (requires cppunit)],
+	[  --enable-testing        Enable unit testing with cppunit (requires cppunit) [[default=no]]],
 	[enable_testing=yes],
 	[enable_testing=no])
 
 # DOCUMENTATION w/doxygen
 AC_ARG_ENABLE([documentation],
-	[  --enable-documentation  Enable buuilding html documentation (requires doxygen)],
+	[  --enable-documentation  Enable buuilding html documentation (requires doxygen) [[default=no]]],
 	[enable_documentation=yes],
 	[enable_documentation=no])
 # ----------------------------------------------------------------------
