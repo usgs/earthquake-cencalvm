@@ -192,6 +192,11 @@ configure \
 configure FC=f95 CC=cc CXX=CC
 \endverbatim
  *
+ * @note These compilers must be binary compatible! The libraries
+ * built by the C++ compiler must be able to be used by the C and
+ * Fortran compilers. For example, you CANNOT mix compilers from
+ * gcc-3.x and gcc-4.x.
+ *
  * </ul>
  *
  * <li> OPTIONAL
