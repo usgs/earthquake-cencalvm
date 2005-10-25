@@ -23,6 +23,7 @@ libcencalvmquery_la_LDFLAGS =
 INCLUDES +=
 
 libcencalvmquery_la_LIBADD = \
+	$(top_builddir)/pkgs/storage/lib/libcencalvmstorage.la \
 	-letree
 
 subpkginclude_HEADERS = \
