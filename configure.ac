@@ -23,6 +23,12 @@ AC_ARG_ENABLE([testing],
 	[enable_testing=yes],
 	[enable_testing=no])
 
+# SPATIAL w/spatialdata
+AC_ARG_ENABLE([spatial],
+	[  --enable-spatial        Enable use of spatialdata package (requires spatialdata) [[default=no]]],
+	[enable_spatial=yes],
+	[enable_spatial=no])
+
 # DOCUMENTATION w/doxygen
 AC_ARG_ENABLE([documentation],
 	[  --enable-documentation  Enable buuilding html documentation (requires doxygen) [[default=no]]],
@@ -75,6 +81,25 @@ if test "$enable_testing" = "yes" ; then
   ])
 fi
 
+# SPATIAL
+AM_CONDITIONAL([ENABLE_SPATIAL], [test "$enable_spatial" = yes])
+if test "$enable_spatial" = "yes" ; then
+  AC_LANG(C++)
+  AC_CHECK_HEADER([spatialdata/spatialdb/SpatialDB.h], [], [
+    AC_MSG_ERROR([SpatialDB header not found; try CPPFLAGS="-I<spatialdata include dir>"])
+  ])
+  AC_MSG_CHECKING([for spatialdata::spatialdb::SimpleDB in -lspatialdata])
+  AC_REQUIRE_CPP
+  AC_COMPILE_IFELSE(
+    [AC_LANG_PROGRAM([[#include <spatialdata/spatialdb/SpatialDB.h>]
+	[#include <spatialdata/spatialdb/SimpleDB.h>]],
+	             [[spatialdata::spatialdb::SimpleDB db;]])],
+    [AC_MSG_RESULT(yes)],
+    [AC_MSG_RESULT(no)
+     AC_MSG_ERROR([spatialdata library not found; try LDFLAGS="-L<spatialdata lib dir>"])
+  ])
+fi
+
 # DOXYGEN
 AM_CONDITIONAL([ENABLE_DOCUMENTATION], [test "$enable_documentation" = yes])
 if test "$enable_documentation" = "yes" ; then
@@ -116,6 +141,9 @@ AC_CONFIG_FILES([Makefile
 	pkgs/query/examples/c/Makefile
 	pkgs/query/examples/f77/Makefile
 	pkgs/query/examples/data/Makefile
+	extensions/Makefile
+	extensions/cencalvmdb/Makefile
+	extensions/cencalvmdb/lib/Makefile
 	doc/Makefile])
 
 AC_OUTPUT

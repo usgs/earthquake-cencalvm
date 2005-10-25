@@ -1,0 +1,63 @@
+// -*- C++ -*-
+//
+// ======================================================================
+//
+//                           Brad T. Aagaard
+//                        U.S. Geological Survey
+//
+// {LicenseText}
+//
+// ======================================================================
+//
+
+#if !defined(cencalvm_cencalvmdb_cencalvmdb_h)
+#error "CenCalVMDB.icc must only be included from CenCalVMDB.h"
+#endif
+
+// Open the database and prepare for querying.
+inline
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::open(void)
+{ _pQuery->open(); }
+
+// Close the database.
+inline
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::close(void)
+{ _pQuery->close(); }
+
+// Set query type.
+inline
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::queryType(const query::VMQuery::QueryEnum queryType)
+{ _pQuery->queryType(queryType); }
+
+// Set query resolution.
+inline
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::queryRes(const double res)
+{ _pQuery->queryRes(res); }
+
+// Set values to be returned by queries.
+inline
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
+					    const int numVals)
+{ _pQuery->queryVals(names, numVals); }
+
+// Set the database filename.
+inline
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::filename(const char* filename)
+{ _pQuery->filename(filename); }
+
+// Set size of cache during queries.
+inline
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::cacheSize(const int size)
+{ _pQuery->cacheSize(size); }
+
+// version
+// $Id$
+
+// End of file 

@@ -10,20 +10,11 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	pkgs \
-	extensions
+SUBDIRS = 
 
-if ENABLE_DOCUMENTATION
-  SUBDIRS += doc
+if ENABLE_SPATIAL
+  SUBDIRS += cencalvmdb
 endif
-
-
-DISTCHECK_CONFIGURE_FLAGS = \
-	--enable-testing \
-	--enable-documentation \
-	CPPFLAGS="-I${ETREE_INCDIR} -I${PROJ4_INCDIR} -I${CPPUNIT_INCDIR}" \
-	LDFLAGS="-L${ETREE_LIBDIR} -L${PROJ4_LIBDIR} -L${CPPUNIT_LIBDIR}"
 
 # version
 # $Id$

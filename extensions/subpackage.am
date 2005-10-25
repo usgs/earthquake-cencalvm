@@ -10,20 +10,13 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	pkgs \
-	extensions
+# define subpackage dirs
+subpkgsysconfdir = $(pkgsysconfdir)/$(subpackage)
+subpkgincludedir = $(pkgincludedir)/$(subpackage)
+subpkgpythondir = $(pkgpythondir)/$(subpackage)
+subpkgpyexecdir = $(pkgpyexecdir)/$(subpackage)
 
-if ENABLE_DOCUMENTATION
-  SUBDIRS += doc
-endif
-
-
-DISTCHECK_CONFIGURE_FLAGS = \
-	--enable-testing \
-	--enable-documentation \
-	CPPFLAGS="-I${ETREE_INCDIR} -I${PROJ4_INCDIR} -I${CPPUNIT_INCDIR}" \
-	LDFLAGS="-L${ETREE_LIBDIR} -L${PROJ4_LIBDIR} -L${CPPUNIT_LIBDIR}"
+INCLUDES = -I$(top_builddir)/include
 
 # version
 # $Id$
