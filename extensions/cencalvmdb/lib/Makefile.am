@@ -13,7 +13,6 @@
 subpackage = extensions/cencalvmdb
 include $(top_srcdir)/extensions/subpackage.am
 
-
 lib_LTLIBRARIES = libcencalvmdb.la
 
 libcencalvmdb_la_SOURCES = \
