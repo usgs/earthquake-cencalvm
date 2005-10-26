@@ -39,6 +39,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::CenCalVMDB(void) :
   _pCS->isGeocentric(false);
   _pCS->toMeters(1.0);
   _pCS->initialize();
+
 } // constructor
 
 // ----------------------------------------------------------------------
@@ -67,6 +68,12 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
   pCoords[1] = y;
   pCoords[2] = z;
   spatialdata::geocoords::Converter::convert(&pCoords, numLocs, _pCS, pCSQuery);
+
+  /** :KLUDGE:
+   * Prevent elevations from being deeper than 31.0 km.
+   */
+  if (pCoords[2] < -30.9e+3)
+    pCoords[2] = -30.9e+3;
 
   _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], pCoords[2]);
   delete[] pCoords; pCoords = 0;
