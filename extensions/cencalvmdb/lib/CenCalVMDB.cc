@@ -19,6 +19,8 @@
 #include "spatialdata/geocoords/CoordSys.h" // USES CoordSys
 #include "spatialdata/geocoords/CSGeo.h" // USES CoordSys
 #include "spatialdata/geocoords/Converter.h" // USES Converter
+#include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
+#include "cencalvm/storage/Payload.h" // USES Payload::NODATAVAL
 
 #if defined(USE_PYTHIA)
 #include "journal/firewall.h" // USES FIREWALL
@@ -35,7 +37,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::CenCalVMDB(void) :
 { // constructor
   _pCS->ellipsoid("WGS84");
   _pCS->datumHoriz("WGS84");
-  _pCS->datumVert("mean sea level");
+  _pCS->datumVert("ellipsoid");
   _pCS->isGeocentric(false);
   _pCS->toMeters(1.0);
   _pCS->initialize();
@@ -67,7 +69,9 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
   pCoords[0] = x;
   pCoords[1] = y;
   pCoords[2] = z;
-  spatialdata::geocoords::Converter::convert(&pCoords, numLocs, _pCS, pCSQuery);
+
+  spatialdata::geocoords::Converter::convert(&pCoords, numLocs, 
+					     _pCS, pCSQuery);
 
   /** :KLUDGE:
    * Prevent elevations from being deeper than 31.0 km.
@@ -75,7 +79,25 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
   if (pCoords[2] < -30.9e+3)
     pCoords[2] = -30.9e+3;
 
+  cencalvm::storage::ErrorHandler* pErrHandler = _pQuery->errorHandler();
+
   _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], pCoords[2]);
+  int iter = 1;
+  while ((*pVals)[0] < 0.0) {
+    const int maxIter = 5;
+    const double elevDiff = 10.0;
+    pErrHandler->resetStatus();
+    const double newElev = pCoords[2] - iter*elevDiff;
+    _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], newElev);
+    if (iter < maxIter)
+      ++iter;
+    else
+      break;
+  } // while
+
+  if (cencalvm::storage::ErrorHandler::WARNING == pErrHandler->status())
+    pErrHandler->resetStatus();
+  
   delete[] pCoords; pCoords = 0;
 } // query
 
