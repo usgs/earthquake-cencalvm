@@ -32,6 +32,8 @@
 // ----------------------------------------------------------------------
 /// Default constructor
 cencalvm::extensions::cencalvmdb::CenCalVMDB::CenCalVMDB(void) :
+  _minVs(0),
+  _vsVal(-1),
   _pQuery(new cencalvm::query::VMQuery),
   _pCS(new spatialdata::geocoords::CSGeo)
 { // constructor
@@ -51,6 +53,22 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::~CenCalVMDB(void)
   delete _pQuery; _pQuery = 0;
   delete _pCS; _pCS = 0;
 } // destructor
+
+// ----------------------------------------------------------------------
+// Set values to be returned by queries.
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
+							const int numVals)
+{ // queryVals
+  _pQuery->queryVals(names, numVals);
+
+  _vsVal = -1;
+  for (int i=0; i < numVals; ++i)
+    if (0 == strcasecmp(names[i], "Vs")) {
+      _vsVal = i;
+      break;
+    } // if
+} // queryVals
 
 // ----------------------------------------------------------------------
 // Query the database.
@@ -83,17 +101,23 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
 
   _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], pCoords[2]);
   int iter = 1;
-  while ((*pVals)[0] < 0.0) {
-    const int maxIter = 5;
-    const double elevDiff = 10.0;
-    pErrHandler->resetStatus();
-    const double newElev = pCoords[2] - iter*elevDiff;
-    _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], newElev);
-    if (iter < maxIter)
-      ++iter;
-    else
-      break;
-  } // while
+
+  if (_vsVal > 0) {
+    double* pVs = &(*pVals)[_vsVal];
+    while (*pVs < 0.0) {
+      const int maxIter = 4;
+      const double elevDiff = 25.0;
+      pErrHandler->resetStatus();
+      const double newElev = pCoords[2] - iter*elevDiff;
+      _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], newElev);
+      if (iter < maxIter)
+	++iter;
+      else
+	break;
+    } // while
+    if (0.0 < *pVs && *pVs < _minVs)
+      *pVs = _minVs;
+  } // if
 
   if (cencalvm::storage::ErrorHandler::WARNING == pErrHandler->status())
     pErrHandler->resetStatus();

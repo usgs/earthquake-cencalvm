@@ -83,6 +83,12 @@ class cencalvm::extensions::cencalvmdb::CenCalVMDB :
    */
   void queryRes(const double res);
 
+  /** Set minimum shear-wave speed (clip values lower than this).
+   *
+   * @param vs Shear wave speed
+   */
+  void minVs(const double vs);
+  
   /** Set values to be returned by queries.
    *
    * @pre Must call open() before queryVals()
@@ -132,6 +138,9 @@ class cencalvm::extensions::cencalvmdb::CenCalVMDB :
 private :
  // PRIVATE MEMBERS ////////////////////////////////////////////////////
   
+  double _minVs; ///< Minimum shear wave speed
+  int _vsVal; ///< Index of query value corresponding to Vs
+
   cencalvm::query::VMQuery* _pQuery; ///< Pointer to velocity model query
   spatialdata::geocoords::CSGeo* _pCS; ///< Pointer to coord system of VMQuery
 

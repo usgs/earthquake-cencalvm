@@ -38,13 +38,13 @@ void
 cencalvm::extensions::cencalvmdb::CenCalVMDB::queryRes(const double res)
 { _pQuery->queryRes(res); }
 
-// Set values to be returned by queries.
+// Set minimum shear-wave speed (clip values lower than this).
 inline
 void
-cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
-					    const int numVals)
-{ _pQuery->queryVals(names, numVals); }
-
+cencalvm::extensions::cencalvmdb::CenCalVMDB::minVs(const double vs) {
+  _minVs = vs;
+}
+  
 // Set the database filename.
 inline
 void
