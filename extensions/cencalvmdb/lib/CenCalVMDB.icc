@@ -14,24 +14,6 @@
 #error "CenCalVMDB.icc must only be included from CenCalVMDB.h"
 #endif
 
-// Open the database and prepare for querying.
-inline
-void
-cencalvm::extensions::cencalvmdb::CenCalVMDB::open(void)
-{ _pQuery->open(); }
-
-// Close the database.
-inline
-void
-cencalvm::extensions::cencalvmdb::CenCalVMDB::close(void)
-{ _pQuery->close(); }
-
-// Set query type.
-inline
-void
-cencalvm::extensions::cencalvmdb::CenCalVMDB::queryType(const query::VMQuery::QueryEnum queryType)
-{ _pQuery->queryType(queryType); }
-
 // Set query resolution.
 inline
 void

@@ -22,6 +22,8 @@
 #include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 #include "cencalvm/storage/Payload.h" // USES Payload::NODATAVAL
 
+#include <stdexcept> // USES std::runtime_error
+
 #if defined(USE_PYTHIA)
 #include "journal/firewall.h" // USES FIREWALL
 #include "pythiautil/FireWallUtil.h" // USES FIREWALL
@@ -43,7 +45,6 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::CenCalVMDB(void) :
   _pCS->isGeocentric(false);
   _pCS->toMeters(1.0);
   _pCS->initialize();
-
 } // constructor
 
 // ----------------------------------------------------------------------
@@ -55,12 +56,52 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::~CenCalVMDB(void)
 } // destructor
 
 // ----------------------------------------------------------------------
+// Open the database and prepare for querying.
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::open(void)
+{ // open
+  FIREWALL(0 != _pQuery);
+
+  _pQuery->open();
+  if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
+    throw std::runtime_error(_pQuery->errorHandler()->message());
+} // open
+
+// ----------------------------------------------------------------------
+// Close the database.
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::close(void)
+{ // close
+  FIREWALL(0 != _pQuery);
+
+  _pQuery->close(); 
+  if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
+    throw std::runtime_error(_pQuery->errorHandler()->message());
+} // close
+
+// ----------------------------------------------------------------------
+// Set query type.
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::queryType(const query::VMQuery::QueryEnum queryType)
+{ // queryType
+  FIREWALL(0 != _pQuery);
+
+  _pQuery->queryType(queryType);
+  if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
+    throw std::runtime_error(_pQuery->errorHandler()->message());
+} // queryType
+
+// ----------------------------------------------------------------------
 // Set values to be returned by queries.
 void
 cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
 							const int numVals)
 { // queryVals
+  FIREWALL(0 != _pQuery);
+
   _pQuery->queryVals(names, numVals);
+  if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
+    throw std::runtime_error(_pQuery->errorHandler()->message());
 
   _vsVal = -1;
   for (int i=0; i < numVals; ++i)
@@ -92,27 +133,28 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
 					     _pCS, pCSQuery);
 
   /** :KLUDGE:
-   * Prevent elevations from being deeper than 31.0 km.
+   * Prevent elevations from being deeper than 45.0 km.
    */
-  if (pCoords[2] < -30.9e+3)
-    pCoords[2] = -30.9e+3;
+  if (pCoords[2] < -44.95e+3)
+    pCoords[2] = -44.95e+3;
 
   cencalvm::storage::ErrorHandler* pErrHandler = _pQuery->errorHandler();
 
   _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], pCoords[2]);
-  int iter = 1;
+  if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
+    throw std::runtime_error(_pQuery->errorHandler()->message());
 
-  if (_vsVal > 0) {
+  if (_vsVal >= 0) {
     double* pVs = &(*pVals)[_vsVal];
+    int iter = 1;
     while (*pVs < 0.0) {
-      const int maxIter = 4;
+      const int maxIter = 8;
       const double elevDiff = 25.0;
       pErrHandler->resetStatus();
       const double newElev = pCoords[2] - iter*elevDiff;
       _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], newElev);
       if (iter < maxIter)
 	++iter;
-      else
 	break;
     } // while
     if (0.0 < *pVs && *pVs < _minVs)
