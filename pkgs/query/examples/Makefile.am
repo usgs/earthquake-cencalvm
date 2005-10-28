@@ -11,10 +11,10 @@
 #
 
 SUBDIRS = \
+	data \
 	cpp \
 	c \
-	f77 \
-	data
+	f77
 
 # version
 # $Id$
