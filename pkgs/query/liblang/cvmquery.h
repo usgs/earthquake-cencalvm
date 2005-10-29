@@ -151,6 +151,26 @@ int cencalvm_filename(void* handle,
 int cencalvm_cacheSize(void* handle,
 		       const int size);
 
+/** Set the extended database filename.
+ *
+ * @param handle Pointer to query
+ * @param filename Name of database file
+ *
+ * @returns Status of error handler
+ */
+int cencalvm_filenameExt(void* handle,
+			 const char* filename);
+
+/** Set size of cache during queries of extended database.
+ *
+ * @param handle Pointer to query
+ * @param size Size of cache in MB
+ *
+ * @returns Status of error handler
+ */
+int cencalvm_cacheSizeExt(void* handle,
+			  const int size);
+
 /** Query the database.
  *
  * @warning Array for values to be returned must be allocated BEFORE

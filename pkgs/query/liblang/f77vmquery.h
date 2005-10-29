@@ -181,6 +181,38 @@ void cencalvm_cachesize_f(size_t* handleAddr,
 
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
+#define cencalvm_filenameext_f \
+  FC_FUNC_(cencalvm_filenameext_f, CENCALVM_FILENAMEEXT_F)
+/** Set the extended database filename.
+ *
+ * @param handleAddr Address of handle to VMQuery object
+ * @param filename Name of database file
+ * @param len Length of string (IMPLICIT IN FORTRAN)
+ * @param err set to status of error handler
+ */
+extern "C"
+void cencalvm_filenameext_f(size_t* handleAddr,
+			    const char* filename,
+			    int* err,
+			    const int len);
+
+// ----------------------------------------------------------------------
+/** Fortran name mangling */
+#define cencalvm_cachesizeext_f \
+  FC_FUNC_(cencalvm_cachesizeext_f, CENCALVM_CACHESIZEEXT_F)
+/** Set size of cache during queries.
+ *
+ * @param handleAddr Address of handle to VMQuery object
+ * @param size Size of cache in MB
+ * @param err set to status of error handler
+ */
+extern "C"
+void cencalvm_cachesizeext_f(size_t* handleAddr,
+			     const int* size,
+			     int* err);
+
+// ----------------------------------------------------------------------
+/** Fortran name mangling */
 #define cencalvm_query_f \
   FC_FUNC_(cencalvm_query_f, CENCALVM_QUERY_F)
 /** Query the database.

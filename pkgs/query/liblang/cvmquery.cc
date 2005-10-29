@@ -176,6 +176,44 @@ cencalvm_cacheSize(void* handle,
 } // cacheSize
 
 // ----------------------------------------------------------------------
+// Set the extended database filename.
+int
+cencalvm_filenameExt(void* handle,
+		     const char* filename)
+{ // filenameExt
+  if (0 == handle) {
+    std::cerr << "Null handle for query manager in call to filename()."
+	      << std::endl;
+    return cencalvm::storage::ErrorHandler::ERROR;
+  } // if
+
+  cencalvm::query::VMQuery* pQuery = (cencalvm::query::VMQuery*) handle;
+  pQuery->filenameExt(filename);
+
+  const cencalvm::storage::ErrorHandler* pErrHandler = pQuery->errorHandler();
+  return pErrHandler->status();
+} // filenameExt
+
+// ----------------------------------------------------------------------
+// Set size of cache during queries of extended database
+int
+cencalvm_cacheSizeExt(void* handle,
+		      const int size)
+{ // cacheSizeExt
+  if (0 == handle) {
+    std::cerr << "Null handle for query manager in call to cacheSize()."
+	      << std::endl;
+    return cencalvm::storage::ErrorHandler::ERROR;
+  } // if
+
+  cencalvm::query::VMQuery* pQuery = (cencalvm::query::VMQuery*) handle;
+  pQuery->cacheSizeExt(size);
+
+  const cencalvm::storage::ErrorHandler* pErrHandler = pQuery->errorHandler();
+  return pErrHandler->status();
+} // cacheSizeExt
+
+// ----------------------------------------------------------------------
 // Query the database.
 int
 cencalvm_query(void* handle,

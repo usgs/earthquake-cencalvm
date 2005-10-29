@@ -122,6 +122,36 @@ cencalvm_cachesize_f(size_t* handleAddr,
 } // cacheSize
 
 // ----------------------------------------------------------------------
+// Set the extended database filename.
+void
+cencalvm_filenameext_f(size_t* handleAddr,
+		       const char* filename,
+		       int* err,
+		       const int len)
+{ // filenameExt
+  assert(0 != err);
+  assert(0 != filename);
+  assert(len > 0);
+
+  std::istringstream sin(filename);
+  std::string cfilename;
+  sin >> cfilename;
+  *err = cencalvm_filenameExt((void*) *handleAddr, cfilename.c_str());
+} // filenameExt
+
+// ----------------------------------------------------------------------
+// Set size of cache during queries.
+void
+cencalvm_cachesizeext_f(size_t* handleAddr,
+			const int* size,
+			int* err)
+{ // cacheSizeExt
+  assert(0 != err);
+
+  *err = cencalvm_cacheSizeExt((void*) *handleAddr, *size);
+} // cacheSizeExt
+
+// ----------------------------------------------------------------------
 // Query the database.
 void
 cencalvm_query_f(size_t* handleAddr,
