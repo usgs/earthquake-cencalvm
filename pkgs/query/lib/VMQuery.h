@@ -175,49 +175,73 @@ class cencalvm::query::VMQuery
 private :
   // PRIVATE METHODS ////////////////////////////////////////////////////
 
-  /** Query database at maximum resolution possible.
+  /** Query database at maximum resolution possible. 
+   *
+   * Address used in search is returned via argument.
    *
    * @param pPayload Pointer to database payload
+   * @param pAddr Pointer to Etree address
    * @param pDB Database to search
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
-   * @param elev Elevation of location for query in meters
+   * @param elev Elevation of location wrt MSL in meters
+   * @param useAddr Use supplied address
    */
   void _queryMax(cencalvm::storage::PayloadStruct*,
+		 etree_addr_t* pAddr,
 		 etree_t* pDB,
 		 const double lon,
 		 const double lat,
-		 const double elev);
+		 const double elev,
+		 const bool useAddr);
   
   /** Query database at fixed resolution. Resolution is specified by
    * queryRes().
    *
+   * Address used in search is returned via argument.
+   *
    * @param pPayload Pointer to database payload
+   * @param pAddr Pointer to Etree address
    * @param pDB Database to search
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
-   * @param elev Elevation of location for query in meters
+   * @param elev Elevation of location wrt MSL in meters
+   * @param useAddr Use supplied address
    */
   void _queryFixed(cencalvm::storage::PayloadStruct*,
+		   etree_addr_t* pAddr,
 		   etree_t* pDB,
 		   const double lon,
 		   const double lat,
-		   const double elev);
+		   const double elev,
+		   const bool useAddr);
 
   /** Query database at resolution specified by wavelength. Resolution
    * is specified by queryRes().
    *
+   * Address used in search is returned via argument.
+   *
    * @param pPayload Pointer to database payload
+   * @param pAddr Pointer to Etree address
    * @param pDB Database to search
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
-   * @param elev Elevation of location for query in meters
+   * @param elev Elevation of location wrt MSL in meters
+   * @param useAddr Use supplied address
    */
   void _queryWave(cencalvm::storage::PayloadStruct*,
+		  etree_addr_t* pAddr,
 		  etree_t* pDB,
 		  const double lon,
 		  const double lat,
-		  const double elev);
+		  const double elev,
+		  const bool useAddr);
+  
+  /** Set payload to NODATA values.
+   *
+   * @param payload Pointer to database payload
+   */
+  static void _setNoData(cencalvm::storage::PayloadStruct* pPayload);
 
  private :
   // PRIVATE METHODS ////////////////////////////////////////////////////
@@ -241,7 +265,8 @@ private :
   int _cacheSizeExt; ///< Size of query cache for extended model
 
   typedef void (cencalvm::query::VMQuery::*queryFn_t)
-    (cencalvm::storage::PayloadStruct*, etree_t*, double, double, double);
+    (cencalvm::storage::PayloadStruct*, etree_addr_t*, etree_t*, 
+     double, double, double, bool);
   queryFn_t _queryFn; ///< Method to call for queries
 
   cencalvm::storage::Geometry* _pGeom; ///< Velocity model geometry

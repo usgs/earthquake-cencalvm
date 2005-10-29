@@ -181,15 +181,41 @@ cencalvm::query::VMQuery::query(double** ppVals,
   assert(0 != _queryFn);
   assert(0 != ppVals);
   assert(numVals == _querySize);
+  assert(0 != _pGeom);
 
+  bool useAddr = false;
+  etree_addr_t addr;
   cencalvm::storage::PayloadStruct payload;
-  (this->*_queryFn)(&payload, _db, lon, lat, elev);
+  (this->*_queryFn)(&payload, &addr, _db, lon, lat, elev, useAddr);
 
   // If not found in detailed model, query the regional model
+  char buf[ETREE_MAXBUF];
   if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock &&
-      0 != _dbExt)
-    (this->*_queryFn)(&payload, _dbExt, lon, lat, elev);
+      0 != _dbExt) {
+    useAddr = true;
+    (this->*_queryFn)(&payload, &addr, _dbExt, lon, lat, elev, useAddr);
+  } // if
 
+  // If not found in any model, set data to NODATA values
+  if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock) {
+    std::ostringstream msg;
+    msg
+      << std::resetiosflags(std::ios::fixed)
+      << std::setiosflags(std::ios::scientific)
+      << std::setprecision(6)
+      << lon << ", " << lat << ", " << elev << ", No data\n";
+    _pErrHandler->log(msg.str().c_str());
+    std::ostringstream warning;
+    warning
+      << "WARNING: No data for "
+      << std::resetiosflags(std::ios::fixed)
+      << std::setiosflags(std::ios::scientific)
+      << std::setprecision(6)
+      << lon << ", " << lat << ", " << elev << ".\n";
+    _pErrHandler->warning(warning.str().c_str());
+  } // if
+
+  // Copy values from payload into array
   for (int i=0; i < _querySize; ++i) {
     switch (_pQueryVals[i])
       { // switch
@@ -227,107 +253,70 @@ cencalvm::query::VMQuery::query(double** ppVals,
 // Query database at maximum resolution possible.
 void
 cencalvm::query::VMQuery::_queryMax(cencalvm::storage::PayloadStruct* pPayload,
+				    etree_addr_t* pAddr,
 				    etree_t* pDB,
 				    const double lon,
 				    const double lat,
-				    const double elev)
+				    const double elev,
+				    const bool useAddr)
 { // _queryMax
   assert(0 != pPayload);
+  assert(0 != pDB);
+  assert(0 != pAddr);
 
-  etree_addr_t addr;
-  addr.level = ETREE_MAXLEVEL;
-  addr.type = ETREE_LEAF;
-  _pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
-  if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
-    return;
+  if (!useAddr) {
+    pAddr->level = ETREE_MAXLEVEL;
+    pAddr->type = ETREE_LEAF;
+    _pGeom->lonLatElevToAddr(pAddr, lon, lat, elev);
+    if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
+      return;
+  } // if
 
   etree_addr_t resAddr;
-  int err = etree_search(pDB, addr, &resAddr, "*", pPayload);
+  int err = etree_search(pDB, *pAddr, &resAddr, "*", pPayload);
   // If search returned interior octant (averaged), return no data
   // instead of averaged values since query request is for maximum
   // resolution and we don't have a leaf octant (data) at that
   // location.
   if (0 != err ||
-      ETREE_INTERIOR == resAddr.type) {
-    std::ostringstream msg;
-    msg
-      << std::resetiosflags(std::ios::fixed)
-      << std::setiosflags(std::ios::scientific)
-      << std::setprecision(6)
-      << lon << ", " << lat << ", " << elev << ", No data\n";
-    _pErrHandler->log(msg.str().c_str());
-    std::ostringstream warning;
-    warning
-      << "WARNING: No data for "
-      << std::resetiosflags(std::ios::fixed)
-      << std::setiosflags(std::ios::scientific)
-      << std::setprecision(6)
-      << lon << ", " << lat << ", " << elev << ".\n";
-    _pErrHandler->warning(warning.str().c_str());
-    pPayload->Vp = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Vs = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Density = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Qp = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Qs = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->DepthFreeSurf = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->FaultBlock = cencalvm::storage::Payload::NODATABLOCK;
-    pPayload->Zone = cencalvm::storage::Payload::NODATAZONE;
-    return;
-  } // if
+      ETREE_INTERIOR == resAddr.type)
+    _setNoData(pPayload);
 } // _queryMax
 
 // ----------------------------------------------------------------------
 // Query database at fixed resolution. Resolution is specified by queryRes().
 void
 cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload,
-				      etree_t* pDB,
-				      const double lon,
-				      const double lat,
-				      const double elev)
+				    etree_addr_t* pAddr,
+				    etree_t* pDB,
+				    const double lon,
+				    const double lat,
+				    const double elev,
+				    const bool useAddr)
 { // _queryFixed
   assert(0 != pPayload);
+  assert(0 != pDB);
+  assert(0 != pAddr);
+  assert(0 != _pGeom);
 
-  etree_addr_t addr;
-  const double vertExag = cencalvm::storage::Geometry::vertExag();
-  addr.level = _pGeom->level(vertExag * _queryRes);
-  addr.type = ETREE_LEAF;
-  _pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
-  if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
-    return;
+  if (!useAddr) {
+    const double vertExag = cencalvm::storage::Geometry::vertExag();
+    pAddr->level = _pGeom->level(vertExag * _queryRes);
+    pAddr->type = ETREE_LEAF;
+    _pGeom->lonLatElevToAddr(pAddr, lon, lat, elev);
+    if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
+      return;
+  } // if
 
   etree_addr_t resAddr;
-  const int err = etree_search(pDB, addr, &resAddr, "*", pPayload);
+  const int err = etree_search(pDB, *pAddr, &resAddr, "*", pPayload);
   // if search returned interior octant at coarser resolution than
   // what we want, return no data instead of averaged octant since
   // query request was for a given resolution and we don't have a leaf
   // octant at that resolution or one higher.
   if (0 != err ||
-      (ETREE_INTERIOR == resAddr.type && addr.level > resAddr.level)) {
-    std::ostringstream msg;
-    msg
-      << std::resetiosflags(std::ios::fixed)
-      << std::setiosflags(std::ios::scientific)
-      << std::setprecision(6)
-      << lon << ", " << lat << ", " << elev << ", No data\n";
-    _pErrHandler->log(msg.str().c_str());
-    std::ostringstream warning;
-    warning
-      << "WARNING: No data for "
-      << std::resetiosflags(std::ios::fixed)
-      << std::setiosflags(std::ios::scientific)
-      << std::setprecision(6)
-      << lon << ", " << lat << ", " << elev << ".\n";
-    _pErrHandler->warning(warning.str().c_str());
-    pPayload->Vp = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Vs = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Density = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Qp = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Qs = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->DepthFreeSurf = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->FaultBlock = cencalvm::storage::Payload::NODATABLOCK;
-    pPayload->Zone = cencalvm::storage::Payload::NODATAZONE;
-    return;
-  } // if
+      (ETREE_INTERIOR == resAddr.type && pAddr->level > resAddr.level))
+    _setNoData(pPayload);
 } // _queryFixed
 
 // ----------------------------------------------------------------------
@@ -335,21 +324,27 @@ cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload
 // is specified by queryRes().
 void
 cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
-				     etree_t* pDB,
-				     const double lon,
-				     const double lat,
-				     const double elev)
+				    etree_addr_t* pAddr,
+				    etree_t* pDB,
+				    const double lon,
+				    const double lat,
+				    const double elev,
+				    const bool useAddr)
 { // _queryWave
-  etree_addr_t addr;
+  assert(0 != pPayload);
+  assert(0 != pDB);
+  assert(0 != pAddr);
 
-  addr.level = ETREE_MAXLEVEL;
-  addr.type = ETREE_LEAF;
-  _pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
-  if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
-    return;
+  if (!useAddr) {
+    pAddr->level = ETREE_MAXLEVEL;
+    pAddr->type = ETREE_LEAF;
+    _pGeom->lonLatElevToAddr(pAddr, lon, lat, elev);
+    if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
+      return;
+  } // if
 
   etree_addr_t resAddr;
-  const int err = etree_search(pDB, addr, &resAddr, "*", pPayload);
+  const int err = etree_search(pDB, *pAddr, &resAddr, "*", pPayload);
 
   const double vertExag = cencalvm::storage::Geometry::vertExag();
   const double minPeriod = vertExag * _queryRes;
@@ -359,29 +354,7 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
   if (0 != err ||
       (ETREE_INTERIOR == resAddr.type &&
        _pGeom->edgeLen(resAddr.level) / pPayload->Vs > minPeriod)) {
-    std::ostringstream msg;
-    msg
-      << std::resetiosflags(std::ios::fixed)
-      << std::setiosflags(std::ios::scientific)
-      << std::setprecision(6)
-      << lon << ", " << lat << ", " << elev << ", No data\n";
-    _pErrHandler->log(msg.str().c_str());
-    std::ostringstream warning;
-    warning
-      << "WARNING: No data for "
-      << std::resetiosflags(std::ios::fixed)
-      << std::setiosflags(std::ios::scientific)
-      << std::setprecision(6)
-      << lon << ", " << lat << ", " << elev << ".\n";
-    _pErrHandler->warning(warning.str().c_str());
-    pPayload->Vp = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Vs = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Density = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Qp = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->Qs = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->DepthFreeSurf = cencalvm::storage::Payload::NODATAVAL;
-    pPayload->FaultBlock = cencalvm::storage::Payload::NODATABLOCK;
-    pPayload->Zone = cencalvm::storage::Payload::NODATAZONE;
+    _setNoData(pPayload);
     return;
   } // if
   
@@ -393,13 +366,6 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
     etree_addr_t parentAddr;
     _pGeom->findAncestor(&parentAddr, resAddr, resAddr.level-1);
     if (0 != etree_search(pDB, parentAddr, &resAddr, "*", pPayload)) {
-      std::ostringstream msgLog;
-      msgLog
-	<< std::resetiosflags(std::ios::fixed)
-	<< std::setiosflags(std::ios::scientific)
-	<< std::setprecision(6)
-	<< lon << ", " << lat << ", " << elev << ", No parent\n";
-      _pErrHandler->log(msgLog.str().c_str());
       char buf[ETREE_MAXBUF];
       std::ostringstream msg;
       msg
@@ -409,7 +375,7 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
 	<< "for location " << lon << ", " << lat << ", " << elev
 	<< ".\nUsing values from child octant.";
       _pErrHandler->warning(msg.str().c_str());
-      etree_search(pDB, addr, &resAddr, "*", pPayload);
+      etree_search(pDB, *pAddr, &resAddr, "*", pPayload);
       return;
     } // if
   } // while
@@ -426,6 +392,22 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
   pPayload->DepthFreeSurf = 
     0.5 * (childPayload.DepthFreeSurf + pPayload->DepthFreeSurf);
 } // _queryWave
+
+// ----------------------------------------------------------------------
+// Set payload to NODATA values.
+void
+cencalvm::query::VMQuery::_setNoData(cencalvm::storage::PayloadStruct* 
+				     pPayload)
+{ // _setNoData
+  pPayload->Vp = cencalvm::storage::Payload::NODATAVAL;
+  pPayload->Vs = cencalvm::storage::Payload::NODATAVAL;
+  pPayload->Density = cencalvm::storage::Payload::NODATAVAL;
+  pPayload->Qp = cencalvm::storage::Payload::NODATAVAL;
+  pPayload->Qs = cencalvm::storage::Payload::NODATAVAL;
+  pPayload->DepthFreeSurf = cencalvm::storage::Payload::NODATAVAL;
+  pPayload->FaultBlock = cencalvm::storage::Payload::NODATABLOCK;
+  pPayload->Zone = cencalvm::storage::Payload::NODATAZONE;
+} // _setNoData
 
 // version
 // $Id$
