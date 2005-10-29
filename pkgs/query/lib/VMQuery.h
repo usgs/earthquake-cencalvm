@@ -123,11 +123,23 @@ class cencalvm::query::VMQuery
    */
   void filename(const char* filename);
 
+  /** Set the database filename for the extended model.
+   *
+   * @param filename Name of database file for the extended model
+   */
+  void filenameExt(const char* filename);
+
   /** Set size of cache during queries.
    *
    * @param size Size of cache in MB
    */
   void cacheSize(const int size);
+
+  /** Set size of cache during queries in the extended model.
+   *
+   * @param size Size of cache in MB for the extended model
+   */
+  void cacheSizeExt(const int size);
 
   /** Query the database.
    *
@@ -166,11 +178,13 @@ private :
   /** Query database at maximum resolution possible.
    *
    * @param pPayload Pointer to database payload
+   * @param pDB Database to search
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
    * @param elev Elevation of location for query in meters
    */
   void _queryMax(cencalvm::storage::PayloadStruct*,
+		 etree_t* pDB,
 		 const double lon,
 		 const double lat,
 		 const double elev);
@@ -179,11 +193,13 @@ private :
    * queryRes().
    *
    * @param pPayload Pointer to database payload
+   * @param pDB Database to search
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
    * @param elev Elevation of location for query in meters
    */
   void _queryFixed(cencalvm::storage::PayloadStruct*,
+		   etree_t* pDB,
 		   const double lon,
 		   const double lat,
 		   const double elev);
@@ -192,11 +208,13 @@ private :
    * is specified by queryRes().
    *
    * @param pPayload Pointer to database payload
+   * @param pDB Database to search
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
    * @param elev Elevation of location for query in meters
    */
   void _queryWave(cencalvm::storage::PayloadStruct*,
+		  etree_t* pDB,
 		  const double lon,
 		  const double lat,
 		  const double elev);
@@ -212,21 +230,22 @@ private :
   
   double _queryRes; ///< Vertical resolution of query (if specified)
 
-  etree_t* _db; ///< Database
-  std::string _filename; ///< Name of database file
+  etree_t* _db; ///< Database for detailed model
+  etree_t* _dbExt; ///< Database for extended model
+  std::string _filename; ///< Name of database file for detailed model
+  std::string _filenameExt; ///< Name of database file for extended model
 
   int* _pQueryVals; ///< Address offsets in payload for query values
   int _querySize; ///< Number of values requested to be return in queries
-
-  int _cacheSize; ///< Size of query cache
+  int _cacheSize; ///< Size of query cache for detailed model
+  int _cacheSizeExt; ///< Size of query cache for extended model
 
   typedef void (cencalvm::query::VMQuery::*queryFn_t)
-    (cencalvm::storage::PayloadStruct*, double, double, double);
+    (cencalvm::storage::PayloadStruct*, etree_t*, double, double, double);
   queryFn_t _queryFn; ///< Method to call for queries
 
-  cencalvm::storage::ErrorHandler* _pErrHandler; ///< Error handler
-
   cencalvm::storage::Geometry* _pGeom; ///< Velocity model geometry
+  cencalvm::storage::ErrorHandler* _pErrHandler; ///< Error handler
 
 }; // class VMQuery 
 

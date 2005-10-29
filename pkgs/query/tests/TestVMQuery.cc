@@ -124,7 +124,7 @@ cencalvm::query::TestVMQuery::testCacheSize(void)
   const int cacheSize = 523;
   query.cacheSize(cacheSize);
   CPPUNIT_ASSERT_EQUAL(cacheSize, query._cacheSize);
-} // testQueryVals
+} // testCacheSize
 
 // ----------------------------------------------------------------------
 // Test query() with max query
@@ -311,6 +311,84 @@ cencalvm::query::TestVMQuery::testErrorHandler(void)
   CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
 		       pHandler->status());
 } // testErrorHandler
+
+// ----------------------------------------------------------------------
+// Test filenameExt()
+void
+cencalvm::query::TestVMQuery::testFilenameExt(void)
+{ // testFilenameExt
+  VMQuery query;
+  query.filenameExt(_DBFILENAME);
+  CPPUNIT_ASSERT(0 == strcmp(_DBFILENAME, query._filenameExt.c_str()));
+} // testFilenameExt
+
+// ----------------------------------------------------------------------
+// Test cacheSize()
+void
+cencalvm::query::TestVMQuery::testCacheSizeExt(void)
+{ // testCacheSizeExt
+  VMQuery query;
+
+  // default should be 128
+  const int defaultSize = 128;
+  CPPUNIT_ASSERT_EQUAL(defaultSize, query._cacheSizeExt);
+
+  const int cacheSize = 523;
+  query.cacheSizeExt(cacheSize);
+  CPPUNIT_ASSERT_EQUAL(cacheSize, query._cacheSizeExt);
+} // testCacheSizeExt
+
+// ----------------------------------------------------------------------
+// Test query() with max query for extended model
+void 
+cencalvm::query::TestVMQuery::testQueryMaxExt(void)
+{ // testQueryMaxExt
+  CPPUNIT_ASSERT(false);
+#if 0
+  _createDB();
+
+  VMQuery query;
+  query.filename(_DBFILENAME);
+  query.queryType(cencalvm::query::VMQuery::MAXRES);
+  query.open();
+
+  const cencalvm::storage::ErrorHandler* pHandler = query.errorHandler();
+
+  const int numVals = 8;
+  double* pVals = (numVals > 0) ? new double[numVals] : 0;
+
+  double* pLonLatElev = 0;
+  _dbLonLatElev(&pLonLatElev);
+  const int numLocs = _NUMOCTANTSLEAF;
+  for (int iLoc=0, i=0; iLoc < numLocs; ++iLoc, i+=3) {
+    query.query(&pVals, numVals, 
+		pLonLatElev[i  ], pLonLatElev[i+1], pLonLatElev[i+2]);
+    
+    const double tolerance = 1.0e-06;
+    const double val = _OCTVALS[iLoc];
+    for (int iVal=0; iVal < 6; ++iVal) {
+      const double  valE = _RELPAY[iVal]*val;
+      CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+    } // for
+    int iVal = 6; // Block
+    double valE = (iLoc < _NUMOCTANTSLEAF) ? 
+      _RELPAY[iVal] :
+      cencalvm::storage::Payload::INTERIORBLOCK;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+    iVal = 7; // Zone
+    valE = (iLoc < _NUMOCTANTSLEAF) ? 
+      _RELPAY[iVal] :
+      cencalvm::storage::Payload::INTERIORZONE;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+  } // for
+
+  query.close();
+
+  CPPUNIT_ASSERT(cencalvm::storage::ErrorHandler::OK == pHandler->status());
+
+  delete[] pLonLatElev; pLonLatElev = 0;
+#endif
+} // testQueryMaxExt
 
 // ----------------------------------------------------------------------
 // Create etree with desired number of octants.

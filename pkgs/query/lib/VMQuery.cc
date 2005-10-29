@@ -30,10 +30,13 @@ extern "C" {
 cencalvm::query::VMQuery::VMQuery(void) :
   _queryRes(0),
   _db(0),
+  _dbExt(0),
   _filename(""),
+  _filenameExt(""),
   _pQueryVals(0),
   _querySize(0),
   _cacheSize(128),
+  _cacheSizeExt(128),
   _queryFn(&cencalvm::query::VMQuery::_queryMax),
   _pErrHandler(new cencalvm::storage::ErrorHandler),
   _pGeom(new cencalvm::storage::Geometry(*_pErrHandler))
@@ -52,8 +55,7 @@ cencalvm::query::VMQuery::~VMQuery(void)
   delete[] _pQueryVals; _pQueryVals = 0;
   delete _pGeom; _pGeom = 0;
   delete _pErrHandler; _pErrHandler = 0;
-  if (0 != _db)
-    close();
+  close();
 } // destructor
 
 // ----------------------------------------------------------------------
@@ -61,16 +63,26 @@ cencalvm::query::VMQuery::~VMQuery(void)
 void
 cencalvm::query::VMQuery::open(void)
 { // open
-  if (0 != _db) // database is already open
-    return;
-  
-  assert(_cacheSize > 0);
-  _db = etree_open(_filename.c_str(), O_RDONLY, _cacheSize, 0, 0);
-  if (0 == _db) {
-    std::ostringstream msg;
-    msg << "Could not open the etree database '" << _filename
-	<< "' for querying.";
-    _pErrHandler->error(msg.str().c_str());
+  if (0 == _db) { // database is not already open
+    assert(_cacheSize > 0);
+    _db = etree_open(_filename.c_str(), O_RDONLY, _cacheSize, 0, 0);
+    if (0 == _db) {
+      std::ostringstream msg;
+      msg << "Could not open the etree database '" << _filename
+	  << "' for querying.";
+      _pErrHandler->error(msg.str().c_str());
+    } // if
+  } // if
+
+  if (0 != strcmp(_filenameExt.c_str(), "") && 0 == _dbExt) {
+    assert(_cacheSizeExt > 0);
+    _dbExt = etree_open(_filenameExt.c_str(), O_RDONLY, _cacheSizeExt, 0, 0);
+    if (0 == _dbExt) {
+      std::ostringstream msg;
+      msg << "Could not open the etree (regional) database '"
+	  << _filenameExt << "' for querying.";
+      _pErrHandler->error(msg.str().c_str());
+    } // if
   } // if
 } // open
   
@@ -85,6 +97,13 @@ cencalvm::query::VMQuery::close(void)
     _pErrHandler->error(msg.str().c_str());
   } // if
   _db = 0;
+
+  if (0 != _dbExt && 0 != etree_close(_dbExt)) {
+    std::ostringstream msg;
+    msg << "Could not close the etree database '" << _filename << "'.";
+    _pErrHandler->error(msg.str().c_str());
+  } // if
+  _dbExt = 0;
 } // close
   
 // ----------------------------------------------------------------------
@@ -164,7 +183,12 @@ cencalvm::query::VMQuery::query(double** ppVals,
   assert(numVals == _querySize);
 
   cencalvm::storage::PayloadStruct payload;
-  (this->*_queryFn)(&payload, lon, lat, elev);
+  (this->*_queryFn)(&payload, _db, lon, lat, elev);
+
+  // If not found in detailed model, query the regional model
+  if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock &&
+      0 != _dbExt)
+    (this->*_queryFn)(&payload, _dbExt, lon, lat, elev);
 
   for (int i=0; i < _querySize; ++i) {
     switch (_pQueryVals[i])
@@ -173,13 +197,6 @@ cencalvm::query::VMQuery::query(double** ppVals,
 	(*ppVals)[i] = payload.Vp;
 	break;
       case 1 :
-	// TEMPORARY BEGIN
-	// KLUDGE UNTIL ETREE IS RECREATED
-	// Create routine shouldn't have converted km/s to m/s for NODATAVAL
-	if (payload.Vs == -999000.0)
-	  payload.Vs = cencalvm::storage::Payload::NODATAVAL;
-	// TEMPORARY END
-
 	(*ppVals)[i] = payload.Vs;
 	break;
       case 2 :
@@ -210,6 +227,7 @@ cencalvm::query::VMQuery::query(double** ppVals,
 // Query database at maximum resolution possible.
 void
 cencalvm::query::VMQuery::_queryMax(cencalvm::storage::PayloadStruct* pPayload,
+				    etree_t* pDB,
 				    const double lon,
 				    const double lat,
 				    const double elev)
@@ -224,7 +242,7 @@ cencalvm::query::VMQuery::_queryMax(cencalvm::storage::PayloadStruct* pPayload,
     return;
 
   etree_addr_t resAddr;
-  const int err = etree_search(_db, addr, &resAddr, "*", pPayload);
+  int err = etree_search(pDB, addr, &resAddr, "*", pPayload);
   // If search returned interior octant (averaged), return no data
   // instead of averaged values since query request is for maximum
   // resolution and we don't have a leaf octant (data) at that
@@ -262,6 +280,7 @@ cencalvm::query::VMQuery::_queryMax(cencalvm::storage::PayloadStruct* pPayload,
 // Query database at fixed resolution. Resolution is specified by queryRes().
 void
 cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload,
+				      etree_t* pDB,
 				      const double lon,
 				      const double lat,
 				      const double elev)
@@ -277,7 +296,7 @@ cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload
     return;
 
   etree_addr_t resAddr;
-  const int err = etree_search(_db, addr, &resAddr, "*", pPayload);
+  const int err = etree_search(pDB, addr, &resAddr, "*", pPayload);
   // if search returned interior octant at coarser resolution than
   // what we want, return no data instead of averaged octant since
   // query request was for a given resolution and we don't have a leaf
@@ -316,6 +335,7 @@ cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload
 // is specified by queryRes().
 void
 cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
+				     etree_t* pDB,
 				     const double lon,
 				     const double lat,
 				     const double elev)
@@ -329,7 +349,7 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
     return;
 
   etree_addr_t resAddr;
-  const int err = etree_search(_db, addr, &resAddr, "*", pPayload);
+  const int err = etree_search(pDB, addr, &resAddr, "*", pPayload);
 
   const double vertExag = cencalvm::storage::Geometry::vertExag();
   const double minPeriod = vertExag * _queryRes;
@@ -372,7 +392,7 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
     childPayload = *pPayload;
     etree_addr_t parentAddr;
     _pGeom->findAncestor(&parentAddr, resAddr, resAddr.level-1);
-    if (0 != etree_search(_db, parentAddr, &resAddr, "*", pPayload)) {
+    if (0 != etree_search(pDB, parentAddr, &resAddr, "*", pPayload)) {
       std::ostringstream msgLog;
       msgLog
 	<< std::resetiosflags(std::ios::fixed)
@@ -384,12 +404,12 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
       std::ostringstream msg;
       msg
 	<< "Could not find parent octant " << 
-	etree_straddr(_db, buf, parentAddr)
-	<< "\nof child octant " << etree_straddr(_db, buf, resAddr) << "\n"
+	etree_straddr(pDB, buf, parentAddr)
+	<< "\nof child octant " << etree_straddr(pDB, buf, resAddr) << "\n"
 	<< "for location " << lon << ", " << lat << ", " << elev
 	<< ".\nUsing values from child octant.";
       _pErrHandler->warning(msg.str().c_str());
-      etree_search(_db, addr, &resAddr, "*", pPayload);
+      etree_search(pDB, addr, &resAddr, "*", pPayload);
       return;
     } // if
   } // while

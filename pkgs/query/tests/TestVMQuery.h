@@ -47,6 +47,9 @@ class cencalvm::query::TestVMQuery : public CppUnit::TestFixture
   CPPUNIT_TEST( testQueryFixed );
   CPPUNIT_TEST( testQueryWave );
   CPPUNIT_TEST( testErrorHandler );
+  CPPUNIT_TEST( testCacheSizeExt );
+  CPPUNIT_TEST( testFilenameExt );
+  CPPUNIT_TEST( testQueryMaxExt );
   CPPUNIT_TEST_SUITE_END();
 
   // PUBLIC METHODS /////////////////////////////////////////////////////
@@ -81,6 +84,15 @@ public :
 
   /// Test errorHandler()
   void testErrorHandler(void);
+
+  /// Test filenameExt()
+  void testFilenameExt(void);
+
+  /// Test cacheSizeExt()
+  void testCacheSizeExt(void);
+
+  /// Test query() with max query and extended model
+  void testQueryMaxExt(void);
 
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 private :

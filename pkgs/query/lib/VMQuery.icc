@@ -20,11 +20,23 @@ void
 cencalvm::query::VMQuery::filename(const char* filename)
 { _filename = filename; }
 
+// Set the database filename for the regional model.
+inline
+void
+cencalvm::query::VMQuery::filenameExt(const char* filename)
+{ _filenameExt = filename; }
+
 // Set size of cache during queries.
 inline
 void
 cencalvm::query::VMQuery::cacheSize(const int size)
 { if (size > 0) _cacheSize = size; }
+
+// Set size of cache during queries of the regional model.
+inline
+void
+cencalvm::query::VMQuery::cacheSizeExt(const int size)
+{ if (size > 0) _cacheSizeExt = size; }
 
 // Set query resolution.
 inline
