@@ -19,7 +19,11 @@ data_DATA = \
 	sample-05.1.0_maxres.out \
 	sample-05.1.0_fixedres.out \
 	sample-05.1.0_waveres.out \
-	sample-05.1.x.in
+	sample-05.1.x.in \
+	sample_ext-05.1.x.in \
+	sample_ext-05.1.0_maxres.out \
+	sample_ext-05.1.0_fixedres.out \
+	sample_ext-05.1.0_waveres.out
 
 noinst_HEADERS = \
 	$(data_DATA)

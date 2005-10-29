@@ -35,11 +35,12 @@ usage(void)
 { /* usage */
   fprintf(stderr,
 	  "usage: cencalvmcquery [-h] -i fileIn -o fileOut -d dbfile\n"
-	  "       [-l logfile] [-t queryType] [-r res]\n"
+	  "       [-l logfile] [-t queryType] [-r res] [-e dbextfile]\n"
 	  "\n"
 	  "  -i fileIn   File containing list of locations: 'lon lat elev'.\n"
 	  "  -o fileOut  Output file with locations and material properties.\n"
 	  "  -d dbfile   Etree database file to query.\n"
+	  "  -e dbextfile  Etree extended database file to query.\n"
 	  "  -t queryType  Type of query {'maxres', 'fixedres', 'waveres'}\n"
 	  "  -r res        Resolution for query (not needed for maxres queries\n"
 	  "  -h          Display usage and exit.\n"
@@ -52,6 +53,7 @@ void
 parseArgs(char* filenameIn,
 	  char* filenameOut,
 	  char* filenameDB,
+	  char* filenameDBExt,
 	  char* filenameLog,
 	  char* queryType,
 	  double* pQueryRes,
@@ -61,6 +63,7 @@ parseArgs(char* filenameIn,
   assert(0 != filenameIn);
   assert(0 != filenameOut);
   assert(0 != filenameDB);
+  assert(0 != filenameDBExt);
   assert(0 != filenameLog);
   assert(0 != queryType);
   assert(0 != pQueryRes);
@@ -69,7 +72,7 @@ parseArgs(char* filenameIn,
 
   int nparsed = 1;
   int c = EOF;
-  while ( (c = getopt(argc, argv, "hi:l:o:d:r:t:") ) != EOF) {
+  while ( (c = getopt(argc, argv, "hi:l:o:d:e:r:t:") ) != EOF) {
     switch (c)
       { /* switch */
       case 'i' : /* process -i option */
@@ -82,6 +85,10 @@ parseArgs(char* filenameIn,
 	break;
       case 'd' : /* process -d option */
 	strcpy(filenameDB, optarg);
+	nparsed += 2;
+	break;
+      case 'e' : /* process -e option */
+	strcpy(filenameDBExt, optarg);
 	nparsed += 2;
 	break;
       case 'h' : /* process -h option */
@@ -123,19 +130,21 @@ main(int argc,
   char filenameIn[256];
   char filenameOut[256];
   char filenameDB[256];
+  char filenameDBExt[256];
   char filenameLog[256];
   char queryType[256];
 
   strcpy(filenameIn, "");
   strcpy(filenameOut, "");
   strcpy(filenameDB, "");
+  strcpy(filenameDBExt, "");
   strcpy(filenameLog, "");
   strcpy(queryType, "maxres");
   double queryRes = 0.0;
   
   /* Parse command line arguments */
-  parseArgs(filenameIn, filenameOut, filenameDB, filenameLog, 
-	    queryType, &queryRes,
+  parseArgs(filenameIn, filenameOut, filenameDB, filenameDBExt,
+	    filenameLog, queryType, &queryRes,
 	    argc, argv);
 
   /* Create query */
@@ -160,6 +169,14 @@ main(int argc,
   if (0 != cencalvm_filename(query, filenameDB)) {
     fprintf(stderr, "%s\n", cencalvm_error_message(errHandler));
     return 1;
+  } /* if */
+
+  /* Set extended database filename if given */
+  if (0 != strcmp("", filenameDBExt)) {
+    if (0 != cencalvm_filenameExt(query, filenameDBExt)) {
+      fprintf(stderr, "%s\n", cencalvm_error_message(errHandler));
+      return 1;
+    } /* if */
   } /* if */
 
   /* Set values to be returned in queries (or not) */

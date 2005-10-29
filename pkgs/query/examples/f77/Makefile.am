@@ -34,7 +34,11 @@ CLEANFILES = \
 	test_maxres.out \
 	test_fixedres.out \
 	test_waveres.out \
-	test.log
+	test.log \
+	testext_maxres.out \
+	testext_fixedres.out \
+	testext_waveres.out
+
 
 # version
 # $Id$

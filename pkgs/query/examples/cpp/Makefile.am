@@ -29,6 +29,7 @@ cencalvmcppquery_LDADD = \
 # ----------------------------------------------------------------------
 
 VELMODEL = USGSBayAreaVM-05.1.0.etree
+VELMODELEXT = USGSBayAreaVMExt-05.1.0.etree
 
 testmaxres:
 	cencalvmcppquery \
@@ -55,11 +56,42 @@ testwaveres:
 		-r 0.2 \
 		-l test.log
 
+testextmaxres:
+	cencalvmcppquery \
+		-d $(VELMODEL) \
+		-e $(VELMODELEXT) \
+		-i ../data/sample_ext-05.1.x.in \
+		-o testext_maxres.out \
+		-l test.log
+
+testextfixedres:
+	cencalvmcppquery \
+		-d $(VELMODEL) \
+		-e $(VELMODELEXT) \
+		-i ../data/sample_ext-05.1.x.in \
+		-o testext_fixedres.out \
+		-t fixedres \
+		-r 200.0 \
+		-l test.log
+
+testextwaveres:
+	cencalvmcppquery \
+		-d $(VELMODEL) \
+		-e $(VELMODELEXT) \
+		-i ../data/sample_ext-05.1.x.in \
+		-t waveres \
+		-r 0.2 \
+		-o testext_waveres.out \
+		-l test.log
+
 CLEANFILES = \
 	test_maxres.out \
 	test_fixedres.out \
 	test_waveres.out \
-	test.log
+	test.log \
+	testext_maxres.out \
+	testext_fixedres.out \
+	testext_waveres.out
 
 # version
 # $Id$

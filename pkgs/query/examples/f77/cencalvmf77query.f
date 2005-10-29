@@ -20,7 +20,6 @@ c
 	implicit none
 
 	character*128 filenameIn
-	parameter(filenameIn='../data/sample-05.1.x.in')
 	integer unitIn
 	parameter(unitIn=10)
 
@@ -30,6 +29,9 @@ c
 
         character*64 filenameDB
 	parameter(filenameDB='USGSBayAreaVM-05.1.0.etree')
+
+        character*64 filenameDBExt
+	parameter(filenameDBExt='USGSBayAreaVMExt-05.1.0.etree')
 
         character*64 filenameLog
 	parameter(filenameLog='test.log')
@@ -49,15 +51,29 @@ c
 	integer ok
 
 c       ****************************************************************
+c	Uncomment one of the following lines
+c
+c       Note: Only 1 set can be uncommented at a time.
+c       ****************************************************************
+
+c       Query points reside only in the normal database
+c       (Sets 1-3)
+c	parameter(filenameIn='../data/sample-05.1.x.in')
+
+c       Query points reside in either the normal or extended database
+c       (Sets 4-6)
+	parameter(filenameIn='../data/sample_ext-05.1.x.in')
+
+c       ****************************************************************
 c	Uncomment one of the following sets of 3 lines
 c
 c       Note: Only 1 set can be uncommented at a time.
 c       ****************************************************************
 
 c       SET1 = Parameters for sample MAXRES query
-	parameter(filenameOut='test_maxres.out')
-	parameter(queryType='maxres')
-	parameter(queryRes=0)
+c	parameter(filenameOut='test_maxres.out')
+c	parameter(queryType='maxres')
+c	parameter(queryRes=0)
 
 c       SET2 = Query resolution for fixedres query (dx=200m)
 c	parameter(filenameOut='test_fixedres.out')
@@ -68,6 +84,24 @@ c       SET3 = Query resolution for waveres query (T=0.2s)
 c	parameter(filenameOut='test_waveres.out')
 c	parameter(queryType='waveres')
 c	parameter(queryRes=0.2)
+
+c
+c       SETS 4-6 use the extended database
+c
+c       SET4 = Parameters for sample MAXRES query
+c	parameter(filenameOut='testext_maxres.out')
+c	parameter(queryType='maxres')
+c	parameter(queryRes=0)
+
+c       SET5 = Query resolution for fixedres query (dx=200m)
+c	parameter(filenameOut='testext_fixedres.out')
+c	parameter(queryType='fixedres')
+c	parameter(queryRes=200.0)
+
+c       SET6 = Query resolution for waveres query (T=0.2s)
+	parameter(filenameOut='testext_waveres.out')
+	parameter(queryType='waveres')
+	parameter(queryRes=0.1999)
 
 c       ****************************************************************
 c       Size of query and errHandler MUST match sizeof(void*) in C
@@ -91,6 +125,13 @@ c       Set log file in error handler
 
 c       Set database filename
 	call cencalvm_filename_f(query, filenameDB, ok)
+	if (ok.ne.0) goto 998
+
+c       Set extended database filename
+c       ****************************************************************
+c       Uncomment this to use the extended database
+c       ****************************************************************
+	call cencalvm_filenameext_f(query, filenameDBExt, ok)
 	if (ok.ne.0) goto 998
 
 c       Open database for querying

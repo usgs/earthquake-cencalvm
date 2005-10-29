@@ -39,11 +39,12 @@ usage(void)
 { // usage
   std::cerr
     << "usage: cencalvmcppquery [-h] -i fileIn -o fileOut -d dbfile\n"
-    << "       [-l logfile] [-t queryType] [-r res]\n"
+    << "       [-l logfile] [-t queryType] [-r res] [-e dbextfile]\n"
     << "\n"
     << "  -i fileIn     File containing list of locations: 'lon lat elev'.\n"
     << "  -o fileOut    Output file with locations and material properties.\n"
     << "  -d dbfile     Etree database file to query.\n"
+    << "  -e dbextfile  Etree extended database file to query.\n"
     << "  -t queryType  Type of query {'maxres', 'fixedres', 'waveres'}\n"
     << "  -r res        Resolution for query (not needed for maxres queries\n"
     << "  -h            Display usage and exit.\n"
@@ -56,6 +57,7 @@ void
 parseArgs(std::string* pFilenameIn,
 	  std::string* pFilenameOut,
 	  std::string* pFilenameDB,
+	  std::string* pFilenameDBExt,
 	  std::string* pFilenameLog,
 	  std::string* pQueryType,
 	  double* pQueryRes,
@@ -65,6 +67,7 @@ parseArgs(std::string* pFilenameIn,
   assert(0 != pFilenameIn);
   assert(0 != pFilenameOut);
   assert(0 != pFilenameDB);
+  assert(0 != pFilenameDBExt);
   assert(0 != pFilenameLog);
   assert(0 != pQueryType);
   assert(0 != pQueryRes);
@@ -75,9 +78,10 @@ parseArgs(std::string* pFilenameIn,
   *pFilenameIn = "";
   *pFilenameOut = "";
   *pFilenameDB = "";
+  *pFilenameDBExt = "";
   *pFilenameLog = "";
   int c = EOF;
-  while ( (c = getopt(argc, argv, "hi:l:o:d:r:t:") ) != EOF) {
+  while ( (c = getopt(argc, argv, "hi:l:o:d:e:r:t:") ) != EOF) {
     switch (c)
       { // switch
       case 'i' : // process -i option
@@ -90,6 +94,10 @@ parseArgs(std::string* pFilenameIn,
 	break;
       case 'd' : // process -d option
 	*pFilenameDB = optarg;
+	nparsed += 2;
+	break;
+      case 'e' : // process -e option
+	*pFilenameDBExt = optarg;
 	nparsed += 2;
 	break;
       case 'h' : // process -h option
@@ -132,13 +140,14 @@ main(int argc,
   std::string filenameIn = "";
   std::string filenameOut = "";
   std::string filenameDB = "";
+  std::string filenameDBExt = "";
   std::string filenameLog = "";
   std::string queryType = "maxres";
   double queryRes = 0.0;
   
   // Parse command line arguments
-  parseArgs(&filenameIn, &filenameOut, &filenameDB, &filenameLog, 
-	    &queryType, &queryRes,
+  parseArgs(&filenameIn, &filenameOut, &filenameDB, &filenameDBExt,
+	    &filenameLog, &queryType, &queryRes,
 	    argc, argv);
 
   // Create query
@@ -160,6 +169,15 @@ main(int argc,
   if (cencalvm::storage::ErrorHandler::OK != pErrHandler->status()) {
     std::cerr << pErrHandler->message();
     return 1;
+  } // if
+
+  // Set extended database filename if given
+  if ("" != filenameDBExt) {
+    query.filenameExt(filenameDBExt.c_str());
+    if (cencalvm::storage::ErrorHandler::OK != pErrHandler->status()) {
+      std::cerr << pErrHandler->message();
+      return 1;
+    } // if
   } // if
 
   // Set values to be returned in queries (or not)
