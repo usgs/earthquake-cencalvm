@@ -100,21 +100,37 @@ private :
   /// Create etree database.
   void _createDB(void) const;
 
+  /// Create etree database for extended region.
+  void _createDBExt(void) const;
+
   /** Get lon/lat/elev of octants in database.
    *
    * @param ppCoords Pointer to array of coordinates
    */
   void _dbLonLatElev(double** ppCoords) const;
 
+  /** Get lon/lat/elev of octants in extended database.
+   *
+   * @param ppCoords Pointer to array of coordinates
+   */
+  void _dbLonLatElevExt(double** ppCoords) const;
+
   // PRIVATE METHODS ////////////////////////////////////////////////////
 private :
 
   static const double _OCTVALS[]; ///< Octant values in database
-  static const double _RELPAY[]; ///< Relateive values of payload
+  static const double _RELPAY[]; ///< Relative values of payload
   static const int _COORDS[]; ///< Coordinates of octants in database
   static const char* _DBFILENAME; ///< Filename of output etree database
   static const int _NUMOCTANTS; ///< Number of octants
   static const int _NUMOCTANTSLEAF; ///< Number of octants for input
+
+  static const double _OCTVALSEXT[]; ///< Octant values for extended database
+  static const double _RELPAYEXT[]; ///< Relative values of extended payload
+  static const int _COORDSEXT[]; ///< Coordinates of octants in database
+  static const char* _DBFILENAMEEXT; ///< Filename of output etree database
+  static const int _NUMOCTANTSEXT; ///< Number of octants
+  static const int _NUMOCTANTSLEAFEXT; ///< Number of octants for input
 
 }; // class TestVMQuery
 

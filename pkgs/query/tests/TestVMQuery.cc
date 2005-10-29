@@ -343,12 +343,12 @@ cencalvm::query::TestVMQuery::testCacheSizeExt(void)
 void 
 cencalvm::query::TestVMQuery::testQueryMaxExt(void)
 { // testQueryMaxExt
-  CPPUNIT_ASSERT(false);
-#if 0
   _createDB();
+  _createDBExt();
 
   VMQuery query;
   query.filename(_DBFILENAME);
+  query.filenameExt(_DBFILENAMEEXT);
   query.queryType(cencalvm::query::VMQuery::MAXRES);
   query.open();
 
@@ -358,25 +358,33 @@ cencalvm::query::TestVMQuery::testQueryMaxExt(void)
   double* pVals = (numVals > 0) ? new double[numVals] : 0;
 
   double* pLonLatElev = 0;
-  _dbLonLatElev(&pLonLatElev);
-  const int numLocs = _NUMOCTANTSLEAF;
-  for (int iLoc=0, i=0; iLoc < numLocs; ++iLoc, i+=3) {
+  _dbLonLatElevExt(&pLonLatElev);
+
+  const int pOctIndices[] = { 2, 0 };
+  const int numLocs = 2;
+  for (int iLoc=0; iLoc < numLocs; ++iLoc) {
+    const int iOctant = pOctIndices[iLoc];
+
     query.query(&pVals, numVals, 
-		pLonLatElev[i  ], pLonLatElev[i+1], pLonLatElev[i+2]);
+		pLonLatElev[3*iOctant  ], 
+		pLonLatElev[3*iOctant+1],
+		pLonLatElev[3*iOctant+2]);
+    if (cencalvm::storage::ErrorHandler::OK != pHandler->status())
+      std::cerr << pHandler->message() << std::endl;
     
     const double tolerance = 1.0e-06;
-    const double val = _OCTVALS[iLoc];
+    const double val = _OCTVALSEXT[iOctant];
     for (int iVal=0; iVal < 6; ++iVal) {
-      const double  valE = _RELPAY[iVal]*val;
+      const double  valE = _RELPAYEXT[iVal]*val;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
     } // for
     int iVal = 6; // Block
-    double valE = (iLoc < _NUMOCTANTSLEAF) ? 
+    double valE = (iOctant < _NUMOCTANTSLEAFEXT) ? 
       _RELPAY[iVal] :
       cencalvm::storage::Payload::INTERIORBLOCK;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
     iVal = 7; // Zone
-    valE = (iLoc < _NUMOCTANTSLEAF) ? 
+    valE = (iOctant < _NUMOCTANTSLEAFEXT) ? 
       _RELPAY[iVal] :
       cencalvm::storage::Payload::INTERIORZONE;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
@@ -387,7 +395,6 @@ cencalvm::query::TestVMQuery::testQueryMaxExt(void)
   CPPUNIT_ASSERT(cencalvm::storage::ErrorHandler::OK == pHandler->status());
 
   delete[] pLonLatElev; pLonLatElev = 0;
-#endif
 } // testQueryMaxExt
 
 // ----------------------------------------------------------------------
@@ -449,6 +456,64 @@ cencalvm::query::TestVMQuery::_createDB(void) const
 } // _createDB
 
 // ----------------------------------------------------------------------
+// Create etree with desired number of octants.
+void
+cencalvm::query::TestVMQuery::_createDBExt(void) const
+{ // _createDBExt
+  const char* filenameTmp = "data/leafext.etree";
+
+  etree_t* db = etree_open(filenameTmp, O_CREAT|O_RDWR|O_TRUNC, 0, 0, 3);
+  CPPUNIT_ASSERT(0 != db);
+
+  int err = etree_registerschema(db, cencalvm::storage::Payload::SCHEMA);
+  CPPUNIT_ASSERT(0 == err);
+
+  const int numOctants = _NUMOCTANTSLEAFEXT;
+  const int numCoords = 4;
+  for (int iOctant=0; iOctant < numOctants; ++iOctant) {
+    
+    etree_addr_t addr;
+    addr.level = _COORDSEXT[numCoords*iOctant+3];
+    addr.type = ETREE_LEAF;
+
+    const etree_tick_t tickLen = 0x80000000 >> addr.level;
+    addr.x = tickLen * _COORDSEXT[numCoords*iOctant  ];
+    addr.y = tickLen * _COORDSEXT[numCoords*iOctant+1];
+    addr.z = tickLen * _COORDSEXT[numCoords*iOctant+2];
+    addr.t = 0;
+
+    const double val = _OCTVALSEXT[iOctant];
+    cencalvm::storage::PayloadStruct payload;
+    int i=0;
+    payload.Vp = _RELPAYEXT[i++]*val;
+    payload.Vs = _RELPAYEXT[i++]*val;
+    payload.Density = _RELPAYEXT[i++]*val;
+    payload.Qp = _RELPAYEXT[i++]*val;
+    payload.Qs = _RELPAYEXT[i++]*val;
+    payload.DepthFreeSurf = _RELPAYEXT[i++]*val;
+    payload.FaultBlock = int(_RELPAYEXT[i++]);
+    payload.Zone = int(_RELPAYEXT[i++]);
+
+    err = etree_insert(db, addr, &payload);
+    CPPUNIT_ASSERT(0 == err);
+  } // for
+
+  err = etree_close(db);
+  CPPUNIT_ASSERT(0 == err);
+
+  cencalvm::average::Averager averager;
+  averager.filenameIn(filenameTmp);
+  averager.filenameOut(_DBFILENAMEEXT);
+  averager.quiet(true);
+  averager.average();  
+
+  const cencalvm::storage::ErrorHandler* pHandler = averager.errorHandler();
+  CPPUNIT_ASSERT(0 != pHandler);
+  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
+		       pHandler->status());
+} // _createDBExt
+
+// ----------------------------------------------------------------------
 // Get lon/lat/elev of octants in database.
 void
 cencalvm::query::TestVMQuery::_dbLonLatElev(double** ppCoords) const
@@ -481,6 +546,40 @@ cencalvm::query::TestVMQuery::_dbLonLatElev(double** ppCoords) const
     (*ppCoords)[i++] = elev;    
   } // for
 } // _dbLonLatElev
+
+// ----------------------------------------------------------------------
+// Get lon/lat/elev of octants in database.
+void
+cencalvm::query::TestVMQuery::_dbLonLatElevExt(double** ppCoords) const
+{ // _dbLonLatElevExt
+  assert(0 != ppCoords);
+  const int numCoords = 3;
+  const int numOctants = _NUMOCTANTSEXT;
+  delete[] *ppCoords; *ppCoords = new double[numCoords*numOctants];
+
+  const int numOctCoords = 4;
+  for (int iOctant=0, i=0; iOctant < numOctants; ++iOctant) {
+    etree_addr_t addr;
+    addr.level = _COORDSEXT[numOctCoords*iOctant+3];
+    addr.type = ETREE_LEAF;
+
+    const etree_tick_t tickLen = 0x80000000 >> addr.level;
+    addr.x = tickLen * _COORDSEXT[numOctCoords*iOctant  ];
+    addr.y = tickLen * _COORDSEXT[numOctCoords*iOctant+1];
+    addr.z = tickLen * _COORDSEXT[numOctCoords*iOctant+2];
+
+    double lon = 0;
+    double lat = 0;
+    double elev = 0;
+    cencalvm::storage::ErrorHandler errHandler;
+    cencalvm::storage::Geometry geom(errHandler);
+    geom.addrToLonLatElev(&lon, &lat, &elev, &addr);
+
+    (*ppCoords)[i++] = lon;
+    (*ppCoords)[i++] = lat;
+    (*ppCoords)[i++] = elev;    
+  } // for
+} // _dbLonLatElevExt
 
 // version
 // $Id$

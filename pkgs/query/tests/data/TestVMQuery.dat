@@ -10,6 +10,9 @@
 // ----------------------------------------------------------------------
 //
 
+// ----------------------------------------------------------------------
+// NORMAL DATABASE
+
 const int cencalvm::query::TestVMQuery::_NUMOCTANTS = 21;
 const int cencalvm::query::TestVMQuery::_NUMOCTANTSLEAF = 12;
 const int cencalvm::query::TestVMQuery::_COORDS[] = {
@@ -52,6 +55,28 @@ const double cencalvm::query::TestVMQuery::_RELPAY[] = {
 };
 
 const char* cencalvm::query::TestVMQuery::_DBFILENAME = "data/full.etree";
+
+// ----------------------------------------------------------------------
+// EXTENDED DATABASE
+
+const int cencalvm::query::TestVMQuery::_NUMOCTANTSEXT = 4;
+const int cencalvm::query::TestVMQuery::_NUMOCTANTSLEAFEXT = 4;
+const int cencalvm::query::TestVMQuery::_COORDSEXT[] = {
+  43, 16, 88, 7, // 0, leaf
+  43, 16, 89, 7, // 1, leaf
+  43, 17, 89, 7, // 2, leaf
+  44, 16, 88, 7, // 3, leaf
+};
+
+const double cencalvm::query::TestVMQuery::_OCTVALSEXT[] = {
+  -5.4, -1.2, -0.3, -4.3 // level 7
+};
+
+const double cencalvm::query::TestVMQuery::_RELPAYEXT[] = {
+  1.0, 100.0, 0.001, 0.1, -0.01, 10.0, 1.0, 1.0
+};
+
+const char* cencalvm::query::TestVMQuery::_DBFILENAMEEXT = "data/fullext.etree";
 
 // version
 // $Id$
