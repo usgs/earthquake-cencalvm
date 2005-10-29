@@ -112,8 +112,6 @@ cencalvm::storage::Geometry::lonLatElevToAddr(etree_addr_t* pAddr,
   pAddr->y = tickLen*etree_tick_t(q / res);
   pAddr->z = tickLen*etree_tick_t(r / res);
   pAddr->t = 0;
-
-  _pProj->project(&x, &y, lon, lat);
 } // lonLatElevToAddr
   
 // ----------------------------------------------------------------------
