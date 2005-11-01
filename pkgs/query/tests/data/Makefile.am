@@ -12,7 +12,9 @@
 
 data_TMP = \
 	leaf.etree \
-	full.etree
+	full.etree \
+	leafext.etree \
+	fullext.etree
 
 noinst_HEADERS = \
 	TestVMQuery.dat
