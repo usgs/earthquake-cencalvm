@@ -111,6 +111,18 @@ class cencalvm::extensions::cencalvmdb::CenCalVMDB :
    */
   void cacheSize(const int size);
 
+  /** Set the extended database filename.
+   *
+   * @param filename Name of extended database file
+   */
+  void filenameExt(const char* filename);
+
+  /** Set size of cache during queries of extended database
+   *
+   * @param size Size of cache in MB
+   */
+  void cacheSizeExt(const int size);
+
   /** Query the database.
    *
    * @pre Must call open() before query()

@@ -39,6 +39,18 @@ void
 cencalvm::extensions::cencalvmdb::CenCalVMDB::cacheSize(const int size)
 { _pQuery->cacheSize(size); }
 
+// Set the extended database filename.
+inline
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::filenameExt(const char* filename)
+{ _pQuery->filenameExt(filename); }
+
+// Set size of cache during queries of extended database.
+inline
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::cacheSizeExt(const int size)
+{ _pQuery->cacheSizeExt(size); }
+
 // version
 // $Id$
 
