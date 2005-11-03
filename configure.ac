@@ -10,8 +10,8 @@
 # ----------------------------------------------------------------------
 #
 
-AC_PREREQ(2.57)
-AC_INIT([cencalvm], [0.3.0], [baagaard@usgs.gov])
+AC_PREREQ(2.59)
+AC_INIT([cencalvm], [0.4.0], [baagaard@usgs.gov])
 AC_CONFIG_HEADER([portinfo])
 AC_CONFIG_AUX_DIR([./aux-config])
 AM_INIT_AUTOMAKE([foreign])
