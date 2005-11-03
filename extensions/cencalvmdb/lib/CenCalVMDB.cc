@@ -41,7 +41,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::CenCalVMDB(void) :
 { // constructor
   _pCS->ellipsoid("WGS84");
   _pCS->datumHoriz("WGS84");
-  _pCS->datumVert("ellipsoid");
+  _pCS->datumVert("mean sea level");
   _pCS->isGeocentric(false);
   _pCS->toMeters(1.0);
   _pCS->initialize();
@@ -139,7 +139,6 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
     pCoords[2] = -44.95e+3;
 
   cencalvm::storage::ErrorHandler* pErrHandler = _pQuery->errorHandler();
-
   _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], pCoords[2]);
   if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
     throw std::runtime_error(_pQuery->errorHandler()->message());
