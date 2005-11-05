@@ -55,19 +55,24 @@ ln -s /home/data/USGSBayAreaVM-05.0.1.etree .
  *
  * <ol>
  *
- * <li> Run 'make'
+ * <li>Run 'make'
  *
- * <li> Run 'make testmaxres' for the sample MAXRES query. The output
+ * <li>Run 'make testmaxres' for the sample MAXRES query. The output
  * (test_maxres.out) should be identical to the corresponding
  * sample-VERSION.out file in the data directory.
  *
- * <li> Run 'make testfixedres' for the sample FIXEDRES query. The output
+ * <li>Run 'make testfixedres' for the sample FIXEDRES query. The output
  * (test_fixedres.out) should be identical to the corresponding
  * sample-VERSION_fixedres.out file in the data directory.
  *
- * <li> Run 'make testwaveres' for the sample WAVERES query. The output
+ * <li>Run 'make testwaveres' for the sample WAVERES query. The output
  * (test_waveres.out) should be identical to the corresponding
  * sample-VERSION_waveres.out file in the data directory.
+ *
+ * <li>Analogous tests using both the detailed and extended (regional)
+ * models can be run via 'make testextmaxres', 'make testextfixedres',
+ * and 'make testextwaveres'. The output should be identical to the
+ * sample_ext* files in the data directory.
  *
  * </ol>
  *
@@ -76,7 +81,9 @@ ln -s /home/data/USGSBayAreaVM-05.0.1.etree .
  * <ol>
  *
  * <li> Edit the source file 'cencalvmf77query.f' to select the type
- * of query that you want.
+ * of query that you want. You may need to adjust the name of the
+ * output filename (see line 54), the parameters (see line 68), and
+ * whether to use the extended (regional) model (see line 132).
  *
  * <li> Run 'make' and then './cencalvmf77query'.
  *
@@ -93,6 +100,10 @@ ln -s /home/data/USGSBayAreaVM-05.0.1.etree .
  * <li> For the sample WAVERES query. The output (test_waveres.out)
  * should be identical to the corresponding sample-VERSION_waveres.out
  * file in the data directory.
+ *
+ * <li> Similarly, for queries using the extended (regional) model
+ * compare the output to the files beginning with 'sample_ext' in the
+ * data directory.
  *
  * </ul>
  *

@@ -38,6 +38,18 @@
  * documentation of the query routines for specific units of the
  * arguments to each routine.
  *
+ * @section extendedmodel Enabling use of the extended (regional) model
+ *
+ * Use of the extended model is disabled by default. To enable use of
+ * the extended model in queries simply set the filename of the
+ * extended model using cencalvm::query::VMQuery::filenameExt() in
+ * C++, cencalvm_filenameExt() in C, or cencalvm_filenameext_f() in
+ * Fortran. You can also change the size of the cache used in queries
+ * of the extended model using
+ * cencalvm::query::VMQuery::cacheSizeExt() in C++,
+ * cencalvm_cacheSizeExt() in C, or cencalvm_cachesizeext_f() in
+ * Fortran.
+ *
  * @section Applications
  *
  * @subsection cencalvminfo

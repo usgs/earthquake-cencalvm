@@ -204,14 +204,21 @@ configure FC=f95 CC=cc CXX=CC
  * If you have cppunit and enabled testing (--enable-testing), then
  * you can run 'make check' to run the unit tests.
  *
- * <li> Download the velocity model from
+ * <li> Download the velocity model(s) from
  * ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database
  *
+ * In the current configuration, the detailed model is required while
+ * the extended (regional) model is optional. Use of the extended model is
+ * disabled by default. See \link pkgs/query/README pkgs/query/README
+ * \endlink for details on how to enable use of the extended model.
+ *
  * Download the MD5SUM files and check to the integrity of the
- * downloaded file by running 'md5sum -c MD5SUMS_GZIPPED'. After
- * gunzipping the file, you can again check the integrity of the file
- * by running 'md5sum -c MD5SUMS'. Each time you should get output
- * reporting that the file is OK.
+ * downloaded file by running 'md5sum -c MD5SUMS_GZIPPED' for the
+ * detailed model and 'md5sum -c MD5SUMS_GZIPPEDEXT' for the extended
+ * model. After gunzipping the file, you can again check the integrity
+ * of the file by running 'md5sum -c MD5SUMS' for the detailed model
+ * and 'md5sum -c MD5SUMSEXT' for the extended model. Each time you
+ * should get output reporting that the file is OK.
  *
  * <li> OPTIONAL
  *

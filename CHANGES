@@ -13,6 +13,20 @@
 /**
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
+ * \section ver040 Version 0.4.0, 2005/11/05
+ *
+ * @li Restructured query routines, adding the ability to query the
+ * regional model, if desired.
+ * @li Updated sample input and output data files to be compatible
+ * with release 05.1.0 of the USGS Bay Area Velocity Model, including
+ * the abilty to use the regional model, if desired.
+ * @li Created extension of VMQuery to be compatible with CIG
+ * spatialdata package. This will only be of use in CIG code. Building
+ * this extension is turned off by default.
+ * @li Fixed bug in query routines where projection routine was called
+ * twice. Second, superfluous call was removed. This should speed up
+ * queries a very slight amount.
+ *
  * \section ver030 Version 0.3.0, 2005/10/07
  *
  * @li Changed examples to include FIXEDRES and WAVERES query
