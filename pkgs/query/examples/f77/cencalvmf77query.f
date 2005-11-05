@@ -58,11 +58,11 @@ c       ****************************************************************
 
 c       Query points reside only in the normal database
 c       (Sets 1-3)
-c	parameter(filenameIn='../data/sample-05.1.x.in')
+	parameter(filenameIn='../data/sample-05.1.x.in')
 
 c       Query points reside in either the normal or extended database
 c       (Sets 4-6)
-	parameter(filenameIn='../data/sample_ext-05.1.x.in')
+c	parameter(filenameIn='../data/sample_ext-05.1.x.in')
 
 c       ****************************************************************
 c	Uncomment one of the following sets of 3 lines
@@ -71,9 +71,9 @@ c       Note: Only 1 set can be uncommented at a time.
 c       ****************************************************************
 
 c       SET1 = Parameters for sample MAXRES query
-c	parameter(filenameOut='test_maxres.out')
-c	parameter(queryType='maxres')
-c	parameter(queryRes=0)
+	parameter(filenameOut='test_maxres.out')
+	parameter(queryType='maxres')
+	parameter(queryRes=0)
 
 c       SET2 = Query resolution for fixedres query (dx=200m)
 c	parameter(filenameOut='test_fixedres.out')
@@ -99,9 +99,9 @@ c	parameter(queryType='fixedres')
 c	parameter(queryRes=200.0)
 
 c       SET6 = Query resolution for waveres query (T=0.2s)
-	parameter(filenameOut='testext_waveres.out')
-	parameter(queryType='waveres')
-	parameter(queryRes=0.1999)
+c	parameter(filenameOut='testext_waveres.out')
+c	parameter(queryType='waveres')
+c	parameter(queryRes=0.1999)
 
 c       ****************************************************************
 c       Size of query and errHandler MUST match sizeof(void*) in C
@@ -131,8 +131,8 @@ c       Set extended database filename
 c       ****************************************************************
 c       Uncomment this to use the extended database
 c       ****************************************************************
-	call cencalvm_filenameext_f(query, filenameDBExt, ok)
-	if (ok.ne.0) goto 998
+c	call cencalvm_filenameext_f(query, filenameDBExt, ok)
+c	if (ok.ne.0) goto 998
 
 c       Open database for querying
 	call cencalvm_open_f(query, ok)
