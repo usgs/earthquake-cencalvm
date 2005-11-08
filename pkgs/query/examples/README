@@ -29,16 +29,18 @@
  * "*.out". The examples use the input files in this directory as
  * input. The output files are provided so that you can compare the
  * output from the examples against these data files that are
- * considered "correct."
+ * considered "correct." See \link pkgs/query/examples/data/README
+ * pkgs/query/examples/data/README \endlink for a description of each
+ * file.
  *
  * @section general Instructions that apply to ALL examples
  *
  * Create a symbolic link from the database file to the example
  * directory. For example, if the database is
- * /home/data/USGSBayAreaVM-05.0.1.etree and you want to run the C++
+ * /home/data/USGSBayAreaVM-05.1.0.etree and you want to run the C++
  * example, in the cpp directory type
 \verbatim
-ln -s /home/data/USGSBayAreaVM-05.0.1.etree .
+ln -s /home/data/USGSBayAreaVM-05.1.0.etree .
 \endverbatim
  *
  *
