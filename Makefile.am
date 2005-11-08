@@ -10,6 +10,12 @@
 # ----------------------------------------------------------------------
 #
 
+noinst_HEADERS = \
+	CHANGES \
+	README \
+	INSTALL \
+	TODO
+
 SUBDIRS = \
 	pkgs \
 	extensions
