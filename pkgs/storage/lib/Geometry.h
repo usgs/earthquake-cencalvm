@@ -137,7 +137,7 @@ private :
   /// Projected X coordinate of NW corner of detailed region
   static const double _PROJXNW;
 
-  /// Projected Y coordinate of NW cornder of detailed region
+  /// Projected Y coordinate of NW corner of detailed region
   static const double _PROJYNW;
 
   /// Distant to NW from detailed region to NW edge of root octant
@@ -146,7 +146,7 @@ private :
   /// Distant to SW from detailed region to SW edge of root octant
   static const double _BUFFERSW;
 
-  /// Elevation (wrt MSL) or top of root octant
+  /// Elevation (wrt MSL) of top of root octant
   static const double _MAXELEV;
 
   static const etree_tick_t _LEFTMOSTONE; ///< first bit is 1, others 0
