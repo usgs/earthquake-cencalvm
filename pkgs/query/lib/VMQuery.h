@@ -51,7 +51,7 @@ namespace cencalvm {
   } // query
   namespace storage {
     class Geometry; // HOLDSA geometry
-    class ErrorHandler; // HOLDA ErrorHandler
+    class ErrorHandler; // HOLDSA ErrorHandler
     struct PayloadStruct; // USES PayloadStruct
   } // storage
 } // cencalvm
