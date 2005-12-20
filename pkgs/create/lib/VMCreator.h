@@ -66,6 +66,9 @@ public :
   /// Create the velocity model database.
   void run(void) const;
 
+  /// Create packed etree database from unpacked etree database.
+  void packDB(void) const;
+
   /** Get handle to error handler.
    *
    * @returns Pointer to Error handler
@@ -93,9 +96,6 @@ private :
 
   /// Create the unpacked etree database.
   void _createDB(void) const;
-
-  /// Create packed etree database from unpacked etree database.
-  void _packDB(void) const;
 
  private :
   // PRIVATE METHODS ////////////////////////////////////////////////////

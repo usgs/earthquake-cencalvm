@@ -266,8 +266,7 @@ cencalvm::average::AvgEngine::_addToParent(OctantPendingStruct* pPendingParent,
   } else if (childPayload.Vp > 0.0) {
     // if water and children with solid material properties have not
     // added their contributions, then add water contributions
-    if (pPendingParent->data.numChildren >= 0 &&
-	pPendingParent->data.pSum->Vs <= 0) {
+    if (pPendingParent->data.pSum->Vs <= 0) {
       ++pPendingParent->data.numChildren;
       pPendingParent->data.pSum->Vp += childPayload.Vp;
       pPendingParent->data.pSum->Vs += childPayload.Vs;

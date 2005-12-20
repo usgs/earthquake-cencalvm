@@ -62,7 +62,7 @@ cencalvm::create::VMCreator::run(void) const
   _readParams(&pGridFilenames, &numGrids);
   
   _createDB();
-  _packDB();
+  packDB();
 } // run
 
 // ----------------------------------------------------------------------
@@ -170,12 +170,12 @@ cencalvm::create::VMCreator::_createDB(void) const
 // ----------------------------------------------------------------------
 // Create packed etree database from unpacked etree database
 void
-cencalvm::create::VMCreator::_packDB(void) const
-{ // _packDB
+cencalvm::create::VMCreator::packDB(void) const
+{ // packDB
   if (!_quiet)
     std::cout << "Packing etree database..." << std::endl;
 
-  const int cacheSize = 64;
+  const int cacheSize = 512;
   const int numDims = 3;
   const int payloadSize = sizeof(cencalvm::storage::PayloadStruct);
   etree_t* unpackeddb = etree_open(_filenameTmp.c_str(), O_RDONLY,
@@ -252,7 +252,7 @@ cencalvm::create::VMCreator::_packDB(void) const
 
   if (!_quiet)
     std::cout << "Done packing etree database." << std::endl;
-} // _packDB
+} // packDB
 
 // version
 // $Id$

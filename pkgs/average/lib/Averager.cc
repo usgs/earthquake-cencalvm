@@ -61,7 +61,7 @@ cencalvm::average::Averager::average(void)
 
 
   // Open input database
-  const int cacheSize = 64;
+  const int cacheSize = 512;
   const int numDims = 3;
   const int payloadSize = sizeof(cencalvm::storage::PayloadStruct);
   _dbIn = etree_open(_filenameIn.c_str(), O_RDONLY,
