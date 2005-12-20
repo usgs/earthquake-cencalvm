@@ -10,7 +10,7 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = 
+SUBDIRS = vsgrader
 
 if ENABLE_SPATIAL
   SUBDIRS += cencalvmdb

@@ -144,6 +144,11 @@ AC_CONFIG_FILES([Makefile
 	extensions/Makefile
 	extensions/cencalvmdb/Makefile
 	extensions/cencalvmdb/lib/Makefile
+	extensions/vsgrader/Makefile
+	extensions/vsgrader/lib/Makefile
+	extensions/vsgrader/driver/Makefile
+	extensions/vsgrader/tests/Makefile
+	extensions/vsgrader/tests/data/Makefile
 	doc/Makefile])
 
 AC_OUTPUT
