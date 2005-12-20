@@ -35,11 +35,11 @@ subpkginclude_HEADERS = \
 	Geometry.h \
 	Geometry.icc \
 	Payload.h \
-	etreefwd.h
-
-noinst_HEADERS = \
 	Projector.h \
+	etreefwd.h \
 	proj4fwd.h
+
+noinst_HEADERS =
 
 # export
 clean-local: clean-subpkgincludeHEADERS
