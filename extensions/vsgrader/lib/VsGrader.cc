@@ -96,6 +96,8 @@ cencalvm::vsgrader::VsGrader::run(void)
 void
 cencalvm::vsgrader::VsGrader::_readParams(void)
 { // _readParams
+  assert(0 != _pErrHandler);
+
   if (!_quiet)
     std::cout << "Reading parameters from '" << _filenameParams << "'..." 
 	      << std::endl;
@@ -171,6 +173,8 @@ cencalvm::vsgrader::VsGrader::_readParams(void)
 void
 cencalvm::vsgrader::VsGrader::_initialize(void)
 { // _initialize
+  assert(0 != _pProj);
+
   if (!_quiet)
     std::cout << "Initializing grader..." << std::endl;
 
@@ -182,6 +186,9 @@ cencalvm::vsgrader::VsGrader::_initialize(void)
 void
 cencalvm::vsgrader::VsGrader::_extract(void) const
 { // _extract
+  assert(0 != _pGeom);
+  assert(0 != _pErrHandler);
+
   if (!_quiet)
     std::cout << "Extracting data from '" << _filenameIn << "'..."
 	      << std::endl;
@@ -294,6 +301,9 @@ cencalvm::vsgrader::VsGrader::_pack(void) const
 void
 cencalvm::vsgrader::VsGrader::_grade(void) const
 { // _grade
+  assert(0 != _pGeom);
+  assert(0 != _pErrHandler);
+
   if (!_quiet)
     std::cout << "Starting grading of database." << std::endl;
 
@@ -301,7 +311,7 @@ cencalvm::vsgrader::VsGrader::_grade(void) const
   const int cacheSize = 512;
   const int numDims = 3;
   const int payloadSize = sizeof(cencalvm::storage::PayloadStruct);
-  etree_t* db = etree_open(_filenameTmp.c_str(), O_RDWR,
+  etree_t* db = etree_open(_filenameOut.c_str(), O_RDWR,
 			       cacheSize, payloadSize, numDims);
   if (0 == db) {
     _pErrHandler->error("Could not open etree database.");
@@ -315,12 +325,14 @@ cencalvm::vsgrader::VsGrader::_grade(void) const
   
   int dataLen = 0;
   cencalvm::storage::PayloadStruct* pData = 0;
+  bool* pIsChanged = 0;
 
   // Limit gradient in vertical direction
   if (!_quiet)
     std::cout << "Grading database in vertical direction." << std::endl;
   dataLen = (numHt > 0) ? numHt : 0;
   pData = (dataLen > 0) ? new cencalvm::storage::PayloadStruct[dataLen] : 0;
+  pIsChanged = (dataLen > 0) ? new bool[dataLen] : 0;
   for (int iLen=0; iLen < numLen; ++iLen)
     for (int iWidth=0; iWidth < numWidth; ++iWidth) {
       double lon = 0;
@@ -331,14 +343,16 @@ cencalvm::vsgrader::VsGrader::_grade(void) const
 	_pullData(&pData[iHt], lon, lat, elev, db);
       } // for
       const double maxdiff = _gradientMaxVs * _resVert;
-      _limitDiff(&pData, dataLen, maxdiff);
+      _limitDiff(&pData, &pIsChanged, dataLen, maxdiff);
       
-      for (int iHt=0; iHt < numHt; ++iHt) {
-	const double elev = _indexToElev(iHt);
-	_pushData(db, pData[iHt], lon, lat, elev);
-      } // for
+      for (int iHt=0; iHt < numHt; ++iHt)
+	if (pIsChanged[iHt]) {
+	  const double elev = _indexToElev(iHt);
+	  _pushData(db, pData[iHt], lon, lat, elev);
+	} // for
     } // for
   delete[] pData; pData = 0;
+  delete[] pIsChanged; pIsChanged = 0;
   dataLen = 0;
 
   // Limit gradient in length direction
@@ -346,6 +360,7 @@ cencalvm::vsgrader::VsGrader::_grade(void) const
     std::cout << "Grading database in length direction." << std::endl;
   dataLen = (numLen > 0) ? numLen : 0;
   pData = (dataLen > 0) ? new cencalvm::storage::PayloadStruct[dataLen] : 0;
+  pIsChanged = (dataLen > 0) ? new bool[dataLen] : 0;
   for (int iHt=0; iHt < numHt; ++iHt) {
     const double elev = _indexToElev(iHt);
     double lon = 0;
@@ -356,15 +371,17 @@ cencalvm::vsgrader::VsGrader::_grade(void) const
 	_pullData(&pData[iLen], lon, lat, elev, db);
       } // for
       const double maxdiff = _gradientMaxVs * resHoriz;
-      _limitDiff(&pData, dataLen, maxdiff);
+      _limitDiff(&pData, &pIsChanged, dataLen, maxdiff);
       
-      for (int iLen=0; iLen < numLen; ++iLen) {
-	_indexToLonLat(&lon, &lat, iLen, iWidth);
-	_pushData(db, pData[iLen], lon, lat, elev);
-      } // for
+      for (int iLen=0; iLen < numLen; ++iLen)
+	if (pIsChanged[iLen]) {
+	  _indexToLonLat(&lon, &lat, iLen, iWidth);
+	  _pushData(db, pData[iLen], lon, lat, elev);
+	} // for
     } // for
   } // for
   delete[] pData; pData = 0;
+  delete[] pIsChanged; pIsChanged = 0;
   dataLen = 0;
       
   // Limit gradient in width direction
@@ -372,6 +389,7 @@ cencalvm::vsgrader::VsGrader::_grade(void) const
     std::cout << "Grading database in width direction." << std::endl;
   dataLen = (numWidth > 0) ? numWidth : 0;
   pData = (dataLen > 0) ? new cencalvm::storage::PayloadStruct[dataLen] : 0;
+  pIsChanged = (dataLen > 0) ? new bool[dataLen] : 0;
   for (int iHt=0; iHt < numHt; ++iHt) {
     const double elev = _indexToElev(iHt);
     double lon = 0;
@@ -382,15 +400,18 @@ cencalvm::vsgrader::VsGrader::_grade(void) const
 	_pullData(&pData[iWidth], lon, lat, elev, db);
       } // for
       const double maxdiff = _gradientMaxVs * resHoriz;
-      _limitDiff(&pData, dataLen, maxdiff);
+      _limitDiff(&pData, &pIsChanged, dataLen, maxdiff);
       
-      for (int iWidth=0; iWidth < numWidth; ++iWidth) {
-	_indexToLonLat(&lon, &lat, iLen, iWidth);
-	_pushData(db, pData[iWidth], lon, lat, elev);
-      } // for
+      for (int iWidth=0; iWidth < numWidth; ++iWidth)
+	if (pIsChanged[iWidth]) {
+	  _indexToLonLat(&lon, &lat, iLen, iWidth);
+	  _pushData(db, pData[iWidth], lon, lat, elev);
+	} // for
     } // for
   } // for
-  delete[] pData; dataLen = 0;
+  delete[] pData; pData = 0;
+  delete[] pIsChanged; pIsChanged = 0;
+  dataLen = 0;
 
   // close database
   if (0 != etree_close(db)) {
@@ -410,6 +431,9 @@ cencalvm::vsgrader::VsGrader::_indexToLonLat(double* pLon,
 					     const int indexL,
 					     const int indexW) const
 { // _indexToLonLat
+  assert(0 != _pGeom);
+  assert(0 != _pProj);
+
   const double azR = _AZIMUTHLEN;
   const double resHoriz = _resVert * _pGeom->vertExag();
   const double l = indexL * resHoriz;
@@ -428,6 +452,11 @@ cencalvm::vsgrader::VsGrader::_pullData(cencalvm::storage::PayloadStruct* pPaylo
 					const double elev,
 					etree_t* pDB) const
 { // _pullData
+  assert(0 != pPayload);
+  assert(0 != pDB);
+  assert(0 != _pGeom);
+  assert(0 != _pErrHandler);
+
   etree_addr_t addr;
   addr.type = ETREE_LEAF;
 
@@ -453,6 +482,10 @@ cencalvm::vsgrader::VsGrader::_pushData(etree_t* pDB,
 					const double lat,
 					const double elev) const
 { // _pushData
+  assert(0 != pDB);
+  assert(0 != _pGeom);
+  assert(0 != _pErrHandler);
+
   etree_addr_t addr;
   addr.type = ETREE_LEAF;
 
@@ -471,9 +504,16 @@ cencalvm::vsgrader::VsGrader::_pushData(etree_t* pDB,
 // Limit maximum difference in Vs. Other material properties are
 void
 cencalvm::vsgrader::VsGrader::_limitDiff(cencalvm::storage::PayloadStruct** ppData,
+					 bool** ppIsChanged,
 					 const int dataLen,
 					 const double maxdiff) const
 { // _limitDiff
+  assert(0 != ppData);
+  assert(0 != ppIsChanged);
+
+  for (int i=0; i < dataLen; ++i)
+    (*ppIsChanged)[i] = false;
+
   for (int i=1; i < dataLen; ++i)
     if ((*ppData)[i].Vs - (*ppData)[i-1].Vs > maxdiff) {
       const double vs = (*ppData)[i-1].Vs + maxdiff;
@@ -484,6 +524,7 @@ cencalvm::vsgrader::VsGrader::_limitDiff(cencalvm::storage::PayloadStruct** ppDa
       pPayload->Density *= scale;
       pPayload->Qp *= scale;
       pPayload->Qs *= scale;
+      (*ppIsChanged)[i] = true;
     } // if
   for (int i=dataLen-2; i >= 0; --i)
     if ((*ppData)[i].Vs - (*ppData)[i+1].Vs > maxdiff) {
@@ -495,8 +536,8 @@ cencalvm::vsgrader::VsGrader::_limitDiff(cencalvm::storage::PayloadStruct** ppDa
       pPayload->Density *= scale;
       pPayload->Qp *= scale;
       pPayload->Qs *= scale;
+      (*ppIsChanged)[i] = true;
     } // if
-  
 } // _limitDiff
 
 // version

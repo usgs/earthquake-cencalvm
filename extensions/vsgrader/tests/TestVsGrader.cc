@@ -309,9 +309,11 @@ cencalvm::vsgrader::TestVsGrader::testLimitDiff(void)
   const double maxdiff = _VSGRADIENTMAX;
   static const double vsValsE[] = { 3.4, 4.5, 3.6, 2.5, 1.4 };
   static const double scale[] = { 1.0, 0.1, 2.3, 5.6, 1.2, 0.8, 0.5 };
-  
+  static const bool changed[] = { false, true, true, true, false };
+
   cencalvm::storage::PayloadStruct* pData = 
     new cencalvm::storage::PayloadStruct[numLocs];
+  bool* pIsChanged = new bool[numLocs];
   for (int iLoc=0; iLoc < numLocs; ++iLoc) {
     const double vs = vsVals[iLoc];
     pData[iLoc].Vs = vs;
@@ -325,7 +327,7 @@ cencalvm::vsgrader::TestVsGrader::testLimitDiff(void)
   } // for
 
   VsGrader grader;
-  grader._limitDiff(&pData, numLocs, maxdiff);
+  grader._limitDiff(&pData, &pIsChanged, numLocs, maxdiff);
 
   const double tolerance = 1.0e-06;
   for (int iLoc=0; iLoc < numLocs; ++iLoc) {
@@ -343,8 +345,10 @@ cencalvm::vsgrader::TestVsGrader::testLimitDiff(void)
 				 tolerance);
     CPPUNIT_ASSERT_EQUAL(int16_t(vsOrig*scale[5]), pData[iLoc].FaultBlock);
     CPPUNIT_ASSERT_EQUAL(int16_t(vsOrig*scale[6]), pData[iLoc].Zone);
+    CPPUNIT_ASSERT_EQUAL(changed[iLoc], pIsChanged[iLoc]);
   } // for
   delete[] pData; pData = 0;
+  delete[] pIsChanged; pIsChanged = 0;
 } // testLimitDiff
 
 // ----------------------------------------------------------------------

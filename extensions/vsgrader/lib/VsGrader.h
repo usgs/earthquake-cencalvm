@@ -163,10 +163,12 @@ public :
    * changed proportionally.
    *
    * @param ppData Pointer to array of payload values
+   * @param ppIsChanged Pointer to array of flags indicating payload changed
    * @param dataLen Size of array
    * @param maxdiff Maximum difference
    */
   void _limitDiff(cencalvm::storage::PayloadStruct** ppData,
+		  bool** ppIsChanged,
 		  const int dataLen,
 		  const double maxdiff) const;
 
