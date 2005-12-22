@@ -182,6 +182,7 @@ private :
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 
   double _gradientMaxVs; ///< Maximum gradient in Vs
+  double _minVs; ///< Minimum Vs
 
   double _swcornerLon; ///< Longitude of southwest top corner of domain
   double _swcornerLat; ///< Latitude of southwest top corner of domain

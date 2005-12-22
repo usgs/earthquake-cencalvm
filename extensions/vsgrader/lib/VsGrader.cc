@@ -36,6 +36,7 @@ const double cencalvm::vsgrader::VsGrader::_NODATAVAL = 1.0e+10;
 // Constructor
 cencalvm::vsgrader::VsGrader::VsGrader(void) :
   _gradientMaxVs(0),
+  _minVs(0),
   _swcornerLon(0),
   _swcornerLat(0),
   _swcornerElev(0),
@@ -98,6 +99,17 @@ cencalvm::vsgrader::VsGrader::_readParams(void)
 { // _readParams
   assert(0 != _pErrHandler);
 
+  // Set default values
+  _gradientMaxVs = 0.0;
+  _minVs = 0.0;
+  _swcornerLon = 0.0;
+  _swcornerLat = 0.0;
+  _swcornerElev = 0.0;
+  _domainLen = 0.0;
+  _domainWidth = 0.0;
+  _domainHt = 0.0;
+  _resVert = 0.0;
+
   if (!_quiet)
     std::cout << "Reading parameters from '" << _filenameParams << "'..." 
 	      << std::endl;
@@ -145,6 +157,9 @@ cencalvm::vsgrader::VsGrader::_readParams(void)
       } else if (0 == strcasecmp(token.c_str(), "vs-gradient-max")) {
 	filein.ignore(maxIgnore, '=');
 	filein >> _gradientMaxVs;
+      } else if (0 == strcasecmp(token.c_str(), "vs-min")) {
+	filein.ignore(maxIgnore, '=');
+	filein >> _minVs;
       } else {
 	std::ostringstream msg;
 	msg << "Could not parse '" << token << "' into a parameter setting.";
@@ -157,6 +172,50 @@ cencalvm::vsgrader::VsGrader::_readParams(void)
     if (!filein.good()) {
 	_pErrHandler->error("I/O error while parsing settings.");
 	return;
+    } // if
+
+    std::ostringstream msg;
+    bool ok = true;
+
+    if (0 == _gradientMaxVs) {
+      ok = false;
+      msg << "Parameter file must specify 'vs-gradient-max'.\n";
+    } // if
+    if (0 == _minVs) {
+      ok = false;
+      msg << "Parameter file must specify 'vs-min'.\n";
+    } // if
+    if (0 == _swcornerLon) {
+      ok = false;
+      msg << "Parameter file must specify 'swcorner-lon'.\n";
+    } // if
+    if (0 == _swcornerLat) {
+      ok = false;
+      msg << "Parameter file must specify 'swcorner-lat'.\n";
+    } // if
+    if (0 == _swcornerElev) {
+      ok = false;
+      msg << "Parameter file must specify 'swcorner-elev'.\n";
+    } // if
+    if (0 == _domainLen) {
+      ok = false;
+      msg << "Parameter file must specify 'domain-len'.\n";
+    } // if
+    if (0 == _domainWidth) {
+      ok = false;
+      msg << "Parameter file must specify 'domain-width'.\n";
+    } // if
+    if (0 == _domainHt) {
+      ok = false;
+      msg << "Parameter file must specify 'domain-height'.";
+    } // if
+    if (0 == _resVert) {
+      ok = false;
+      msg << "Parameter file must specify 'resolution-vert'.";
+    } // if      
+    if (!ok) {
+      _pErrHandler->error(msg.str().c_str());
+      return;
     } // if
   } else {
     std::ostringstream msg;
@@ -244,7 +303,8 @@ cencalvm::vsgrader::VsGrader::_extract(void) const
 	etree_addr_t resAddr;
 	int err = etree_search(dbOrig, addr, &resAddr, "*", &payload);
 	if (0 != err ||
-	    (ETREE_INTERIOR == resAddr.type && addr.level > resAddr.level)) {
+	    (ETREE_INTERIOR == resAddr.type && addr.level > resAddr.level) ||
+	    payload.Vs < 0) {
 	  payload.Vp = _NODATAVAL;
 	  payload.Vs = _NODATAVAL;
 	  payload.Density = _NODATAVAL;
@@ -253,7 +313,8 @@ cencalvm::vsgrader::VsGrader::_extract(void) const
 	  payload.DepthFreeSurf = cencalvm::storage::Payload::NODATAVAL;
 	  payload.FaultBlock = cencalvm::storage::Payload::NODATABLOCK;
 	  payload.Zone = cencalvm::storage::Payload::NODATAZONE;
-	} // if
+	} else if (payload.Vs < _minVs)
+	  payload.Vs = _minVs;
 
 	// Append data to extracted database
 	if (0 != etree_insert(dbNew, addr, &payload)) {
