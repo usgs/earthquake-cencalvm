@@ -14,9 +14,8 @@
 
 #include "cencalvm/storage/Payload.h" // USES SCHEMA
 #include "cencalvm/storage/Geometry.h" // USES Geometry
-#include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
-#include "cencalvm/create/VMCreator.h" // USES VMCreator
 #include "cencalvm/storage/Projector.h" // USES Projector
+#include "cencalvm/create/VMCreator.h" // USES VMCreator
 
 extern "C" {
 #include "etree.h"
@@ -24,6 +23,7 @@ extern "C" {
 
 #include <fstream> // USES std::ifstream
 
+#include <stdexcept> // USES std::runtime_error
 #include <sstream> // USES std::ostringstream
 #include <assert.h> // USES assert()
 #include <iostream> // USES std::cout
@@ -40,19 +40,21 @@ cencalvm::vsgrader::VsGrader::VsGrader(void) :
   _swcornerLon(0),
   _swcornerLat(0),
   _swcornerElev(0),
-  _swcornerX(0),
-  _swcornerY(0),
   _domainLen(0),
   _domainWidth(0),
   _domainHt(0),
   _resVert(1.0),
+  _swcornerX(0),
+  _swcornerY(0),
+  _queryRes(0.0),
   _filenameIn(""),
   _filenameOut(""),
   _filenameTmp(""),
   _filenameParams(""),
-  _pErrHandler(new cencalvm::storage::ErrorHandler),
-  _pGeom(new cencalvm::storage::Geometry(*_pErrHandler)),
-  _pProj(new cencalvm::storage::Projector(*_pErrHandler)),
+  _cacheSize(128),
+  _queryType(query::VMQuery::MAXRES),
+  _pGeom(new cencalvm::storage::Geometry),
+  _pProj(new cencalvm::storage::Projector),
   _quiet(false)
 { // constructor
 } // constructor
@@ -63,7 +65,6 @@ cencalvm::vsgrader::VsGrader::~VsGrader(void)
 { // destructor
   delete _pGeom; _pGeom = 0;
   delete _pProj; _pProj = 0;
-  delete _pErrHandler; _pErrHandler = 0;
 } // destructor
 
 // ----------------------------------------------------------------------
@@ -72,24 +73,10 @@ void
 cencalvm::vsgrader::VsGrader::run(void)
 { // run
   _readParams();
-  if (cencalvm::storage::ErrorHandler::OK != _pErrHandler->status())
-    return;
-
   _initialize();
-  if (cencalvm::storage::ErrorHandler::OK != _pErrHandler->status())
-    return;
-
   _extract();
-  if (cencalvm::storage::ErrorHandler::OK != _pErrHandler->status())
-    return;
-
   _pack();
-  if (cencalvm::storage::ErrorHandler::OK != _pErrHandler->status())
-    return;
-
   _grade();
-  if (cencalvm::storage::ErrorHandler::OK != _pErrHandler->status())
-    return;
 } // run
 
 // ----------------------------------------------------------------------
@@ -97,8 +84,6 @@ cencalvm::vsgrader::VsGrader::run(void)
 void
 cencalvm::vsgrader::VsGrader::_readParams(void)
 { // _readParams
-  assert(0 != _pErrHandler);
-
   // Set default values
   _gradientMaxVs = 0.0;
   _minVs = 0.0;
@@ -119,8 +104,7 @@ cencalvm::vsgrader::VsGrader::_readParams(void)
     std::ostringstream msg;
     msg << "Could not open file '" << _filenameParams
 	<< "' to read VsGrader parameters.";
-    _pErrHandler->error(msg.str().c_str());
-    return;
+    throw std::runtime_error(msg.str());
   } // if
 
   std::string name;
@@ -160,23 +144,47 @@ cencalvm::vsgrader::VsGrader::_readParams(void)
       } else if (0 == strcasecmp(token.c_str(), "vs-min")) {
 	filein.ignore(maxIgnore, '=');
 	filein >> _minVs;
+      } else if (0 == strcasecmp(token.c_str(), "cache-size")) {
+	filein.ignore(maxIgnore, '=');
+	int value;
+	filein >> value;
+	if (value > 0)
+	  _cacheSize = value;
+      } else if (0 == strcasecmp(token.c_str(), "query-resolution")) {	
+	filein.ignore(maxIgnore, '=');
+	double value;
+	filein >> value;
+	if (value >= 0)
+	  _queryRes = value;
+      } else if (0 == strcasecmp(token.c_str(), "query-type")) {
+	filein.ignore(maxIgnore, '=');
+	std::string value;
+	filein >> value;
+	if (0 == strcasecmp("maxres", value.c_str()))
+	  _queryType = query::VMQuery::MAXRES;
+	else if (0 == strcasecmp("fixedres" , value.c_str()))
+	  _queryType = query::VMQuery::FIXEDRES;
+	else if (0 == strcasecmp("waveres", value.c_str()))
+	  _queryType = query::VMQuery::WAVERES;
+	else {
+	  std::ostringstream msg;
+	  msg << "Could not parse query type '" << value
+	      << "' into a known type of query.";
+	  throw std::runtime_error(msg.str());
+	} // else
       } else {
 	std::ostringstream msg;
 	msg << "Could not parse '" << token << "' into a parameter setting.";
-	_pErrHandler->error(msg.str().c_str());
-	return;
+	throw std::runtime_error(msg.str());
       } // else
       
       filein >> token;
     } // while
-    if (!filein.good()) {
-	_pErrHandler->error("I/O error while parsing settings.");
-	return;
-    } // if
+    if (!filein.good())
+      throw std::runtime_error("I/O error while parsing settings.");
 
     std::ostringstream msg;
     bool ok = true;
-
     if (0 == _gradientMaxVs) {
       ok = false;
       msg << "Parameter file must specify 'vs-gradient-max'.\n";
@@ -213,15 +221,17 @@ cencalvm::vsgrader::VsGrader::_readParams(void)
       ok = false;
       msg << "Parameter file must specify 'resolution-vert'.";
     } // if      
-    if (!ok) {
-      _pErrHandler->error(msg.str().c_str());
-      return;
+    if (query::VMQuery::MAXRES != _queryType && _queryRes <= 0) {
+      ok = false;
+      msg << "Parameter file must specify 'query-res' when 'query-type' "
+	  << "is not 'maxres'.";
     } // if
+    if (!ok)
+      throw std::runtime_error(msg.str());      
   } else {
     std::ostringstream msg;
     msg << "Could not parse '" << name << "' into 'VsGrader'.";
-    _pErrHandler->error(msg.str().c_str());
-    return;
+    throw std::runtime_error(msg.str());
   } // else
 
   filein.close();
@@ -246,51 +256,37 @@ void
 cencalvm::vsgrader::VsGrader::_extract(void) const
 { // _extract
   assert(0 != _pGeom);
-  assert(0 != _pErrHandler);
 
   if (!_quiet)
     std::cout << "Extracting data from '" << _filenameIn << "'..."
 	      << std::endl;
 
-  const int cacheSize = 512;
-  const int numDims = 3;
-  const int payloadSize = sizeof(cencalvm::storage::PayloadStruct);
-  etree_t* dbOrig = etree_open(_filenameIn.c_str(), O_RDONLY,
-			       cacheSize, payloadSize, numDims);
-  if (0 == dbOrig) {
-    _pErrHandler->error("Could not open source etree database.");
-    return;
-  } // if
-  
-  etree_t* dbNew = etree_open(_filenameTmp.c_str(),
-			      O_CREAT | O_TRUNC | O_RDWR,
-			      cacheSize, payloadSize, numDims);
-  if (0 == dbNew) {
-    _pErrHandler->error("Could not open new etree database.");
-    return;
-  } // if
-  
-  if (0 != etree_registerschema(dbNew, cencalvm::storage::Payload::SCHEMA)) {
-    _pErrHandler->error(etree_strerror(etree_errno(dbNew)));
-    return;
-  } // if
-  
-  char* appmeta = 0;
-  if (0 != (appmeta = etree_getappmeta(dbOrig)))
-    if (0 != etree_setappmeta(dbNew, appmeta)) {
-      _pErrHandler->error(etree_strerror(etree_errno(dbNew)));
-      return;
-    } // if
-  free(appmeta);
+  query::VMQuery dbOrig;
+  dbOrig.queryType(_queryType);
+  dbOrig.queryRes(_queryRes);
+  dbOrig.cacheSize(_cacheSize);
+  dbOrig.filename(_filenameIn.c_str());
+  dbOrig.open();
 
+  std::ostringstream description;
+  description << _pGeom->metadata() << "\n"
+	      << "Gradient in Vs limited to " << _gradientMaxVs << ".";
+  create::VMCreator dbNew;
+  dbNew.openDB(_filenameTmp.c_str(),
+	       _cacheSize,
+	       description.str().c_str());
+  
   const double resHoriz = _resVert * _pGeom->vertExag();
   const int numLen = int(1 + _domainLen / resHoriz);
   const int numWidth = int(1 + _domainWidth / resHoriz);
   const int numHt = int(1 + _domainHt / _resVert);
-  etree_addr_t addr;
-  addr.type = ETREE_LEAF;
-  addr.level = cencalvm::storage::Geometry::level(resHoriz);
+
   cencalvm::storage::PayloadStruct payload;
+  const int numVals = 8;
+  const char* valNames[] = { "Vp", "Vs", "Density", "Qp", "Qs", 
+			     "DepthFreeSurf", "FaultBlock", "Zone" };
+  dbOrig.queryVals(valNames, numVals);
+  double* pVals = (numVals > 0) ? new double[numVals] : 0;
   for (int iLen=0; iLen < numLen; ++iLen) {
     for (int iWidth=0; iWidth < numWidth; ++iWidth) {
       double lon = 0;
@@ -298,13 +294,16 @@ cencalvm::vsgrader::VsGrader::_extract(void) const
       _indexToLonLat(&lon, &lat, iLen, iWidth);
       for (int iHt=0; iHt < numHt; ++iHt) {
 	const double elev = _indexToElev(iHt);
-	_pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
-
-	etree_addr_t resAddr;
-	int err = etree_search(dbOrig, addr, &resAddr, "*", &payload);
-	if (0 != err ||
-	    (ETREE_INTERIOR == resAddr.type && addr.level > resAddr.level) ||
-	    payload.Vs < 0) {
+	dbOrig.query(&pVals, numVals, lon, lat, elev);
+	payload.Vp = pVals[0];
+	payload.Vs = pVals[1];
+	payload.Density = pVals[2];
+	payload.Qp = pVals[3];
+	payload.Qs = pVals[4];
+	payload.DepthFreeSurf = pVals[5];
+	payload.FaultBlock = int16_t(pVals[6]);
+	payload.Zone = int16_t(pVals[7]);
+	if (payload.Vs < 0) {
 	  payload.Vp = _NODATAVAL;
 	  payload.Vs = _NODATAVAL;
 	  payload.Density = _NODATAVAL;
@@ -316,24 +315,14 @@ cencalvm::vsgrader::VsGrader::_extract(void) const
 	} else if (payload.Vs < _minVs)
 	  payload.Vs = _minVs;
 
-	// Append data to extracted database
-	if (0 != etree_insert(dbNew, addr, &payload)) {
-	  _pErrHandler->error(etree_strerror(etree_errno(dbNew)));
-	  return;
-	} // if
+	dbNew.insert(payload, lon, lat, elev, resHoriz, _pGeom);
       } // for
     } // for
   } // for
+  delete[] pVals; pVals = 0;
   
-  if (0 != etree_close(dbOrig)) {
-    _pErrHandler->error(etree_strerror(etree_errno(dbOrig)));
-    return;
-  } // if
-  
-  if (0 != etree_close(dbNew)) {
-    _pErrHandler->error(etree_strerror(etree_errno(dbNew)));
-    return; 
-  } // if
+  dbNew.closeDB();
+  dbOrig.close();
 
   if (!_quiet)
     std::cout << "Done extracting." << std::endl;
@@ -344,17 +333,9 @@ cencalvm::vsgrader::VsGrader::_extract(void) const
 void
 cencalvm::vsgrader::VsGrader::_pack(void) const
 { // _pack
-  if (!_quiet)
-    std::cout << "Creating packed database..." << std::endl;
-
   cencalvm::create::VMCreator creator;
-  creator.filenameTmp(_filenameTmp.c_str());
-  creator.filenameOut(_filenameOut.c_str());
   creator.quiet(_quiet);
-  creator.packDB();
-
-  if (!_quiet)
-    std::cout << "Done packing database..." << std::endl;
+  creator.packDB(_filenameOut.c_str(), _filenameTmp.c_str(), _cacheSize);
 } // _pack
 
 // ----------------------------------------------------------------------
@@ -363,7 +344,6 @@ void
 cencalvm::vsgrader::VsGrader::_grade(void) const
 { // _grade
   assert(0 != _pGeom);
-  assert(0 != _pErrHandler);
 
   if (!_quiet)
     std::cout << "Starting grading of database." << std::endl;
@@ -374,10 +354,8 @@ cencalvm::vsgrader::VsGrader::_grade(void) const
   const int payloadSize = sizeof(cencalvm::storage::PayloadStruct);
   etree_t* db = etree_open(_filenameOut.c_str(), O_RDWR,
 			       cacheSize, payloadSize, numDims);
-  if (0 == db) {
-    _pErrHandler->error("Could not open etree database.");
-    return;
-  } // if
+  if (0 == db)
+    throw std::runtime_error("Could not open etree database.");
 
   const double resHoriz = _resVert * _pGeom->vertExag();
   const int numLen = int(1 + _domainLen / resHoriz);
@@ -475,10 +453,8 @@ cencalvm::vsgrader::VsGrader::_grade(void) const
   dataLen = 0;
 
   // close database
-  if (0 != etree_close(db)) {
-    _pErrHandler->error(etree_strerror(etree_errno(db)));
-    return; 
-  } // if
+  if (0 != etree_close(db))
+    throw std::runtime_error(etree_strerror(etree_errno(db)));
 
   if (!_quiet)
     std::cout << "Done grading database." << std::endl;
@@ -516,7 +492,6 @@ cencalvm::vsgrader::VsGrader::_pullData(cencalvm::storage::PayloadStruct* pPaylo
   assert(0 != pPayload);
   assert(0 != pDB);
   assert(0 != _pGeom);
-  assert(0 != _pErrHandler);
 
   etree_addr_t addr;
   addr.type = ETREE_LEAF;
@@ -528,10 +503,8 @@ cencalvm::vsgrader::VsGrader::_pullData(cencalvm::storage::PayloadStruct* pPaylo
   
   etree_addr_t resAddr;
   int err = etree_search(pDB, addr, &resAddr, "*", pPayload);
-  if (0 != err) {
-    _pErrHandler->error("Could not find octant in database.\n");
-    return;
-  } // if
+  if (0 != err)
+    throw std::runtime_error("Could not find octant in database.");
 } // _pullData
 
 // ----------------------------------------------------------------------
@@ -545,7 +518,6 @@ cencalvm::vsgrader::VsGrader::_pushData(etree_t* pDB,
 { // _pushData
   assert(0 != pDB);
   assert(0 != _pGeom);
-  assert(0 != _pErrHandler);
 
   etree_addr_t addr;
   addr.type = ETREE_LEAF;
@@ -555,10 +527,8 @@ cencalvm::vsgrader::VsGrader::_pushData(etree_t* pDB,
 
   _pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
   int err = etree_update(pDB, addr, &payload);
-  if (0 != err) {
-    _pErrHandler->error("Could not update octant in database.\n");
-    return;
-  } // if
+  if (0 != err)
+    throw std::runtime_error("Could not update octant in database.");
 } // _pushData
 
 // ----------------------------------------------------------------------

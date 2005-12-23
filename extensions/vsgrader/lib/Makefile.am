@@ -25,6 +25,7 @@ INCLUDES +=
 libcencalvmvsgrader_la_LIBADD = \
 	-letree \
 	$(top_builddir)/pkgs/storage/lib/libcencalvmstorage.la
+	$(top_builddir)/pkgs/storage/lib/libcencalvmquery.la
 
 subpkginclude_HEADERS = \
 	VsGrader.h \

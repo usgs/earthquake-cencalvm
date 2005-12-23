@@ -13,7 +13,9 @@
 subpackage = create
 include $(top_srcdir)/pkgs/subpackage.am
 
-bin_PROGRAMS = gencencalvm
+bin_PROGRAMS = \
+	gencencalvm \
+	packcencalvm
 
 gencencalvm_SOURCES = \
 	gencencalvm.cc
@@ -21,6 +23,16 @@ gencencalvm_SOURCES = \
 INCLUDES +=
 
 gencencalvm_LDADD = \
+	-letree \
+	$(top_builddir)/pkgs/create/lib/libcencalvmcreate.la \
+	$(top_builddir)/pkgs/storage/lib/libcencalvmstorage.la
+
+packcencalvm_SOURCES = \
+	packcencalvm.cc
+
+INCLUDES +=
+
+packcencalvm_LDADD = \
 	-letree \
 	$(top_builddir)/pkgs/create/lib/libcencalvmcreate.la \
 	$(top_builddir)/pkgs/storage/lib/libcencalvmstorage.la

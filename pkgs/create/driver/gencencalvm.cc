@@ -13,8 +13,7 @@
 // Application driver to generate etree database of central CA
 // velocity model.
 
-#include "cencalvm/create/VMCreator.h" // USES VMCreator
-#include "cencalvm/storage/ErrorHandler.h" // USES VMCreator
+#include "cencalvm/create/GridIngester.h" // USES GridIngester
 
 #include <stdlib.h> // USES exit()
 #include <unistd.h> // USES getopt()
@@ -44,14 +43,14 @@ void
 parseArgs(std::string* pFilenameParams,
 	  std::string* pFilenameOut,
 	  std::string* pFilenameTmp,
-	  std::string* pFilenameLog,
+	  int* pCacheSize,
 	  int argc,
 	  char** argv)
 { // parseArgs
   assert(0 != pFilenameParams);
   assert(0 != pFilenameOut);
   assert(0 != pFilenameTmp);
-  assert(0 != pFilenameLog);
+  assert(0 != pCacheSize);
 
   extern char* optarg;
 
@@ -59,35 +58,34 @@ parseArgs(std::string* pFilenameParams,
   *pFilenameParams = "";
   *pFilenameOut = "";
   *pFilenameTmp = "";
-  *pFilenameLog = "";
   int c = EOF;
-  while ( (c = getopt(argc, argv, "hi:l:o:t:") ) != EOF) {
+  while ( (c = getopt(argc, argv, "c:hi:o:t:") ) != EOF) {
     switch (c)
       { // switch
-	case 'i' : // process -i option
-	  *pFilenameParams = optarg;
-	  nparsed += 2;
-	  break;
-	case 'o' : // process -o option
-	  *pFilenameOut = optarg;
-	  nparsed += 2;
-	  break;
-	case 't' : // process -t option
-	  *pFilenameTmp = optarg;
-	  nparsed += 2;
-	  break;
-	case 'h' : // process -h option
-	  nparsed += 1;
-	  usage();
-	  exit(0);
-	  break;
-	case 'l' : // process -l option
-	  *pFilenameLog = optarg;
-	  nparsed += 2;
-	  break;
-	default :
-	  usage();
-	} // switch
+      case 'c' : // process -c option
+	*pCacheSize = atoi(optarg);
+	nparsed += 2;
+	break;
+      case 'h' : // process -h option
+	nparsed += 1;
+	usage();
+	exit(0);
+	break;
+      case 'i' : // process -i option
+	*pFilenameParams = optarg;
+	nparsed += 2;
+	break;
+      case 'o' : // process -o option
+	*pFilenameOut = optarg;
+	nparsed += 2;
+	break;
+      case 't' : // process -t option
+	*pFilenameTmp = optarg;
+	nparsed += 2;
+	break;
+      default :
+	usage();
+      } // switch
     } // while
   if (nparsed != argc || 
       0 == pFilenameParams->length() ||
@@ -105,25 +103,30 @@ main(int argc,
   std::string filenameOut = "";
   std::string filenameTmp = "";
   std::string filenameLog = "";
+  int cacheSize = 512;
+  const char* description = 
+    "U.S. Geological Survey\n"
+    "Thomas Brocher, Robert Jachens, Carl Wentworth, Russel Graymer, "
+    "Robert Simpson, Brad Aagaard";
   
-  parseArgs(&filenameParams, &filenameOut, &filenameTmp, &filenameLog,
+  parseArgs(&filenameParams, &filenameOut, &filenameTmp, &cacheSize,
 	    argc, argv);
 
-  cencalvm::create::VMCreator creator;
-  cencalvm::storage::ErrorHandler* pHandler = creator.errorHandler();
-
-  if (filenameLog.length() > 0)
-    pHandler->logFilename(filenameLog.c_str());
-
-  creator.filenameParams(filenameParams.c_str());
-  creator.filenameOut(filenameOut.c_str());
-  creator.filenameTmp(filenameTmp.c_str());
-  creator.run();
-
-  if (cencalvm::storage::ErrorHandler::OK != pHandler->status()) {
-    std::cerr << pHandler->message();
+  try {
+    cencalvm::create::GridIngester db;
+    
+    db.filenameParams(filenameParams.c_str());
+    db.filenameOut(filenameOut.c_str());
+    db.filenameTmp(filenameTmp.c_str());
+    db.cacheSize(cacheSize);
+    db.description(description);
+    db.run();
+  } catch (const std::exception& err) {
+    std::cerr << err.what();
     return 1;
-  } // if
+  } catch (...) {
+    return 1;
+  } // catch
 
   return 0;
 } // main

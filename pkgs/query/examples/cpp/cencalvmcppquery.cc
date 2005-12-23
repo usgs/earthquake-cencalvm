@@ -47,6 +47,7 @@ usage(void)
     << "  -e dbextfile  Etree extended database file to query.\n"
     << "  -t queryType  Type of query {'maxres', 'fixedres', 'waveres'}\n"
     << "  -r res        Resolution for query (not needed for maxres queries\n"
+    << "  -c cacheSize  Size of cache in MB to use in query\n"
     << "  -h            Display usage and exit.\n"
     << "  -l logfile    Log file for warnings about no data for locations.\n";
 } // usage
@@ -61,6 +62,7 @@ parseArgs(std::string* pFilenameIn,
 	  std::string* pFilenameLog,
 	  std::string* pQueryType,
 	  double* pQueryRes,
+	  int* pCacheSize,
 	  int argc,
 	  char** argv)
 { // parseArgs
@@ -71,6 +73,7 @@ parseArgs(std::string* pFilenameIn,
   assert(0 != pFilenameLog);
   assert(0 != pQueryType);
   assert(0 != pQueryRes);
+  assert(0 != pCacheSize);
 
   extern char* optarg;
 
@@ -81,15 +84,11 @@ parseArgs(std::string* pFilenameIn,
   *pFilenameDBExt = "";
   *pFilenameLog = "";
   int c = EOF;
-  while ( (c = getopt(argc, argv, "hi:l:o:d:e:r:t:") ) != EOF) {
+  while ( (c = getopt(argc, argv, "c:d:e:hi:l:o:r:t:") ) != EOF) {
     switch (c)
       { // switch
-      case 'i' : // process -i option
-	*pFilenameIn = optarg;
-	nparsed += 2;
-	break;
-      case 'o' : // process -o option
-	*pFilenameOut = optarg;
+      case 'c' : // process -c option
+	*pCacheSize = atoi(optarg);
 	nparsed += 2;
 	break;
       case 'd' : // process -d option
@@ -104,6 +103,14 @@ parseArgs(std::string* pFilenameIn,
 	nparsed += 1;
 	usage();
 	exit(0);
+	break;
+      case 'i' : // process -i option
+	*pFilenameIn = optarg;
+	nparsed += 2;
+	break;
+      case 'o' : // process -o option
+	*pFilenameOut = optarg;
+	nparsed += 2;
 	break;
       case 'l' : // process -l option
 	*pFilenameLog = optarg;
@@ -144,10 +151,11 @@ main(int argc,
   std::string filenameLog = "";
   std::string queryType = "maxres";
   double queryRes = 0.0;
+  int cacheSize = 128;
   
   // Parse command line arguments
   parseArgs(&filenameIn, &filenameOut, &filenameDB, &filenameDBExt,
-	    &filenameLog, &queryType, &queryRes,
+	    &filenameLog, &queryType, &queryRes, &cacheSize,
 	    argc, argv);
 
   // Create query
@@ -171,9 +179,22 @@ main(int argc,
     return 1;
   } // if
 
+  // Set cache size
+  query.cacheSize(cacheSize);
+  if (cencalvm::storage::ErrorHandler::OK != pErrHandler->status()) {
+    std::cerr << pErrHandler->message();
+    return 1;
+  } // if
+
   // Set extended database filename if given
   if ("" != filenameDBExt) {
     query.filenameExt(filenameDBExt.c_str());
+    if (cencalvm::storage::ErrorHandler::OK != pErrHandler->status()) {
+      std::cerr << pErrHandler->message();
+      return 1;
+    } // if
+    // Set cache size
+    query.cacheSizeExt(cacheSize);
     if (cencalvm::storage::ErrorHandler::OK != pErrHandler->status()) {
       std::cerr << pErrHandler->message();
       return 1;

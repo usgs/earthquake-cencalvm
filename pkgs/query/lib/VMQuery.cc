@@ -39,7 +39,7 @@ cencalvm::query::VMQuery::VMQuery(void) :
   _cacheSizeExt(128),
   _queryFn(&cencalvm::query::VMQuery::_queryMax),
   _pErrHandler(new cencalvm::storage::ErrorHandler),
-  _pGeom(new cencalvm::storage::Geometry(*_pErrHandler))
+  _pGeom(new cencalvm::storage::Geometry)
 { // constructor
   const int querySize = 8;
   _pQueryVals = (querySize > 0) ? new int[querySize] : 0;
@@ -268,8 +268,6 @@ cencalvm::query::VMQuery::_queryMax(cencalvm::storage::PayloadStruct* pPayload,
     pAddr->level = ETREE_MAXLEVEL;
     pAddr->type = ETREE_LEAF;
     _pGeom->lonLatElevToAddr(pAddr, lon, lat, elev);
-    if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
-      return;
   } // if
 
   etree_addr_t resAddr;
@@ -304,8 +302,6 @@ cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload
     pAddr->level = _pGeom->level(vertExag * _queryRes);
     pAddr->type = ETREE_LEAF;
     _pGeom->lonLatElevToAddr(pAddr, lon, lat, elev);
-    if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
-      return;
   } // if
 
   etree_addr_t resAddr;
@@ -339,8 +335,6 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
     pAddr->level = ETREE_MAXLEVEL;
     pAddr->type = ETREE_LEAF;
     _pGeom->lonLatElevToAddr(pAddr, lon, lat, elev);
-    if (_pErrHandler->status() != cencalvm::storage::ErrorHandler::OK)
-      return;
   } // if
 
   etree_addr_t resAddr;

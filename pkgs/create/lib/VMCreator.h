@@ -19,7 +19,9 @@
 #if !defined(cencalvm_create_vmcreator_h)
 #define cencalvm_create_vmcreator_h
 
-#include <string> // USES std::string
+#include <string> // HASA std::string
+
+#include "cencalvm/storage/etreefwd.h" // HOLDSA etree_t
 
 namespace cencalvm {
   namespace create {
@@ -27,7 +29,8 @@ namespace cencalvm {
     class TestVMCreator; // friend
   } // namespace create
   namespace storage {
-    class ErrorHandler; // HOLDS ErrorHandler
+    class Geometry; // USES Geometry
+    struct PayloadStruct; // USES PayloadStruct
   } // namespace storage
 } // namespace cencalvm
 
@@ -45,35 +48,48 @@ public :
   /// Destructor
   ~VMCreator(void);
 
-  /** Set filename for parameter file.
+  /** Open a new database.
+   *
+   * Description of database is included in database metadata along
+   * with the hostname where database was created and the time the
+   * database was created.
    *
    * @param filename Name of file
+   * @param cacheSize Size of cache in MB
+   * @param description Description of database
    */
-  void filenameParams(const char* filename);
+  void openDB(const char* filename,
+	      const int cacheSize,
+	      const char* description);
 
-  /** Set filename for output file.
+  /// Close the database
+  void closeDB(void);
+
+  /** Create packed etree database from unpacked etree database.
    *
-   * @param filename Name of file
+   * @param filenamePacked Filename of packed database
+   * @param filenameUnpacked Filename of unpacked database
+   * @param cacheSize Size of cache in MB
    */
-  void filenameOut(const char* filename);
+  void packDB(const char* filenamePacked,
+	      const char* filenameUnpacked,
+	      const int cacheSize) const;
 
-  /** Set filename for temporary (scratch) file.
+  /** Insert data into database.
    *
-   * @param filename Name of file
+   * @param payload Data to insert
+   * @param lon Longitude of location
+   * @param lat Latitude of location
+   * @param elev Elevation of location
+   * @param resHoriz Horizontal resolution associated with location
+   * @param pGeom Pointer to velocity model geometry
    */
-  void filenameTmp(const char* filename);
-
-  /// Create the velocity model database.
-  void run(void) const;
-
-  /// Create packed etree database from unpacked etree database.
-  void packDB(void) const;
-
-  /** Get handle to error handler.
-   *
-   * @returns Pointer to Error handler
-   */
-  cencalvm::storage::ErrorHandler* errorHandler(void);
+  void insert(const storage::PayloadStruct& payload,
+	      const double lon,
+	      const double lat,
+	      const double elev,
+	      const double resHoriz,
+	      storage::Geometry* pGeom);
 
   /** Set flag indicating creation should be quiet (no progress reports).
    *
@@ -82,20 +98,6 @@ public :
    * @param flag True for quiet operation, false to give progress reports
    */
   void quiet(const bool flag);
-
-private :
-  // PRIVATE METHODS ////////////////////////////////////////////////////
-
-  /** Read parameter file.
-   *
-   * @param ppGridFilenames Pointer to array of input grid filenames
-   * @param pNumGrids Pointer to number of input grids
-   */
-  void _readParams(std::string** pGridFilenames,
-		   int* pNumGrids) const;
-
-  /// Create the unpacked etree database.
-  void _createDB(void) const;
 
  private :
   // PRIVATE METHODS ////////////////////////////////////////////////////
@@ -106,12 +108,8 @@ private :
 private :
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 
-  std::string _filenameParams; ///< Filename for parameter file
-  std::string _filenameOut; ///< Filename for output file
-  std::string _filenameTmp; ///< Filename for temporary file
-
-  cencalvm::storage::ErrorHandler* _pErrHandler; ///< Error handler
-
+  std::string _filename; ///< Name of database file
+  etree_t* _pDB; ///< Pointer to database
   bool _quiet; ///< Flag to eliminate progress reports
 
 }; // VMCreator

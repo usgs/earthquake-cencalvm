@@ -29,10 +29,9 @@ libcencalvmcreate_la_LIBADD = \
 
 subpkginclude_HEADERS = \
 	VMCreator.h \
-	VMCreator.icc
-
-noinst_HEADERS = \
-	GridIngester.h
+	VMCreator.icc \
+	GridIngester.h \
+	GridIngester.icc
 
 # export
 clean-local: clean-subpkgincludeHEADERS

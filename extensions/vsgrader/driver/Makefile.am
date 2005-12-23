@@ -24,7 +24,8 @@ gradecencalvm_LDADD = \
 	-letree \
 	$(top_builddir)/extensions/vsgrader/lib/libcencalvmvsgrader.la \
 	$(top_builddir)/pkgs/create/lib/libcencalvmcreate.la \
-	$(top_builddir)/pkgs/storage/lib/libcencalvmstorage.la
+	$(top_builddir)/pkgs/storage/lib/libcencalvmstorage.la \
+	$(top_builddir)/pkgs/query/lib/libcencalvmquery.la
 
 # version
 # $Id$

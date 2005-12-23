@@ -19,6 +19,7 @@ extern "C" {
 #include "etree.h"
 }
 
+#include <stdexcept> // USES std::runtime_error
 #include <sstream> // USES std::ostringstream
 #include <iomanip> // USES setw(), setiosflags(), resetiosflags()
 #include <assert.h> // USES assert()
@@ -36,17 +37,18 @@ const double cencalvm::storage::Geometry::_BUFFERSW = 204800.0;
 const double cencalvm::storage::Geometry::_MAXELEV = 12800.0;
 const etree_tick_t cencalvm::storage::Geometry::_LEFTMOSTONE =
   ~(~((etree_tick_t)0) >> 1);
+const char* cencalvm::storage::Geometry::_METADATA =
+  "Central CA velocity model";
 
 // ----------------------------------------------------------------------
-cencalvm::storage::Geometry::Geometry(ErrorHandler& errHandler) :
+cencalvm::storage::Geometry::Geometry(void) :
   _projXNWRoot(_PROJXNW 
 	       - _BUFFERNW*cos(_AZ*M_PI/180.0)
 	       - _BUFFERSW*sin(_AZ*M_PI/180.0)),
   _projYNWRoot(_PROJYNW
 	       + _BUFFERNW*sin(_AZ*M_PI/180.0)
 	       - _BUFFERSW*cos(_AZ*M_PI/180.0)),
-  _pProj(new Projector(errHandler)),
-  _errHandler(errHandler)
+  _pProj(new Projector)
 { // constructor
 } // constructor
 
@@ -89,20 +91,12 @@ cencalvm::storage::Geometry::lonLatElevToAddr(etree_addr_t* pAddr,
       << std::resetiosflags(std::ios::fixed)
       << std::setiosflags(std::ios::scientific)
       << std::setprecision(6)
-      << lon << ", " << lat << ", " << elev << ", Out of bounds\n";
-    _errHandler.log(msg.str().c_str());
-    std::ostringstream error;
-    error
-      << std::resetiosflags(std::ios::fixed)
-      << std::setiosflags(std::ios::scientific)
-      << std::setprecision(6)
       << "Location (" << lon << ", " << lat << ", " << elev << ")\n"
       << "not in domain. Coordinates relative to root octant are:\n"
       << "  p: " << p/_ROOTLEN << "\n"
       << "  q: " << q/_ROOTLEN << "\n"
       << "  r: " << r/_ROOTLEN << "\n";
-    _errHandler.error(error.str().c_str());
-    return;
+    throw std::runtime_error(msg.str());
   } // if
 
   const double res = _ROOTLEN / ((etree_tick_t) 1 << pAddr->level);

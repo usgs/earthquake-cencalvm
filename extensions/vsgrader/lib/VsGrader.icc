@@ -56,12 +56,6 @@ cencalvm::vsgrader::VsGrader::_indexToElev(const int index) const {
   return _swcornerElev - index*_resVert;
 }
 
-// Get handle to error handler.
-inline
-cencalvm::storage::ErrorHandler*
-cencalvm::vsgrader::VsGrader::errorHandler(void)
-{ return _pErrHandler; }
-
 // version
 // $Id$
 

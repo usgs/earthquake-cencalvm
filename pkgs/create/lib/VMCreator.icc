@@ -14,30 +14,6 @@
 #error "VMCreator.icc must only be included from VMCreator.h"
 #endif
 
-// Set filename for parameter file.
-inline
-void
-cencalvm::create::VMCreator::filenameParams(const char* filename)
-{ _filenameParams = filename; }
-
-// Set filename for output file.
-inline
-void
-cencalvm::create::VMCreator::filenameOut(const char* filename)
-{ _filenameOut = filename; }
-
-// Set filename for temporary (scratch) file.
-inline
-void
-cencalvm::create::VMCreator::filenameTmp(const char* filename)
-{ _filenameTmp = filename; }
-
-// Get handle to error handler.
-inline
-cencalvm::storage::ErrorHandler*
-cencalvm::create::VMCreator::errorHandler(void)
-{ return _pErrHandler; }
-
 // Set flag indicating creation should be quiet (no progress reports).
 inline
 void

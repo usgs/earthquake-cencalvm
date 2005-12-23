@@ -32,6 +32,12 @@ double
 cencalvm::storage::Geometry::vertExag(void)
 { return _VERTEXAG; }
 
+// Get metadata.
+inline
+const char*
+cencalvm::storage::Geometry::metadata(void)
+{ return _METADATA; }
+
 // version
 // $Id$
 

@@ -20,6 +20,7 @@
 #define cencalvm_vsgrader_vsgrader_h
 
 #include <string> // HASA std::string
+#include "cencalvm/query/VMQuery.h" // HASA QueryEnum
 
 #include "cencalvm/storage/etreefwd.h" // USES etree_t
 
@@ -31,7 +32,6 @@ namespace cencalvm {
   namespace storage {
     class Geometry; // HOLDSA Geometry
     class Projector; // HOLDSA Projector
-    class ErrorHandler; // HOLDSA ErrorHandler
     class PayloadStruct; // forward declaration
   } // namespace storage
 } // namespace vsgrader
@@ -85,12 +85,6 @@ public :
 
   /// Create Etree database with maximum gradient.
   void run(void);
-
-  /** Get handle to error handler.
-   *
-   * @returns Pointer to Error handler
-   */
-  cencalvm::storage::ErrorHandler* errorHandler(void);
 
  private :
   // PRIVATE METHODS ////////////////////////////////////////////////////
@@ -187,23 +181,24 @@ private :
   double _swcornerLon; ///< Longitude of southwest top corner of domain
   double _swcornerLat; ///< Latitude of southwest top corner of domain
   double _swcornerElev; ///< Elevation of southwest top corner of domain
+  double _domainLen; ///< Length of domain
+  double _domainWidth; ///< Width of domain
+  double _domainHt; ///< Height of domain
+  double _resVert; ///< Resolution (vertical) of domain
 
   double _swcornerX; ///< Projected x coordinate of SW top corner
   double _swcornerY; ///< Projected y coordinate of SW top corner
 
-
-  double _domainLen; ///< Length of domain
-  double _domainWidth; ///< Width of domain
-  double _domainHt; ///< Height of domain
-
-  double _resVert; ///< Resolution (vertical) of domain
+  double _queryRes; ///< Resolution of extraction query
 
   std::string _filenameIn; ///< Filename for input database
   std::string _filenameOut; ///< Filename for output database
   std::string _filenameTmp; ///< Filename for temporary database
   std::string _filenameParams; ///< Filename for parameters
 
-  cencalvm::storage::ErrorHandler* _pErrHandler; ///< Error handler
+  int _cacheSize; ///< Database cache size in MB
+  query::VMQuery::QueryEnum _queryType; ///< Type of query in extraction
+
   cencalvm::storage::Geometry* _pGeom; ///< Velocity model geometry
   cencalvm::storage::Projector* _pProj; ///< Coordinate projector
 

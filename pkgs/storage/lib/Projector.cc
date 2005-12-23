@@ -18,6 +18,7 @@ extern "C" {
 #include "proj_api.h" // USES PROJ4
 };
 
+#include <stdexcept> // USES std::runtime_error
 #include <sstream> // USES std::ostringstream
 #include <iomanip> // USES setw(), setiosflags(), resetiosflags()
 #include <assert.h> // USES assert()
@@ -32,9 +33,8 @@ const char* cencalvm::storage::Projector::_DATUM = "NAD83";
 const char* cencalvm::storage::Projector::_UNITS = "m";
 
 // ----------------------------------------------------------------------
-cencalvm::storage::Projector::Projector(ErrorHandler& errHandler) :
-  _pProj(0),
-  _errHandler(errHandler)
+cencalvm::storage::Projector::Projector(void) :
+  _pProj(0)
 { // constructor
   std::ostringstream args;
   args
@@ -53,8 +53,8 @@ cencalvm::storage::Projector::Projector(ErrorHandler& errHandler) :
 	<< "  " << pj_strerrno(pj_errno) << "\n"
 	<< "Projection parameters:\n"
 	<< "  " << args;
-    _errHandler.error(msg.str().c_str());
-  } // if  
+    throw std::runtime_error(msg.str());
+  } // if
 } // constructor
 
 // ----------------------------------------------------------------------
@@ -86,7 +86,7 @@ cencalvm::storage::Projector::project(double* pX,
 	<< "  " << pj_strerrno(pj_errno) << "\n"
 	<< "  longitude: " << lon << "\n"
 	<< "  latitude: " << lat << "\n";
-    _errHandler.error(msg.str().c_str());
+    throw std::runtime_error(msg.str());
   } // if
   *pX = xy.u;
   *pY = xy.v;
@@ -116,7 +116,7 @@ cencalvm::storage::Projector::invProject(double* pLon,
 	<< "  " << pj_strerrno(pj_errno) << "\n"
 	<< "  x: " << x << "\n"
 	<< "  y: " << y << "\n";
-    _errHandler.error(msg.str().c_str());
+    throw std::runtime_error(msg.str());
   } // if
   *pLon = lonlat.u * radToDeg;
   *pLat = lonlat.v * radToDeg;

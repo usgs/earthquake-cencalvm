@@ -14,7 +14,6 @@
 // velocity model.
 
 #include "cencalvm/vsgrader/VsGrader.h" // USES VMCreator
-#include "cencalvm/storage/ErrorHandler.h" // USES VMCreator
 
 #include <stdlib.h> // USES exit()
 #include <unistd.h> // USES getopt()
@@ -28,13 +27,12 @@ void
 usage(void)
 { // usage
   std::cerr
-    << "usage: gradecencalvm [-h] -p paramFile -i inFile -o outFile -t tmpFile [-l logFile]\n"
+    << "usage: gradecencalvm [-h] -p paramFile -i inFile -o outFile -t tmpFile\n"
     << "  -p paramFile  Parameter file with list of grid input files\n"
     << "  -i inFile     Input Etree database file.\n"
     << "  -o outFile    Output Etree database file.\n"
     << "  -t tmpFile    Name of scratch file used in database construction.\n"
     << "  -h            Display usage and exit.\n"
-    << "  -l logFile    Log file for warnings about data.\n"
     << "\n"
     << "Parameter file is list of grid input files, one per line.\n";
   exit(1);
@@ -46,7 +44,6 @@ parseArgs(std::string* pFilenameParams,
 	  std::string* pFilenameIn,
 	  std::string* pFilenameOut,
 	  std::string* pFilenameTmp,
-	  std::string* pFilenameLog,
 	  int argc,
 	  char** argv)
 { // parseArgs
@@ -54,7 +51,6 @@ parseArgs(std::string* pFilenameParams,
   assert(0 != pFilenameIn);
   assert(0 != pFilenameOut);
   assert(0 != pFilenameTmp);
-  assert(0 != pFilenameLog);
 
   extern char* optarg;
 
@@ -63,9 +59,8 @@ parseArgs(std::string* pFilenameParams,
   *pFilenameIn = "";
   *pFilenameOut = "";
   *pFilenameTmp = "";
-  *pFilenameLog = "";
   int c = EOF;
-  while ( (c = getopt(argc, argv, "hi:l:o:p:t:") ) != EOF) {
+  while ( (c = getopt(argc, argv, "hi:o:p:t:") ) != EOF) {
     switch (c)
       { // switch
 	case 'i' : // process -i option
@@ -89,10 +84,6 @@ parseArgs(std::string* pFilenameParams,
 	  usage();
 	  exit(0);
 	  break;
-	case 'l' : // process -l option
-	  *pFilenameLog = optarg;
-	  nparsed += 2;
-	  break;
 	default :
 	  usage();
 	} // switch
@@ -114,29 +105,24 @@ main(int argc,
   std::string filenameIn = "";
   std::string filenameOut = "";
   std::string filenameTmp = "";
-  std::string filenameLog = "";
   
-  parseArgs(&filenameParams, &filenameIn, &filenameOut, &filenameTmp,
-	    &filenameLog, argc, argv);
+  try {
+    parseArgs(&filenameParams, &filenameIn, &filenameOut, &filenameTmp,
+	      argc, argv);
 
-  cencalvm::vsgrader::VsGrader grader;
-  cencalvm::storage::ErrorHandler* pHandler = grader.errorHandler();
-
-  if (filenameLog.length() > 0)
-    pHandler->logFilename(filenameLog.c_str());
-
-  grader.filenameParams(filenameParams.c_str());
-  grader.filenameIn(filenameIn.c_str());
-  grader.filenameOut(filenameOut.c_str());
-  grader.filenameTmp(filenameTmp.c_str());
-  grader.run();
-
-  if (cencalvm::storage::ErrorHandler::OK != pHandler->status()) {
-    std::cerr
-      << "Error: "
-      << pHandler->message() << std::endl;
+    cencalvm::vsgrader::VsGrader grader;
+    
+    grader.filenameParams(filenameParams.c_str());
+    grader.filenameIn(filenameIn.c_str());
+    grader.filenameOut(filenameOut.c_str());
+    grader.filenameTmp(filenameTmp.c_str());
+    grader.run();
+  } catch (const std::exception& err) {
+    std::cerr << err.what();
     return 1;
-  } // if
+  } catch (...) {
+    return 1;
+  } // catch
 
   return 0;
 } // main
