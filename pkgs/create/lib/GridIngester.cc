@@ -36,6 +36,8 @@ cencalvm::create::GridIngester::GridIngester(void) :
   _filenameParams(""),
   _filenameOut(""),
   _filenameTmp(""),
+  _cacheSize(64),
+  _description(""),
   _pGeom(0),
   _quiet(false)
 { // constructor

@@ -63,7 +63,7 @@ cencalvm::create::VMCreator::openDB(const char* filename,
   const int numDims = 3;
   const int payloadSize = sizeof(storage::PayloadStruct);
   _pDB = etree_open(filename, 
-		    O_CREAT | O_TRUNC | O_RDWR, 
+		    O_CREAT | O_TRUNC | O_RDWR,
 		    cacheSize, payloadSize, numDims);
   if (0 == _pDB)
     throw std::runtime_error("Could not create etree database.");
