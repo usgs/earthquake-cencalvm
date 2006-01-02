@@ -42,6 +42,7 @@ class cencalvm::vsgrader::TestVsGrader : public CppUnit::TestFixture
   CPPUNIT_TEST( testFilenameIn );
   CPPUNIT_TEST( testFilenameOut );
   CPPUNIT_TEST( testFilenameTmp );
+  CPPUNIT_TEST( testCacheSize );
   CPPUNIT_TEST( testQuiet );
   CPPUNIT_TEST( testReadParams );
   CPPUNIT_TEST( testInitialize );
@@ -75,6 +76,9 @@ public :
 
   /// Test filenameTmp()
   void testFilenameTmp(void);
+
+  /// Test cacheSize()
+  void testCacheSize(void);
 
   /// Test quiet()
   void testQuiet(void);

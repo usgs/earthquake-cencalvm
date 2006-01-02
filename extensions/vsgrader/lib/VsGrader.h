@@ -75,6 +75,12 @@ public :
    */
   void filenameParams(const char* filename);
 
+  /** Set cache size.
+   *
+   * @param Size of cache in MB
+   */
+  void cacheSize(const int size);
+
   /** Set velocity model geometry.
    *
    * @param pGeometry Pointer to geometry

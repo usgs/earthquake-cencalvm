@@ -100,6 +100,18 @@ cencalvm::vsgrader::TestVsGrader::testFilenameTmp(void)
 } // testFilenameTmp
 
 // ----------------------------------------------------------------------
+// Test cacheSize()
+void
+cencalvm::vsgrader::TestVsGrader::testCacheSize(void)
+{ // testCacheSize
+  const int cacheSize = 34;
+
+  VsGrader grader;
+  grader.cacheSize(cacheSize);
+  CPPUNIT_ASSERT_EQUAL(cacheSize, grader._cacheSize);
+} // testCacheSize
+
+// ----------------------------------------------------------------------
 // Test quiet()
 void
 cencalvm::vsgrader::TestVsGrader::testQuiet(void)

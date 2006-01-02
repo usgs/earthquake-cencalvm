@@ -44,6 +44,7 @@ parseArgs(std::string* pFilenameParams,
 	  std::string* pFilenameIn,
 	  std::string* pFilenameOut,
 	  std::string* pFilenameTmp,
+	  int* pCacheSize,
 	  int argc,
 	  char** argv)
 { // parseArgs
@@ -51,6 +52,7 @@ parseArgs(std::string* pFilenameParams,
   assert(0 != pFilenameIn);
   assert(0 != pFilenameOut);
   assert(0 != pFilenameTmp);
+  assert(0 != pCacheSize);
 
   extern char* optarg;
 
@@ -60,9 +62,18 @@ parseArgs(std::string* pFilenameParams,
   *pFilenameOut = "";
   *pFilenameTmp = "";
   int c = EOF;
-  while ( (c = getopt(argc, argv, "hi:o:p:t:") ) != EOF) {
+  while ( (c = getopt(argc, argv, "c:hi:o:p:t:") ) != EOF) {
     switch (c)
       { // switch
+	case 'c' : // process -c option
+	  *pCacheSize = atoi(optarg);
+	  nparsed += 2;
+	  break;
+	case 'h' : // process -h option
+	  nparsed += 1;
+	  usage();
+	  exit(0);
+	  break;
 	case 'i' : // process -i option
 	  *pFilenameIn = optarg;
 	  nparsed += 2;
@@ -78,11 +89,6 @@ parseArgs(std::string* pFilenameParams,
 	case 't' : // process -t option
 	  *pFilenameTmp = optarg;
 	  nparsed += 2;
-	  break;
-	case 'h' : // process -h option
-	  nparsed += 1;
-	  usage();
-	  exit(0);
 	  break;
 	default :
 	  usage();
@@ -105,17 +111,20 @@ main(int argc,
   std::string filenameIn = "";
   std::string filenameOut = "";
   std::string filenameTmp = "";
+  int cacheSize = 128;
   
   try {
     parseArgs(&filenameParams, &filenameIn, &filenameOut, &filenameTmp,
+	      &cacheSize,
 	      argc, argv);
 
     cencalvm::vsgrader::VsGrader grader;
-    
+
     grader.filenameParams(filenameParams.c_str());
     grader.filenameIn(filenameIn.c_str());
     grader.filenameOut(filenameOut.c_str());
     grader.filenameTmp(filenameTmp.c_str());
+    grader.cacheSize(cacheSize);
     grader.run();
   } catch (const std::exception& err) {
     std::cerr << err.what();
