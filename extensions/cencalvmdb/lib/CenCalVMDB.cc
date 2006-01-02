@@ -22,7 +22,7 @@
 #include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 #include "cencalvm/storage/Payload.h" // USES Payload::NODATAVAL
 
-#include "spatialdata/spatialdb/ErrorHandler.h" // USES ErrorHandler
+#include <stdexcept> // USES std::runtime_error
 
 #if defined(USE_PYTHIA)
 #include "journal/firewall.h" // USES FIREWALL
@@ -64,8 +64,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::open(void)
 
   _pQuery->open();
   if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
-    errorHandler()->set(spatialdata::spatialdb::ErrorHandler::ERROR,
-			_pQuery->errorHandler()->message());
+    throw std::runtime_error(_pQuery->errorHandler()->message());
 } // open
 
 // ----------------------------------------------------------------------
@@ -77,8 +76,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::close(void)
 
   _pQuery->close(); 
   if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
-    errorHandler()->set(spatialdata::spatialdb::ErrorHandler::ERROR,
-			_pQuery->errorHandler()->message());
+    throw std::runtime_error(_pQuery->errorHandler()->message());
 } // close
 
 // ----------------------------------------------------------------------
@@ -90,8 +88,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::queryType(const query::VMQuery::Qu
 
   _pQuery->queryType(queryType);
   if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
-    errorHandler()->set(spatialdata::spatialdb::ErrorHandler::ERROR,
-			_pQuery->errorHandler()->message());
+    throw std::runtime_error(_pQuery->errorHandler()->message());
 } // queryType
 
 // ----------------------------------------------------------------------
@@ -104,8 +101,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
 
   _pQuery->queryVals(names, numVals);
   if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
-    errorHandler()->set(spatialdata::spatialdb::ErrorHandler::ERROR,
-			_pQuery->errorHandler()->message());
+    throw std::runtime_error(_pQuery->errorHandler()->message());
 
   _vsVal = -1;
   for (int i=0; i < numVals; ++i)
@@ -117,7 +113,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
 
 // ----------------------------------------------------------------------
 // Query the database.
-void
+int
 cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
 					const int numVals,
 					const double x,
@@ -142,11 +138,11 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
   if (pCoords[2] < -44.95e+3)
     pCoords[2] = -44.95e+3;
 
+  int err = 0;
   cencalvm::storage::ErrorHandler* pErrHandler = _pQuery->errorHandler();
   _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], pCoords[2]);
-  if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
-    errorHandler()->set(spatialdata::spatialdb::ErrorHandler::ERROR,
-			_pQuery->errorHandler()->message());
+  if (storage::ErrorHandler::ERROR == pErrHandler->status())
+    throw std::runtime_error(pErrHandler->message());
 
   if (_vsVal >= 0) {
     double* pVs = &(*pVals)[_vsVal];
@@ -166,10 +162,14 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
       *pVs = _minVs;
   } // if
 
-  if (cencalvm::storage::ErrorHandler::WARNING == pErrHandler->status())
+  if (cencalvm::storage::ErrorHandler::WARNING == pErrHandler->status()) {
+    err = 1;
     pErrHandler->resetStatus();
+  } // if
   
   delete[] pCoords; pCoords = 0;
+
+  return err;
 } // query
 
 // version

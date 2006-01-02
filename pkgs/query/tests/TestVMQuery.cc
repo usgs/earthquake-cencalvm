@@ -14,8 +14,9 @@
 
 #include "cencalvm/query/VMQuery.h" // USES VMQuery
 #include "cencalvm/average/Averager.h" // USES Averager
-#include "cencalvm/storage/Geometry.h" // USES Averager
+#include "cencalvm/storage/Geometry.h" // USES Geometry
 #include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
+#include "cencalvm/storage/GeomCenCA.h" // USES GeomCenCA
 
 extern "C" {
 #include "etree.h"
@@ -29,6 +30,22 @@ CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::query::TestVMQuery );
 
 // ----------------------------------------------------------------------
 #include "data/TestVMQuery.dat"
+
+// ----------------------------------------------------------------------
+// Setup TestVMQuery
+void
+cencalvm::query::TestVMQuery::setUp(void)
+{ // setUp
+  _pGeom = new storage::GeomCenCA;
+} // setUp
+
+// ----------------------------------------------------------------------
+// Tear down TestVMQuery
+void
+cencalvm::query::TestVMQuery::tearDown(void)
+{ // tearDown
+  delete _pGeom; _pGeom = 0;
+} // tearDown
 
 // ----------------------------------------------------------------------
 // Test constructor
@@ -180,6 +197,8 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
 void 
 cencalvm::query::TestVMQuery::testQueryFixed(void)
 { // testQueryFixed
+  assert(0 != _pGeom);
+
   _createDB();
 
   VMQuery query;
@@ -203,8 +222,7 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
 
     const int numOctCoords = 4;
     const int level = _COORDS[numOctCoords*iOctant+3];
-    const double res = cencalvm::storage::Geometry::edgeLen(level) /
-      cencalvm::storage::Geometry::vertExag();
+    const double res = _pGeom->edgeLen(level) / _pGeom->vertExag();
     
     query.queryRes(res);
     query.query(&pVals, numVals, 
@@ -448,11 +466,6 @@ cencalvm::query::TestVMQuery::_createDB(void) const
   averager.filenameOut(_DBFILENAME);
   averager.quiet(true);
   averager.average();  
-
-  const cencalvm::storage::ErrorHandler* pHandler = averager.errorHandler();
-  CPPUNIT_ASSERT(0 != pHandler);
-  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       pHandler->status());
 } // _createDB
 
 // ----------------------------------------------------------------------
@@ -506,11 +519,6 @@ cencalvm::query::TestVMQuery::_createDBExt(void) const
   averager.filenameOut(_DBFILENAMEEXT);
   averager.quiet(true);
   averager.average();  
-
-  const cencalvm::storage::ErrorHandler* pHandler = averager.errorHandler();
-  CPPUNIT_ASSERT(0 != pHandler);
-  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       pHandler->status());
 } // _createDBExt
 
 // ----------------------------------------------------------------------
@@ -519,6 +527,8 @@ void
 cencalvm::query::TestVMQuery::_dbLonLatElev(double** ppCoords) const
 { // _dbLonLatElev
   assert(0 != ppCoords);
+  assert(0 != _pGeom);
+
   const int numCoords = 3;
   const int numOctants = _NUMOCTANTS;
   delete[] *ppCoords; *ppCoords = new double[numCoords*numOctants];
@@ -537,9 +547,7 @@ cencalvm::query::TestVMQuery::_dbLonLatElev(double** ppCoords) const
     double lon = 0;
     double lat = 0;
     double elev = 0;
-    cencalvm::storage::ErrorHandler errHandler;
-    cencalvm::storage::Geometry geom(errHandler);
-    geom.addrToLonLatElev(&lon, &lat, &elev, &addr);
+    _pGeom->addrToLonLatElev(&lon, &lat, &elev, &addr);
 
     (*ppCoords)[i++] = lon;
     (*ppCoords)[i++] = lat;
@@ -553,6 +561,8 @@ void
 cencalvm::query::TestVMQuery::_dbLonLatElevExt(double** ppCoords) const
 { // _dbLonLatElevExt
   assert(0 != ppCoords);
+  assert(0 != _pGeom);
+
   const int numCoords = 3;
   const int numOctants = _NUMOCTANTSEXT;
   delete[] *ppCoords; *ppCoords = new double[numCoords*numOctants];
@@ -571,9 +581,7 @@ cencalvm::query::TestVMQuery::_dbLonLatElevExt(double** ppCoords) const
     double lon = 0;
     double lat = 0;
     double elev = 0;
-    cencalvm::storage::ErrorHandler errHandler;
-    cencalvm::storage::Geometry geom(errHandler);
-    geom.addrToLonLatElev(&lon, &lat, &elev, &addr);
+    _pGeom->addrToLonLatElev(&lon, &lat, &elev, &addr);
 
     (*ppCoords)[i++] = lon;
     (*ppCoords)[i++] = lat;

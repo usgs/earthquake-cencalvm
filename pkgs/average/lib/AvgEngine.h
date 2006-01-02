@@ -32,7 +32,6 @@ namespace cencalvm {
   } // namespace average
   namespace storage {
     struct PayloadStruct; // USES PayloadStruct
-    class ErrorHandler; // HOLDSA ErrorHandler
   } // namespace storage
 } // namespace cencalvm
 
@@ -47,11 +46,9 @@ public :
    *
    * @param dbOut Output database
    * @param dbIn Input database
-   * @param errHandler Error handler
    */
   AvgEngine(etree_t* dbOut,
-	    etree_t* dbIn,
-	    cencalvm::storage::ErrorHandler& errHandler);
+	    etree_t* dbIn);
 
   /// Destructor
   ~AvgEngine(void);
@@ -110,7 +107,7 @@ private :
    * @param payload Payload of octant
    */
   void _averageOctant(etree_addr_t* pAddr,
-		      const cencalvm::storage::PayloadStruct& payload);
+		      const storage::PayloadStruct& payload);
 
   /** Add contribution of octant to parent.
    *
@@ -120,7 +117,7 @@ private :
    */
   void _addToParent(OctantPendingStruct* pPendingParent,
 		    etree_addr_t* pAddrChild,
-		    const cencalvm::storage::PayloadStruct& childPayload);
+		    const storage::PayloadStruct& childPayload);
 
   /** Update pending octant.
    *
@@ -128,7 +125,7 @@ private :
    * @param payload Octant payload
    */
   void _updateOctant(etree_addr_t* pAddr,
-		     const cencalvm::storage::PayloadStruct& childPayload);
+		     const storage::PayloadStruct& childPayload);
 
   /** Process pending octant.
    *
@@ -189,9 +186,6 @@ private :
   int _pendingCursor;
 
   CounterStruct _octantCounter;
-
-  cencalvm::storage::ErrorHandler& _errHandler; ///< Error handler
-
 
   static const etree_tick_t _LEFTMOSTONE; ///< first bit is 1, others 0
 

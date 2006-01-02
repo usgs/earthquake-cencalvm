@@ -29,9 +29,6 @@ namespace cencalvm {
   namespace average {
     class Averager;
   } // namespace average
-  namespace storage {
-    class ErrorHandler; // HOLDSA ErrorHandler
-  } // namespace storage
 } // namespace cencalvm
 
 /// C++ manager for spatial averaging of an etree database containing
@@ -65,12 +62,6 @@ public :
    */
   void average(void);
 
-  /** Get handle to error handler.
-   *
-   * @returns Pointer to Error handler
-   */
-  cencalvm::storage::ErrorHandler* errorHandler(void);
-
   /** Set flag indicating creation should be quiet (no progress reports).
    *
    * Default behavior is for to give progress reports.
@@ -97,8 +88,6 @@ private :
   std::string _filenameIn; ///< Filename of input database
   std::string _filenameOut; ///< Filename of output database
   
-  cencalvm::storage::ErrorHandler* _pErrHandler; ///< Error handler
-
   bool _quiet; ///< Flag to eliminate progress reports
 
 }; // Averager

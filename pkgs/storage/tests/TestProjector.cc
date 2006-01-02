@@ -12,8 +12,7 @@
 
 #include "TestProjector.h" // Implementation of class methods
 
-#include "../lib/Projector.h" // USES Projector
-#include "../lib/ErrorHandler.h" // USES Projector
+#include "cencalvm/storage/Projector.h" // USES Projector
 
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::storage::TestProjector );
@@ -26,9 +25,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::storage::TestProjector );
 void
 cencalvm::storage::TestProjector::testConstructor(void)
 { // testConstructor
-  ErrorHandler errHandler;
-  Projector proj(errHandler);
-  CPPUNIT_ASSERT_EQUAL(ErrorHandler::OK, errHandler.status());
+  Projector proj;
 } // testConstructor
 
 // ----------------------------------------------------------------------
@@ -36,8 +33,7 @@ cencalvm::storage::TestProjector::testConstructor(void)
 void
 cencalvm::storage::TestProjector::testProject(void)
 { // testProject
-  ErrorHandler errHandler;
-  Projector proj(errHandler);
+  Projector proj;
 
   const int numLocs = _NUMLOCS;
   for (int iLoc=0; iLoc < numLocs; ++iLoc) {
@@ -50,8 +46,6 @@ cencalvm::storage::TestProjector::testProject(void)
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, x/pXY[0], tolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, y/pXY[1], tolerance);
   } // for
-
-  CPPUNIT_ASSERT_EQUAL(ErrorHandler::OK, errHandler.status());
 } // testProject
 
 // ----------------------------------------------------------------------
@@ -59,8 +53,7 @@ cencalvm::storage::TestProjector::testProject(void)
 void
 cencalvm::storage::TestProjector::testInvProject(void)
 { // testInvProject
-  ErrorHandler errHandler;
-  Projector proj(errHandler);
+  Projector proj;
 
   const int numLocs = _NUMLOCS;
   for (int iLoc=0; iLoc < numLocs; ++iLoc) {
@@ -73,8 +66,6 @@ cencalvm::storage::TestProjector::testInvProject(void)
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, lon/pLonLat[0], tolerance);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, lat/pLonLat[1], tolerance);
   } // for
-
-  CPPUNIT_ASSERT_EQUAL(ErrorHandler::OK, errHandler.status());
 } // testInvProject
 
 // version

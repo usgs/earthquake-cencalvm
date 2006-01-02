@@ -29,6 +29,9 @@ namespace cencalvm {
   namespace query {
     class TestVMQuery;
   } // query
+  namespace storage {
+    class Geometry; // HOLDSA Geometry
+  } // storage
 } // cencalvm
 
 /// C++ unit testing for VMQuery
@@ -54,6 +57,12 @@ class cencalvm::query::TestVMQuery : public CppUnit::TestFixture
 
   // PUBLIC METHODS /////////////////////////////////////////////////////
 public :
+
+  /// Setup TestVMQuery
+  void setUp(void);
+
+  /// Tear down TestVMQuery
+  void tearDown(void);
 
   /// Test constructor
   void testConstructor(void);
@@ -94,7 +103,7 @@ public :
   /// Test query() with max query and extended model
   void testQueryMaxExt(void);
 
-  // PRIVATE MEMBERS ////////////////////////////////////////////////////
+  // PRIVATE METHODS ////////////////////////////////////////////////////
 private :
 
   /// Create etree database.
@@ -115,8 +124,10 @@ private :
    */
   void _dbLonLatElevExt(double** ppCoords) const;
 
-  // PRIVATE METHODS ////////////////////////////////////////////////////
+  // PRIVATE MEMBERS ////////////////////////////////////////////////////
 private :
+
+  storage::Geometry* _pGeom; ///< Pointer to velocity model geometry
 
   static const double _OCTVALS[]; ///< Octant values in database
   static const double _RELPAY[]; ///< Relative values of payload

@@ -20,6 +20,7 @@ data_TMP = \
 
 noinst_HEADERS = \
 	TestVMCreator.dat \
+	TestGridIngester.dat \
 	$(data_DATA)
 
 # 'export' the input files by performing a mock install

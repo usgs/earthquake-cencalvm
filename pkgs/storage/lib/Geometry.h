@@ -21,13 +21,10 @@
 
 #include "etreefwd.h" // USES etree types
 
-#include <math.h> // USES log()
-
 namespace cencalvm {
   namespace storage {
     class Geometry;
-    class Projector; // HOLDSA Projector
-    class TestGeometry; // friend
+    class Projector; // USES Projector
   } // namespace storage
 } // namespace cencalvm
 
@@ -35,8 +32,6 @@ namespace cencalvm {
 /// model.
 class cencalvm::storage::Geometry
 { // Geometry
-  friend class TestGeometry;
-
 public :
   // PUBLIC METHODS /////////////////////////////////////////////////////
 
@@ -44,7 +39,13 @@ public :
   Geometry(void);
 
   /// Destructor
-  ~Geometry(void);
+  virtual ~Geometry(void);
+
+  /** Clone geometry.
+   *
+   * @returns Copy of this
+   */
+  virtual Geometry* clone(void) const = 0;
 
   /** Map global coordinates xyz to etree address. 
    *
@@ -55,10 +56,10 @@ public :
    * @param lat Latitude of location in degrees
    * @param elev Elevation of location wrt MSL in meters
    */
-  void lonLatElevToAddr(etree_addr_t* pAddr,
-			const double lon,
-			const double lat,
-			const double elev);
+  virtual void lonLatElevToAddr(etree_addr_t* pAddr,
+				const double lon,
+				const double lat,
+				const double elev) = 0;
   
   /** Get global coordinates of octant centroid.
    *
@@ -67,22 +68,40 @@ public :
    * @param pElev Pointer to elevation of location wrt MSL in meters
    * @param pAddr Pointer to etree address
    */
-  void addrToLonLatElev(double* pLon,
-			double* pLat,
-			double* pElev,
-			etree_addr_t* pAddr);
+  virtual void addrToLonLatElev(double* pLon,
+				double* pLat,
+				double* pElev,
+				etree_addr_t* pAddr) = 0;
   
   /** Get length of octant edge (horizontal direction).
    *
    * @param level Level in etree
    */
-  static double edgeLen(const etree_tick_t level);
+  virtual double edgeLen(const etree_tick_t level) = 0;
 
   /** Get level in etree corresponding to horizontal resolution.
    *
    * @param res Spatial resolution
    */
-  static int level(const double res);
+  virtual int level(const double res) = 0;
+
+  /** Get vertical exaggeration.
+   *
+   * @returns Vertical exaggeration
+   */
+  virtual double vertExag(void) = 0;
+
+  /** Get projector associated with geometry.
+   *
+   * @returns Pointer to projector
+   */
+  virtual Projector* projector(void) = 0;
+
+  /** Get metadata describing model geometry.
+   *
+   * @returns String containing metadata
+   */
+  virtual const char* metadata(void) = 0;
 
   /** Compute address of ancestor at specified level of given octant.
    *
@@ -94,67 +113,18 @@ public :
 			   const etree_addr_t& childAddr,
 			   const int ancestorLevel);
 
-  /** Get vertical exaggeration.
-   *
-   * @returns Vertical exaggeration
-   */
-  static double vertExag(void);
-
-  /** Get metadata describing model geometry.
-   *
-   * @returns String containing metadata
-   */
-  static const char* metadata(void);
-
  private :
   // PRIVATE METHODS ////////////////////////////////////////////////////
 
   Geometry(const Geometry& g); ///< Not implemented
   const Geometry& operator=(const Geometry& g); ///< Not implemented
   
-private :
-  // PRIVATE MEMBERS ////////////////////////////////////////////////////
-
-  /// Projected X coordinate of NW corner of root octant
-  const double _projXNWRoot;
-
-  /// Projected Y coordinate of NW corner of root octant
-  const double _projYNWRoot;
-
-  /// Projector for converting from lon/lat/elev to projected coordinates
-  Projector* _pProj;
-  
-  /// Length of root octant
-  static const double _ROOTLEN;
-
-  /// Azimuth of NW to NE edge of octants
-  static const double _AZ;
-
-  /// Vertical exaggeration of octants
-  static const double _VERTEXAG;
-
-  /// Projected X coordinate of NW corner of detailed region
-  static const double _PROJXNW;
-
-  /// Projected Y coordinate of NW corner of detailed region
-  static const double _PROJYNW;
-
-  /// Distant to NW from detailed region to NW edge of root octant
-  static const double _BUFFERNW;
-
-  /// Distant to SW from detailed region to SW edge of root octant
-  static const double _BUFFERSW;
-
-  /// Elevation (wrt MSL) of top of root octant
-  static const double _MAXELEV;
+protected :
+  // PROTECTED MEMBERS //////////////////////////////////////////////////
 
   static const etree_tick_t _LEFTMOSTONE; ///< first bit is 1, others 0
 
-  static const char* _METADATA; ///< String describing model geometry
-
 }; // Geometry
-
-#include "Geometry.icc" // inline methods
 
 #endif // cencalvm_storage_geometry_h
 

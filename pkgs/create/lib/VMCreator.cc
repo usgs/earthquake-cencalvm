@@ -54,6 +54,7 @@ cencalvm::create::VMCreator::openDB(const char* filename,
 				    const char* description)
 { // openDB
   assert(0 != filename);
+  assert(0 != description);
 
   if (!_quiet)
     std::cout << "Opening new etree database '" << filename << "'."
@@ -61,17 +62,15 @@ cencalvm::create::VMCreator::openDB(const char* filename,
 
   const int numDims = 3;
   const int payloadSize = sizeof(storage::PayloadStruct);
-  etree_t* _pDB = etree_open(filename, 
-			     O_CREAT | O_TRUNC | O_RDWR, 
-			     cacheSize, payloadSize, numDims);
+  _pDB = etree_open(filename, 
+		    O_CREAT | O_TRUNC | O_RDWR, 
+		    cacheSize, payloadSize, numDims);
   if (0 == _pDB)
     throw std::runtime_error("Could not create etree database.");
   
   // Register schema
-  if (0 != etree_registerschema(_pDB, storage::Payload::SCHEMA)) {
-    etree_close(_pDB); _pDB = 0;
+  if (0 != etree_registerschema(_pDB, storage::Payload::SCHEMA))
     throw std::runtime_error(etree_strerror(etree_errno(_pDB)));
-  } // if
  
   // Create and then register metadata 
   const int maxLen = 128;
@@ -81,13 +80,13 @@ cencalvm::create::VMCreator::openDB(const char* filename,
   const char* datetime = ctime(&rawTime);
   std::ostringstream metainfo;
   metainfo
-    << description
+    << description << "\n"
     << "created on: " << datetime
     << "host: "  << hostname;
-  if (0 != etree_setappmeta(_pDB, metainfo.str().c_str())) {
-    etree_close(_pDB); _pDB = 0;
+  if (0 != etree_setappmeta(_pDB, metainfo.str().c_str()))
     throw std::runtime_error(etree_strerror(etree_errno(_pDB)));
-  } // if
+
+  _filename = filename;
   
   if (!_quiet)
     std::cout << "Finished preparing database." << std::endl;
@@ -101,8 +100,9 @@ cencalvm::create::VMCreator::closeDB(void)
   if (!_quiet)
     std::cout << "Closing database '" << _filename << "'." << std::endl;
 
-  if (0 != _pDB)
+  if (0 != _pDB) {
     etree_close(_pDB); _pDB = 0;
+  } // if
 } // closeDB
 
 // ----------------------------------------------------------------------
@@ -114,7 +114,7 @@ cencalvm::create::VMCreator::packDB(const char* filenamePacked,
 { // packDB
   if (!_quiet)
     std::cout 
-      << "Created packed etree database '" << filenamePacked
+      << "Creating packed etree database '" << filenamePacked
       << "' from unpacked etree database '" << filenameUnpacked
       << "'." << std::endl;
 
@@ -184,13 +184,12 @@ cencalvm::create::VMCreator::insert(const storage::PayloadStruct& payload,
 				    storage::Geometry* pGeom)
 { // insert
   assert(0 != pGeom);
+  assert(0 != _pDB);
 
   etree_addr_t addr;
   addr.level = pGeom->level(resHoriz);
   addr.type = ETREE_LEAF;
   pGeom->lonLatElevToAddr(&addr, lon, lat, elev);
-  // :KLUDGE:
-  // NEED TO CHECK FOR ERRORS HERE
 
   if (0 != etree_insert(_pDB, addr, &payload))
     throw std::runtime_error(etree_strerror(etree_errno(_pDB)));

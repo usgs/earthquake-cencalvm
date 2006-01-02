@@ -15,19 +15,33 @@
 #include "cencalvm/vsgrader/VsGrader.h" // USES VsGrader
 #include "cencalvm/storage/Payload.h" // USES PayloadStruct
 #include "cencalvm/storage/Geometry.h" // USES Geometry
-#include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
+#include "cencalvm/storage/GeomCenCA.h" // USES GeomCenCA
 
 extern "C" {
 #include "etree.h"
 }
-
-#include <iostream>
 
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::vsgrader::TestVsGrader );
 
 // ----------------------------------------------------------------------
 #include "data/TestVsGrader.dat"
+
+// ----------------------------------------------------------------------
+// Setup
+void
+cencalvm::vsgrader::TestVsGrader::setUp(void)
+{ // setUp
+  _pGeom = new storage::GeomCenCA;
+} // setUp
+
+// ----------------------------------------------------------------------
+// Tear down
+void
+cencalvm::vsgrader::TestVsGrader::tearDown(void)
+{ // tearDown
+  delete _pGeom; _pGeom = 0;
+} // testDown
 
 // ----------------------------------------------------------------------
 // Test constructor
@@ -47,11 +61,6 @@ cencalvm::vsgrader::TestVsGrader::testFilenameParams(void)
   VsGrader grader;
   grader.filenameParams(filename);
   CPPUNIT_ASSERT_EQUAL(std::string(filename), grader._filenameParams);
-
-  const cencalvm::storage::ErrorHandler* pHandler = grader.errorHandler();
-  CPPUNIT_ASSERT(0 != pHandler);
-  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       pHandler->status());
 } // testFilenameParams
 
 // ----------------------------------------------------------------------
@@ -64,11 +73,6 @@ cencalvm::vsgrader::TestVsGrader::testFilenameIn(void)
   VsGrader grader;
   grader.filenameIn(filename);
   CPPUNIT_ASSERT_EQUAL(std::string(filename), grader._filenameIn);
-
-  const cencalvm::storage::ErrorHandler* pHandler = grader.errorHandler();
-  CPPUNIT_ASSERT(0 != pHandler);
-  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       pHandler->status());
 } // testFilenameIn
 
 // ----------------------------------------------------------------------
@@ -81,11 +85,6 @@ cencalvm::vsgrader::TestVsGrader::testFilenameOut(void)
   VsGrader grader;
   grader.filenameOut(filename);
   CPPUNIT_ASSERT_EQUAL(std::string(filename), grader._filenameOut);
-
-  const cencalvm::storage::ErrorHandler* pHandler = grader.errorHandler();
-  CPPUNIT_ASSERT(0 != pHandler);
-  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       pHandler->status());
 } // testFilenameOut
 
 // ----------------------------------------------------------------------
@@ -98,24 +97,7 @@ cencalvm::vsgrader::TestVsGrader::testFilenameTmp(void)
   VsGrader grader;
   grader.filenameTmp(filename);
   CPPUNIT_ASSERT_EQUAL(std::string(filename), grader._filenameTmp);
-
-  const cencalvm::storage::ErrorHandler* pHandler = grader.errorHandler();
-  CPPUNIT_ASSERT(0 != pHandler);
-  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       pHandler->status());
 } // testFilenameTmp
-
-// ----------------------------------------------------------------------
-// Test errorHandler()
-void
-cencalvm::vsgrader::TestVsGrader::testErrorHandler(void)
-{ // testErrorHandler
-  VsGrader grader;
-  const cencalvm::storage::ErrorHandler* pHandler = grader.errorHandler();
-  CPPUNIT_ASSERT(0 != pHandler);
-  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       pHandler->status());
-} // testErrorHandler
 
 // ----------------------------------------------------------------------
 // Test quiet()
@@ -198,9 +180,11 @@ cencalvm::vsgrader::TestVsGrader::testIndexToElev(void)
 void
 cencalvm::vsgrader::TestVsGrader::testIndexToLonLat(void)
 { // testIndexToLonLat
+  CPPUNIT_ASSERT(0 != _pGeom);
+
   const int iLen = 23;
   const int iWidth = 75;
-  const double resHoriz = _RESVERT * cencalvm::storage::Geometry::vertExag();
+  const double resHoriz = _RESVERT * _pGeom->vertExag();
   const double lonE = -122.292303;
   const double latE = 35.526138;
 
@@ -234,8 +218,6 @@ cencalvm::vsgrader::TestVsGrader::testPullData(void)
   grader._resVert = _RESVERT;
   cencalvm::storage::PayloadStruct payload;
   grader._pullData(&payload, _SWCORNERLON, _SWCORNERLAT, _SWCORNERELEV, db);
-  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       grader.errorHandler()->status());
 
   const double tolerance = 1.0e-06;
   CPPUNIT_ASSERT_DOUBLES_EQUAL(_DBVS, payload.Vs, _DBVS*tolerance);
@@ -273,13 +255,9 @@ cencalvm::vsgrader::TestVsGrader::testPushPull(void)
   payload.Zone = -7;
   grader._resVert = _RESVERT;
   grader._pushData(db, payload, _SWCORNERLON, _SWCORNERLAT, _SWCORNERELEV);
-  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       grader.errorHandler()->status());
   
   cencalvm::storage::PayloadStruct payloadN;
   grader._pullData(&payloadN, _SWCORNERLON, _SWCORNERLAT, _SWCORNERELEV, db);
-  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       grader.errorHandler()->status());
 
   const double tolerance = 1.0e-06;
   CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, payloadN.Vs/payload.Vs, tolerance);
@@ -356,22 +334,19 @@ cencalvm::vsgrader::TestVsGrader::testLimitDiff(void)
 void
 cencalvm::vsgrader::TestVsGrader::_createDB(void) const
 { // _createDB
+  CPPUNIT_ASSERT(0 != _pGeom);
+
   etree_t* db = etree_open(_FILENAMEDB, O_CREAT|O_RDWR|O_TRUNC, 0, 0, 3);
   CPPUNIT_ASSERT(0 != db);
 
   int err = etree_registerschema(db, cencalvm::storage::Payload::SCHEMA);
   CPPUNIT_ASSERT(0 == err);
 
-  cencalvm::storage::ErrorHandler errorHandler;
-  cencalvm::storage::Geometry geometry(errorHandler);
-
   etree_addr_t addr;
   addr.type = ETREE_LEAF;
-  const double vertExag = cencalvm::storage::Geometry::vertExag();
-  addr.level = geometry.level(_RESVERT*geometry.vertExag());
-  geometry.lonLatElevToAddr(&addr, _SWCORNERLON, _SWCORNERLAT, _SWCORNERELEV);
-  CPPUNIT_ASSERT_EQUAL(cencalvm::storage::ErrorHandler::OK,
-		       errorHandler.status());
+  const double vertExag = _pGeom->vertExag();
+  addr.level = _pGeom->level(_RESVERT*_pGeom->vertExag());
+  _pGeom->lonLatElevToAddr(&addr, _SWCORNERLON, _SWCORNERLAT, _SWCORNERELEV);
   
   cencalvm::storage::PayloadStruct payload;
   payload.Vp = 0.1;

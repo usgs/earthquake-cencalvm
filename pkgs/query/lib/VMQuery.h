@@ -87,6 +87,14 @@ class cencalvm::query::VMQuery
   /// Close the database.
   void close(void);
   
+  /** Set geometry of velocity model.
+   *
+   * Default is to use central CA geometry.
+   *
+   * @param pGeom Pointer to velocity model geometry
+   */
+  void geometry(const storage::Geometry* pGeom);
+
   /** Set query type.
    *
    * @param queryType Set type of query

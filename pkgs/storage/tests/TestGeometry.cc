@@ -13,7 +13,6 @@
 #include "TestGeometry.h" // Implementation of class methods
 
 #include "cencalvm/storage/Geometry.h" // USES Geometry
-#include "cencalvm/storage/ErrorHandler.h" // USES Geometry
 
 extern "C" {
 #include "etree.h"
@@ -21,127 +20,6 @@ extern "C" {
 
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::storage::TestGeometry );
-
-// ----------------------------------------------------------------------
-// Test constructor
-void
-cencalvm::storage::TestGeometry::testConstructor(void)
-{ // testConstructor
-  ErrorHandler errHandler;
-  Geometry geom(errHandler);
-  CPPUNIT_ASSERT(ErrorHandler::OK == errHandler.status());
-} // testConstructor
-
-// ----------------------------------------------------------------------
-// Test lonLatElevToAddr()
-void 
-cencalvm::storage::TestGeometry::testAddress(void)
-{ // testAddress
-  ErrorHandler errHandler;
-  Geometry geom(errHandler);
-
-  const double lon = -123.8584929;
-  const double lat = 38.424179;
-  const double elev = 0.0;
-  const double p = Geometry::_BUFFERNW+0.1;
-  const double q = Geometry::_BUFFERSW+0.1;
-  const double r = Geometry::_ROOTLEN - Geometry::_MAXELEV;
-
-  const int numLevels = 6;
-  for (int iLevel=0; iLevel < numLevels; ++iLevel) {
-    const double res = Geometry::_ROOTLEN / ((etree_tick_t) 1 << iLevel);
-    const etree_tick_t tickLen = 0x80000000 >> iLevel;
-
-    etree_tick_t x = tickLen*int(p / res);
-    etree_tick_t y = tickLen*int(q / res);
-    etree_tick_t z = tickLen*int(r / res);
-    
-    etree_addr_t addr;
-    addr.level = iLevel;
-    geom.lonLatElevToAddr(&addr, lon, lat, elev);
-
-    CPPUNIT_ASSERT_EQUAL(x, addr.x);
-    CPPUNIT_ASSERT_EQUAL(y, addr.y);
-    CPPUNIT_ASSERT_EQUAL(z, addr.z);
-  } // for
-
-  CPPUNIT_ASSERT(ErrorHandler::OK == errHandler.status());
-} // testAddress
-
-// ----------------------------------------------------------------------
-// Test addrToLonLatElev()
-void 
-cencalvm::storage::TestGeometry::testInvAddress(void)
-{ // testInvAddress
-  ErrorHandler errHandler;
-  Geometry geom(errHandler);
-
-  const int level = 6;
-  const double res = Geometry::_ROOTLEN / ((etree_tick_t) 1 << level);
-  const etree_tick_t tickLen = 0x80000000 >> level;
-
-  const double lonE = -123.653262;
-  const double latE = 38.400998;
-  const double elevE = 0.5*res/Geometry::_VERTEXAG;
-
-  const double p = Geometry::_BUFFERNW + 0.5*res;
-  const double q = Geometry::_BUFFERSW + 0.5*res;
-  const double r = Geometry::_ROOTLEN +
-    (0.5*res / Geometry::_VERTEXAG - Geometry::_MAXELEV) * Geometry::_VERTEXAG;
-
-  etree_addr_t addr;
-  addr.level = level;
-  addr.x = tickLen*int(p / res);
-  addr.y = tickLen*int(q / res);
-  addr.z = tickLen*int(r / res);
-    
-  double lon = 0;
-  double lat = 0;
-  double elev = 0;
-  geom.addrToLonLatElev(&lon, &lat, &elev, &addr);
-  
-  const double tolerance = 1.0e-6;
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, lon/lonE, tolerance);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, lat/latE, tolerance);
-  CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, elev/elevE, tolerance);
-
-  CPPUNIT_ASSERT(ErrorHandler::OK == errHandler.status());
-
-  // double check by going lon/lat/elev back to addr
-  etree_addr_t addrCheck;
-  addrCheck.level = level;
-  geom.lonLatElevToAddr(&addrCheck, lon, lat, elev);
-  CPPUNIT_ASSERT_EQUAL(addr.x, addrCheck.x);
-  CPPUNIT_ASSERT_EQUAL(addr.y, addrCheck.y);
-  CPPUNIT_ASSERT_EQUAL(addr.z, addrCheck.z);
-
-  CPPUNIT_ASSERT(ErrorHandler::OK == errHandler.status());
-} // testInvAddress
-
-// ----------------------------------------------------------------------
-// Test edgeLen()
-void 
-cencalvm::storage::TestGeometry::testEdgeLen(void)
-{ // testEdgeLen
-  const double rootLen = Geometry::_ROOTLEN;
-  const int numLevels = 19;
-  double len = rootLen;
-  for (int iLevel=0; iLevel < numLevels; ++iLevel, len /= 2.0)
-    CPPUNIT_ASSERT_EQUAL(len, Geometry::edgeLen(iLevel));
-} // testEdgeLen
-
-// ----------------------------------------------------------------------
-// Test level()
-void 
-cencalvm::storage::TestGeometry::testLevel(void)
-{ // testLevel
-  const double rootLen = Geometry::_ROOTLEN;
-  const int numLevels = 19;
-  double len = rootLen;
-  for (int iLevel=0; iLevel < numLevels; ++iLevel, len /= 2.0) {
-    CPPUNIT_ASSERT_EQUAL(iLevel, Geometry::level(len));
-  } // for
-} // testLevel
 
 // ----------------------------------------------------------------------
 // Test findAncestor()

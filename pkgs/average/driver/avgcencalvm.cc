@@ -14,7 +14,6 @@
 // to create spatially averaged model.
 
 #include "cencalvm/average/Averager.h" // USES VMCreator
-#include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 
 #include <stdlib.h> // USES exit()
 #include <unistd.h> // USES getopt()
@@ -88,17 +87,18 @@ main(int argc,
   
   parseArgs(&filenameIn, &filenameOut, argc, argv);
 
-  cencalvm::average::Averager averager;
-  cencalvm::storage::ErrorHandler* pHandler = averager.errorHandler();
+  try {
+    cencalvm::average::Averager averager;
 
-  averager.filenameIn(filenameIn.c_str());
-  averager.filenameOut(filenameOut.c_str());
-  averager.average();
-
-  if (cencalvm::storage::ErrorHandler::OK != pHandler->status()) {
-    std::cerr << pHandler->message();
+    averager.filenameIn(filenameIn.c_str());
+    averager.filenameOut(filenameOut.c_str());
+    averager.average();
+  } catch (const std::exception& err) {
+    std::cerr << err.what();
     return 1;
-  } // if
+  } catch (...) {
+    return 1;
+  } // catch
 
   return 0;
 } // main

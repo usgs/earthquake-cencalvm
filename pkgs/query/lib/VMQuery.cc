@@ -14,6 +14,7 @@
 
 #include "cencalvm/storage/Payload.h" // USES PayloadStruct
 #include "cencalvm/storage/Geometry.h" // USES Geometry
+#include "cencalvm/storage/GeomCenCA.h" // USES GeomCenCA
 #include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 
 extern "C" {
@@ -39,7 +40,7 @@ cencalvm::query::VMQuery::VMQuery(void) :
   _cacheSizeExt(128),
   _queryFn(&cencalvm::query::VMQuery::_queryMax),
   _pErrHandler(new cencalvm::storage::ErrorHandler),
-  _pGeom(new cencalvm::storage::Geometry)
+  _pGeom(new cencalvm::storage::GeomCenCA)
 { // constructor
   const int querySize = 8;
   _pQueryVals = (querySize > 0) ? new int[querySize] : 0;
@@ -57,6 +58,15 @@ cencalvm::query::VMQuery::~VMQuery(void)
   delete _pErrHandler; _pErrHandler = 0;
   close();
 } // destructor
+
+// ----------------------------------------------------------------------
+// Set geometry of velocity model.
+void
+cencalvm::query::VMQuery::geometry(const storage::Geometry* pGeom)
+{ // geometry
+  delete _pGeom;
+  _pGeom = (0 != _pGeom) ? pGeom->clone() : 0;
+} // geometry
 
 // ----------------------------------------------------------------------
 // Open the database and prepare for querying.
@@ -183,18 +193,24 @@ cencalvm::query::VMQuery::query(double** ppVals,
   assert(numVals == _querySize);
   assert(0 != _pGeom);
 
-  bool useAddr = false;
-  etree_addr_t addr;
   cencalvm::storage::PayloadStruct payload;
-  (this->*_queryFn)(&payload, &addr, _db, lon, lat, elev, useAddr);
+  try {
+    bool useAddr = false;
+    etree_addr_t addr;
+    (this->*_queryFn)(&payload, &addr, _db, lon, lat, elev, useAddr);
 
-  // If not found in detailed model, query the regional model
-  char buf[ETREE_MAXBUF];
-  if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock &&
-      0 != _dbExt) {
-    useAddr = true;
-    (this->*_queryFn)(&payload, &addr, _dbExt, lon, lat, elev, useAddr);
-  } // if
+    // If not found in detailed model, query the regional model
+    char buf[ETREE_MAXBUF];
+    if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock &&
+	0 != _dbExt) {
+      useAddr = true;
+      (this->*_queryFn)(&payload, &addr, _dbExt, lon, lat, elev, useAddr);
+    } // if
+  } catch (const std::exception& err) {
+    _pErrHandler->error(err.what());
+  } catch (...) {
+    _pErrHandler->error("Unknown C++ error");
+  } // catch
 
   // If not found in any model, set data to NODATA values
   if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock) {
@@ -214,8 +230,8 @@ cencalvm::query::VMQuery::query(double** ppVals,
       << lon << ", " << lat << ", " << elev << ".\n";
     _pErrHandler->warning(warning.str().c_str());
   } // if
-
-  // Copy values from payload into array
+    
+    // Copy values from payload into array
   for (int i=0; i < _querySize; ++i) {
     switch (_pQueryVals[i])
       { // switch
@@ -298,7 +314,7 @@ cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload
   assert(0 != _pGeom);
 
   if (!useAddr) {
-    const double vertExag = cencalvm::storage::Geometry::vertExag();
+    const double vertExag = _pGeom->vertExag();
     pAddr->level = _pGeom->level(vertExag * _queryRes);
     pAddr->type = ETREE_LEAF;
     _pGeom->lonLatElevToAddr(pAddr, lon, lat, elev);
@@ -330,6 +346,7 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
   assert(0 != pPayload);
   assert(0 != pDB);
   assert(0 != pAddr);
+  assert(0 != _pGeom);
 
   if (!useAddr) {
     pAddr->level = ETREE_MAXLEVEL;
@@ -340,7 +357,7 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
   etree_addr_t resAddr;
   const int err = etree_search(pDB, *pAddr, &resAddr, "*", pPayload);
 
-  const double vertExag = cencalvm::storage::Geometry::vertExag();
+  const double vertExag = _pGeom->vertExag();
   const double minPeriod = vertExag * _queryRes;
 
   // If search returned interior octant (averaged), return no data

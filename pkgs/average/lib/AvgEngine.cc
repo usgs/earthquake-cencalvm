@@ -13,13 +13,13 @@
 #include "AvgEngine.h" // implementation of class methods
 
 #include "cencalvm/storage/Payload.h" // USES PayloadStruct
-#include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 #include "cencalvm/storage/Geometry.h" // USES Geometry
 
 extern "C" {
 #include "etree.h"
 }
 
+#include <stdexcept> // USES std::runtime_error
 #include <sstream> // USES std::ostringstream
 #include <assert.h> // USES assert()
 #include <iostream> // USES std::cout
@@ -31,19 +31,17 @@ const etree_tick_t cencalvm::average::AvgEngine::_LEFTMOSTONE =
 // ----------------------------------------------------------------------
 // Default constructor
 cencalvm::average::AvgEngine::AvgEngine(etree_t* dbOut,
-					etree_t* dbIn,
-				cencalvm::storage::ErrorHandler& errHandler) :
+					etree_t* dbIn) :
   _dbAvg(dbOut),
   _dbIn(dbIn),
   _pPendingOctants(0),
   _pendingSize(0),
-  _pendingCursor(-1),
-  _errHandler(errHandler)
+  _pendingCursor(-1)
 { // constructor
   const int pendingSize = ETREE_MAXLEVEL + 1;
   _pPendingOctants = new OctantPendingStruct[pendingSize];
   for (int i=0; i < pendingSize; ++i) {
-    _pPendingOctants[i].data.pSum = new cencalvm::storage::PayloadStruct;
+    _pPendingOctants[i].data.pSum = new storage::PayloadStruct;
     _pPendingOctants[i].data.numChildren = 0;
     _pPendingOctants[i].pAddr = new etree_addr_t;
     _pPendingOctants[i].pAddr->x = 0;
@@ -98,42 +96,30 @@ cencalvm::average::AvgEngine::fillOctants(void)
   cursor.level = ETREE_MAXLEVEL;
 
   int eof = etree_initcursor(_dbIn, cursor);
-  if (eof) {
-    _errHandler.error("Error occurred while initializing etree cursor.\n");
-    return;
-  } // if
+  if (eof)
+    throw std::runtime_error("Error occurred while initializing etree cursor.");
 
   int err = etree_beginappend(_dbAvg, 1.0);
-  if (0 != err) {
-    _errHandler.error("Error occurred while trying to initiate appending "
-		      "of etree.\n");
-  } // if
+  if (0 != err)
+    throw std::runtime_error("Error occurred while trying to initiate appending "
+			     "of etree.");
 
-  cencalvm::storage::PayloadStruct payload;
+  storage::PayloadStruct payload;
   while (!eof) {
     eof = etree_getcursor(_dbIn, &cursor, 0, &payload);
-    if (eof) {
-      _errHandler.error("Error occurred while trying to get payload at "
-			"current cursor position.\n");
-      return;
-    } // if
+    if (eof)
+      throw std::runtime_error("Error occurred while trying to get payload at "
+			       "current cursor position.");
     _averageOctant(&cursor, payload);
-    if (cencalvm::storage::ErrorHandler::OK == _errHandler.status())
-      eof = etree_advcursor(_dbIn);
-    else
-      return;
+    eof = etree_advcursor(_dbIn);
   } // while
 
   _finishProcessing();
-  if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
-    return;
 
   err = etree_endappend(_dbAvg);
-  if (0 != err) {
-    _errHandler.error("Error occurred while trying to terminate appending "
-		      "of etree.\n");
-    return;
-  } // if
+  if (0 != err)
+    throw std::runtime_error("Error occurred while trying to terminate appending "
+			     "of etree.");
 } // fillOctants
 
 // ----------------------------------------------------------------------
@@ -163,7 +149,7 @@ cencalvm::average::AvgEngine::printOctantInfo(void) const
 // Do average processing on octant.
 void
 cencalvm::average::AvgEngine::_averageOctant(etree_addr_t* pAddr,
-			    const cencalvm::storage::PayloadStruct& payload)
+					     const storage::PayloadStruct& payload)
 { // _averageOctant
   assert(0 != pAddr);
   assert(0 != _dbAvg);
@@ -174,23 +160,18 @@ cencalvm::average::AvgEngine::_averageOctant(etree_addr_t* pAddr,
     return;
 
   int pendingLevel = _findParent(pAddr);
-  if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
-    return;
   assert(pendingLevel == pAddr->level-1);
   assert(pendingLevel >= 0 && pendingLevel == pAddr->level-1);
   assert(pendingLevel <=_pendingCursor);
 
   int err = etree_append(_dbAvg, *pAddr, &payload);
-  if (0 != err) {
-    _errHandler.error("Error occurred while trying to append octant "
-		      "to etree.\n");
-  } // if
+  if (0 != err)
+    throw std::runtime_error("Error occurred while trying to append octant "
+			     "to etree.");
   ++_octantCounter.input;
   ++_octantCounter.output;
 
   _addToParent(&_pPendingOctants[pendingLevel], pAddr, payload);
-  if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
-    return;
   
   // if completed processing of octant, update higher levels
   const unsigned char INC_FULL = 0xFF;
@@ -199,8 +180,6 @@ cencalvm::average::AvgEngine::_averageOctant(etree_addr_t* pAddr,
     assert(_pPendingOctants[pendingLevel].isValid);
     assert(pendingLevel == _pendingCursor);
     _processOctant(pendingLevel);
-    if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
-      return;
     --pendingLevel;
   } // while
 
@@ -212,7 +191,7 @@ cencalvm::average::AvgEngine::_averageOctant(etree_addr_t* pAddr,
 void
 cencalvm::average::AvgEngine::_addToParent(OctantPendingStruct* pPendingParent,
 					   etree_addr_t* pAddrChild,
-			const cencalvm::storage::PayloadStruct& childPayload)
+			const storage::PayloadStruct& childPayload)
 { // _addToParent
   assert(0 != pPendingParent);
   assert(0 != pAddrChild);
@@ -231,8 +210,7 @@ cencalvm::average::AvgEngine::_addToParent(OctantPendingStruct* pPendingParent,
       << "\n"
       << "pendingCursor: " << _pendingCursor
       << "\n";
-    _errHandler.error(msg.str().c_str());
-    return;
+    throw std::runtime_error(msg.str());
   } // if
 
   pPendingParent->processedChildren |= childBit;
@@ -282,16 +260,14 @@ cencalvm::average::AvgEngine::_addToParent(OctantPendingStruct* pPendingParent,
 // Update pending octant.
 void 
 cencalvm::average::AvgEngine::_updateOctant(etree_addr_t* pAddr,
-		       const cencalvm::storage::PayloadStruct& childPayload)
+		       const storage::PayloadStruct& childPayload)
 { // _updateOctant
   assert(0 != pAddr);
   assert(0 != _dbAvg);
 
   int err = etree_update(_dbAvg, *pAddr, &childPayload);
-  if (0 != err) {
-    _errHandler.error("Could not update octant in etree database.\n");
-    return;
-  } // if
+  if (0 != err)
+    throw std::runtime_error("Could not update octant in etree database.");
 } // _updateOctant
 
 // ----------------------------------------------------------------------
@@ -351,7 +327,7 @@ cencalvm::average::AvgEngine::_processOctant(const int pendingLevel)
       ++_octantCounter.inc_invalid;
     } // switch
 
-  cencalvm::storage::PayloadStruct payload;
+  storage::PayloadStruct payload;
   const int numChildren = pendingOctant.data.numChildren;
   if (numChildren > 0) {
     payload.Vp = pendingOctant.data.pSum->Vp / numChildren;
@@ -365,26 +341,22 @@ cencalvm::average::AvgEngine::_processOctant(const int pendingLevel)
     // If there are no contributing children, then set payload
     // values to 'NODATA' values
 
-    payload.Vp = cencalvm::storage::Payload::NODATAVAL;
-    payload.Vs = cencalvm::storage::Payload::NODATAVAL;
-    payload.Density = cencalvm::storage::Payload::NODATAVAL;
-    payload.Qp = cencalvm::storage::Payload::NODATAVAL;
-    payload.Qs = cencalvm::storage::Payload::NODATAVAL;
-    payload.DepthFreeSurf = cencalvm::storage::Payload::NODATAVAL;
+    payload.Vp = storage::Payload::NODATAVAL;
+    payload.Vs = storage::Payload::NODATAVAL;
+    payload.Density = storage::Payload::NODATAVAL;
+    payload.Qp = storage::Payload::NODATAVAL;
+    payload.Qs = storage::Payload::NODATAVAL;
+    payload.DepthFreeSurf = storage::Payload::NODATAVAL;
   } // if/else
-  payload.FaultBlock = cencalvm::storage::Payload::INTERIORBLOCK;
-  payload.Zone = cencalvm::storage::Payload::INTERIORZONE;
+  payload.FaultBlock = storage::Payload::INTERIORBLOCK;
+  payload.Zone = storage::Payload::INTERIORZONE;
 
   _updateOctant(pendingOctant.pAddr, payload);
-  if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
-    return;
   if (pendingLevel > 0) {
     assert(_pPendingOctants[pendingLevel-1].pAddr->level == 
 	   pendingOctant.pAddr->level-1);
     _addToParent(&_pPendingOctants[pendingLevel-1], pendingOctant.pAddr,
 		 payload);
-    if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
-      return;
   } // if
 
   // Flag octant as processed
@@ -419,8 +391,6 @@ cencalvm::average::AvgEngine::_findParent(etree_addr_t* pAddr)
        pendingLevel >= levelCur;
        --pendingLevel) {
     _processOctant(pendingLevel);
-    if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
-      return -1;
   } // for
     
   // Find lowest level of valid pending octant
@@ -430,7 +400,7 @@ cencalvm::average::AvgEngine::_findParent(etree_addr_t* pAddr)
 
   etree_addr_t ancestorCur; // address of octant that IS ancestor of current
   while(pendingLevel >= 0 && _pPendingOctants[pendingLevel].isValid) {
-    cencalvm::storage::Geometry::findAncestor(&ancestorCur, 
+    storage::Geometry::findAncestor(&ancestorCur, 
 					      *pAddr, pendingLevel);
 
     // If the octant at the current level is fully processed or it is
@@ -440,8 +410,6 @@ cencalvm::average::AvgEngine::_findParent(etree_addr_t* pAddr)
 	INC_FULL == _pPendingOctants[pendingLevel].processedChildren) {
       assert(pendingLevel == _pendingCursor);
       _processOctant(pendingLevel);
-      if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
-	return -1;
       --pendingLevel;
     } // if
     else
@@ -450,11 +418,9 @@ cencalvm::average::AvgEngine::_findParent(etree_addr_t* pAddr)
   
   // Create pending ancestors for current octant
   for (++pendingLevel; pendingLevel < pAddr->level; ++pendingLevel) {
-    cencalvm::storage::Geometry::findAncestor(&ancestorCur, 
+    storage::Geometry::findAncestor(&ancestorCur, 
 					      *pAddr, pendingLevel); 
     _createOctant(&ancestorCur);
-    if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
-      return -1;
   } // for
 
   return pendingLevel-1;
@@ -473,8 +439,6 @@ cencalvm::average::AvgEngine::_finishProcessing(void)
     if (_pPendingOctants[pendingLevel].isValid) {
       assert(pendingLevel == _pendingCursor);
       _processOctant(pendingLevel);
-      if (cencalvm::storage::ErrorHandler::OK != _errHandler.status())
-	return;
     } // if
   } // for
 } // _finishProcessing
@@ -492,12 +456,10 @@ cencalvm::average::AvgEngine::_createOctant(etree_addr_t* pAddr)
   assert(!_pPendingOctants[pendingLevel].isValid);
   assert(pendingLevel == _pendingCursor+1);  
 
-  cencalvm::storage::PayloadStruct payload;
+  storage::PayloadStruct payload;
   int err = etree_append(_dbAvg, *pAddr, &payload);
-  if (0 != err) {
-    _errHandler.error("Error occurred while appending new octant to etree.\n");
-    return;
-  } // if
+  if (0 != err)
+    throw std::runtime_error("Error occurred while appending new octant to etree.");
 
   *_pPendingOctants[pendingLevel].pAddr = *pAddr;
   _pPendingOctants[pendingLevel].processedChildren = 0x00;
@@ -510,9 +472,9 @@ cencalvm::average::AvgEngine::_createOctant(etree_addr_t* pAddr)
   _pPendingOctants[pendingLevel].data.pSum->Qs = 0;
   _pPendingOctants[pendingLevel].data.pSum->DepthFreeSurf = 0;
   _pPendingOctants[pendingLevel].data.pSum->FaultBlock = 
-    cencalvm::storage::Payload::INTERIORBLOCK;
+    storage::Payload::INTERIORBLOCK;
   _pPendingOctants[pendingLevel].data.pSum->Zone = 
-    cencalvm::storage::Payload::INTERIORZONE;
+    storage::Payload::INTERIORZONE;
   _pendingCursor = pendingLevel;
 
   ++_octantCounter.output;

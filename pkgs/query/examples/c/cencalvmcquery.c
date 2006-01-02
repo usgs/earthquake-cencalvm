@@ -36,6 +36,7 @@ usage(void)
   fprintf(stderr,
 	  "usage: cencalvmcquery [-h] -i fileIn -o fileOut -d dbfile\n"
 	  "       [-l logfile] [-t queryType] [-r res] [-e dbextfile]\n"
+	  "       [-c cacheSize]\n"
 	  "\n"
 	  "  -i fileIn   File containing list of locations: 'lon lat elev'.\n"
 	  "  -o fileOut  Output file with locations and material properties.\n"
@@ -43,6 +44,7 @@ usage(void)
 	  "  -e dbextfile  Etree extended database file to query.\n"
 	  "  -t queryType  Type of query {'maxres', 'fixedres', 'waveres'}\n"
 	  "  -r res        Resolution for query (not needed for maxres queries\n"
+	  "  -c cacheSize  Size of cache in MB to use in query\n"
 	  "  -h          Display usage and exit.\n"
 	  "  -l logfile  Log file for messages.\n");
 } /* usage */
@@ -57,6 +59,7 @@ parseArgs(char* filenameIn,
 	  char* filenameLog,
 	  char* queryType,
 	  double* pQueryRes,
+	  int* pCacheSize,
 	  int argc,
 	  char** argv)
 { // parseArgs
@@ -67,20 +70,17 @@ parseArgs(char* filenameIn,
   assert(0 != filenameLog);
   assert(0 != queryType);
   assert(0 != pQueryRes);
+  assert(0 != pCacheSize);
 
   extern char* optarg;
 
   int nparsed = 1;
   int c = EOF;
-  while ( (c = getopt(argc, argv, "hi:l:o:d:e:r:t:") ) != EOF) {
+  while ( (c = getopt(argc, argv, "c:d:e:hi:l:o:r:t:") ) != EOF) {
     switch (c)
       { /* switch */
-      case 'i' : /* process -i option */
-	strcpy(filenameIn, optarg);
-	nparsed += 2;
-	break;
-      case 'o' : /* process -o option */
-	strcpy(filenameOut, optarg);
+      case 'c' : // process -c option
+	*pCacheSize = atoi(optarg);
 	nparsed += 2;
 	break;
       case 'd' : /* process -d option */
@@ -96,8 +96,16 @@ parseArgs(char* filenameIn,
 	usage();
 	exit(0);
 	break;
+      case 'i' : /* process -i option */
+	strcpy(filenameIn, optarg);
+	nparsed += 2;
+	break;
       case 'l' : /* process -l option */
 	strcpy(filenameLog, optarg);
+	nparsed += 2;
+	break;
+      case 'o' : /* process -o option */
+	strcpy(filenameOut, optarg);
 	nparsed += 2;
 	break;
       case 't' : // process -t option
@@ -141,10 +149,11 @@ main(int argc,
   strcpy(filenameLog, "");
   strcpy(queryType, "maxres");
   double queryRes = 0.0;
+  int cacheSize = 128;
   
   /* Parse command line arguments */
   parseArgs(filenameIn, filenameOut, filenameDB, filenameDBExt,
-	    filenameLog, queryType, &queryRes,
+	    filenameLog, queryType, &queryRes, &cacheSize,
 	    argc, argv);
 
   /* Create query */
@@ -171,9 +180,20 @@ main(int argc,
     return 1;
   } /* if */
 
+  /* Set cache size */
+  if (0 != cencalvm_cacheSize(query, cacheSize)) {
+    fprintf(stderr, "%s\n", cencalvm_error_message(errHandler));
+    return 1;
+  } /* if */
+
   /* Set extended database filename if given */
   if (0 != strcmp("", filenameDBExt)) {
     if (0 != cencalvm_filenameExt(query, filenameDBExt)) {
+      fprintf(stderr, "%s\n", cencalvm_error_message(errHandler));
+      return 1;
+    } /* if */
+    /* Set cache size */
+    if (0 != cencalvm_cacheSizeExt(query, cacheSize)) {
       fprintf(stderr, "%s\n", cencalvm_error_message(errHandler));
       return 1;
     } /* if */

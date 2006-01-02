@@ -75,6 +75,12 @@ public :
    */
   void filenameParams(const char* filename);
 
+  /** Set velocity model geometry.
+   *
+   * @param pGeometry Pointer to geometry
+   */
+  void geometry(const storage::Geometry* pGeometry);
+
   /** Set flag indicating operations should be quiet (no progress reports).
    *
    * Default behavior is for to give progress reports.
@@ -200,7 +206,6 @@ private :
   query::VMQuery::QueryEnum _queryType; ///< Type of query in extraction
 
   cencalvm::storage::Geometry* _pGeom; ///< Velocity model geometry
-  cencalvm::storage::Projector* _pProj; ///< Coordinate projector
 
   bool _quiet; ///< Flag to eliminate progress reports
 

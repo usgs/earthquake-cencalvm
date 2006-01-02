@@ -40,6 +40,7 @@ usage(void)
   std::cerr
     << "usage: cencalvmcppquery [-h] -i fileIn -o fileOut -d dbfile\n"
     << "       [-l logfile] [-t queryType] [-r res] [-e dbextfile]\n"
+    << "       [-c cacheSize]\n"
     << "\n"
     << "  -i fileIn     File containing list of locations: 'lon lat elev'.\n"
     << "  -o fileOut    Output file with locations and material properties.\n"
@@ -108,12 +109,12 @@ parseArgs(std::string* pFilenameIn,
 	*pFilenameIn = optarg;
 	nparsed += 2;
 	break;
-      case 'o' : // process -o option
-	*pFilenameOut = optarg;
-	nparsed += 2;
-	break;
       case 'l' : // process -l option
 	*pFilenameLog = optarg;
+	nparsed += 2;
+	break;
+      case 'o' : // process -o option
+	*pFilenameOut = optarg;
 	nparsed += 2;
 	break;
       case 't' : // process -t option

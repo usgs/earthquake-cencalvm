@@ -15,7 +15,6 @@
 #include "cencalvm/average/Averager.h" // USES Averager
 
 #include "cencalvm/storage/Payload.h" // USES Payload
-#include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 
 extern "C" {
 #include "etree.h" // USES etree
@@ -50,12 +49,6 @@ cencalvm::average::TestAverager::testFillOctants(void)
   averager.filenameOut(_DBFILENAMEOUT);
   averager.quiet(true);
   averager.average();
-
-  const cencalvm::storage::ErrorHandler* pHandler = averager.errorHandler();
-  if (cencalvm::storage::ErrorHandler::OK != pHandler->status()) {
-    std::cerr << pHandler->message() << std::endl;
-    CPPUNIT_ASSERT(false);
-  } // if
 
   etree_t* db = etree_open(_DBFILENAMEOUT, O_RDONLY, 0, 0, 0);
   CPPUNIT_ASSERT(0 != db);

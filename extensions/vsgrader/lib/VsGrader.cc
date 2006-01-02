@@ -14,6 +14,7 @@
 
 #include "cencalvm/storage/Payload.h" // USES SCHEMA
 #include "cencalvm/storage/Geometry.h" // USES Geometry
+#include "cencalvm/storage/GeomCenCA.h" // USES GeomCenCA
 #include "cencalvm/storage/Projector.h" // USES Projector
 #include "cencalvm/create/VMCreator.h" // USES VMCreator
 
@@ -53,8 +54,7 @@ cencalvm::vsgrader::VsGrader::VsGrader(void) :
   _filenameParams(""),
   _cacheSize(128),
   _queryType(query::VMQuery::MAXRES),
-  _pGeom(new cencalvm::storage::Geometry),
-  _pProj(new cencalvm::storage::Projector),
+  _pGeom(new cencalvm::storage::GeomCenCA),
   _quiet(false)
 { // constructor
 } // constructor
@@ -64,8 +64,16 @@ cencalvm::vsgrader::VsGrader::VsGrader(void) :
 cencalvm::vsgrader::VsGrader::~VsGrader(void)
 { // destructor
   delete _pGeom; _pGeom = 0;
-  delete _pProj; _pProj = 0;
 } // destructor
+
+// ----------------------------------------------------------------------
+// Set velocity model geometry.
+void
+cencalvm::vsgrader::VsGrader::geometry(const storage::Geometry* pGeometry)
+{ // geometry
+  delete _pGeom;
+  _pGeom = (0 != pGeometry) ? pGeometry->clone() : 0;
+} // geometry
 
 // ----------------------------------------------------------------------
 // Create Etree database with maximum gradient.
@@ -220,7 +228,7 @@ cencalvm::vsgrader::VsGrader::_readParams(void)
     if (0 == _resVert) {
       ok = false;
       msg << "Parameter file must specify 'resolution-vert'.";
-    } // if      
+    } // if
     if (query::VMQuery::MAXRES != _queryType && _queryRes <= 0) {
       ok = false;
       msg << "Parameter file must specify 'query-res' when 'query-type' "
@@ -242,12 +250,14 @@ cencalvm::vsgrader::VsGrader::_readParams(void)
 void
 cencalvm::vsgrader::VsGrader::_initialize(void)
 { // _initialize
-  assert(0 != _pProj);
+  assert(0 != _pGeom);
 
   if (!_quiet)
     std::cout << "Initializing grader..." << std::endl;
 
-  _pProj->project(&_swcornerX, &_swcornerY, _swcornerLon, _swcornerLat);
+  const storage::Projector* pProj = _pGeom->projector();
+  assert(0 != pProj);
+  pProj->project(&_swcornerX, &_swcornerY, _swcornerLon, _swcornerLat);
 } // _initialize
 
 // ----------------------------------------------------------------------
@@ -469,7 +479,6 @@ cencalvm::vsgrader::VsGrader::_indexToLonLat(double* pLon,
 					     const int indexW) const
 { // _indexToLonLat
   assert(0 != _pGeom);
-  assert(0 != _pProj);
 
   const double azR = _AZIMUTHLEN;
   const double resHoriz = _resVert * _pGeom->vertExag();
@@ -477,7 +486,10 @@ cencalvm::vsgrader::VsGrader::_indexToLonLat(double* pLon,
   const double w = indexW * resHoriz;
   const double x = _swcornerX + l * sin(azR) + w * cos(azR);
   const double y = _swcornerY + l * cos(azR) - w * sin(azR);
-  _pProj->invProject(pLon, pLat, x, y);
+
+  const storage::Projector* pProj = _pGeom->projector();
+  assert(0 != pProj);  
+  pProj->invProject(pLon, pLat, x, y);
 } // _indexToLonLat
 
 // ----------------------------------------------------------------------

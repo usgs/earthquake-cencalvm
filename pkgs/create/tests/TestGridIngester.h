@@ -10,15 +10,15 @@
 // ----------------------------------------------------------------------
 //
 
-/** @file tests/TestVMCreator.h
+/** @file tests/TestGridIngester.h
  *
- * @brief C++ TestVMCreator object
+ * @brief C++ TestGridIngester object
  *
- * C++ unit testing for TestVMCreator.
+ * C++ unit testing for TestGridIngester.
  */
 
-#if !defined(cencalvm_storage_testvmcreator_h)
-#define cencalvm_storage_testvmcreator_h
+#if !defined(cencalvm_storage_testgridingester_h)
+#define cencalvm_storage_testgridingester_h
 
 #include "cencalvm/storage/etreefwd.h"
 #include "cencalvm/storage/Payload.h"
@@ -27,21 +27,24 @@
 
 namespace cencalvm {
   namespace create {
-    class TestVMCreator;
+    class TestGridIngester;
   } // create
 } // cencalvm
 
-/// C++ unit testing for VMCreator
-class cencalvm::create::TestVMCreator : public CppUnit::TestFixture
-{ // class TestVMCreator
+/// C++ unit testing for GridIngester
+class cencalvm::create::TestGridIngester : public CppUnit::TestFixture
+{ // class TestGridIngester
 
   // CPPUNIT TEST SUITE /////////////////////////////////////////////////
-  CPPUNIT_TEST_SUITE( TestVMCreator );
+  CPPUNIT_TEST_SUITE( TestGridIngester );
   CPPUNIT_TEST( testConstructor );
-  CPPUNIT_TEST( testOpenDB );
-  CPPUNIT_TEST( testCloseDB );
-  CPPUNIT_TEST( testPackDB );
-  CPPUNIT_TEST( testInsert );
+  CPPUNIT_TEST( testFilenameParams );
+  CPPUNIT_TEST( testFilenameOut );
+  CPPUNIT_TEST( testFilenameTmp );
+  CPPUNIT_TEST( testCacheSize );
+  CPPUNIT_TEST( testDescription );
+  CPPUNIT_TEST( testGeometry );
+  CPPUNIT_TEST( testRun );
   CPPUNIT_TEST( testQuiet );
   CPPUNIT_TEST_SUITE_END();
 
@@ -51,26 +54,32 @@ public :
   /// Test constructor
   void testConstructor(void);
 
-  /// Test openDB()
-  void testOpenDB(void);
+  /// Test filenameParams()
+  void testFilenameParams(void);
 
-  /// Test closeDB()
-  void testCloseDB(void);
+  /// Test filenameOut()
+  void testFilenameOut(void);
 
-  /// Test packDB()
-  void testPackDB(void);
+  /// Test filenameTmp()
+  void testFilenameTmp(void);
 
-  /// Test insert()
-  void testInsert(void);
+  /// Test cacheSize()
+  void testCacheSize(void);
+
+  /// Test description()
+  void testDescription(void);
+
+  /// Test geometry()
+  void testGeometry(void);
+
+  /// Test run()
+  void testRun(void);
 
   /// Test quiet()
   void testQuiet(void);
 
   // PRIVATE METHODS ////////////////////////////////////////////////////
 private :
-
-  static const char* _FILENAMETMP; ///< Name of temporary db file
-  static const char* _FILENAMEIN; ///< Name of existing db test file
 
   static const cencalvm::storage::PayloadStruct _PAYLOAD; ///< Payload in db
   static const double _LONLATELEV[]; ///< Lon/Lat/Elev of test location
@@ -79,9 +88,9 @@ private :
   static const etree_tick_t _ADDRZ; ///< Address z tick of test location
   static const etree_tick_t _ADDRLEVEL; ///< Address level of test location
 
-}; // class TestVMCreator
+}; // class TestGridIngester
 
-#endif // cencalvm_create_testvmcreator
+#endif // cencalvm_create_testgridingester
 
 // version
 // $Id$

@@ -35,11 +35,9 @@ cencalvm::create::GridIngester::GridIngester(void) :
   _filenameParams(""),
   _filenameOut(""),
   _filenameTmp(""),
+  _pGeom(0),
   _quiet(false)
 { // constructor
-  // :KLUDGE:
-  // REMOVE THIS WHEN GEOMETRY IS IMPLEMENTED USING ABSTRACT BASE CLASS
-  _pGeom = new storage::Geometry;
 } // constructor
 
 // ----------------------------------------------------------------------
@@ -54,10 +52,7 @@ cencalvm::create::GridIngester::~GridIngester(void)
 void
 cencalvm::create::GridIngester::geometry(const storage::Geometry* pGeom)
 { // geometry
-#if 0
-  if (0 != pGeom)
-    _pGeom = pGeom->clone();
-#endif
+  delete _pGeom; _pGeom = (0 != pGeom) ? _pGeom = pGeom->clone() : 0;
 } // geometry
 
 // ----------------------------------------------------------------------
@@ -97,7 +92,6 @@ cencalvm::create::GridIngester::_readParams(std::string** ppGridFilenames,
 { // _readParams
   assert(0 != ppGridFilenames);
   assert(0 != pNumGrids);
-  assert(0 != _pGeom);
   
   std::ifstream fin(_filenameParams.c_str());
   if (!fin.is_open()) {
@@ -247,18 +241,20 @@ cencalvm::create::GridIngester::_addGrid(VMCreator* pCreator,
 	  payload.DepthFreeSurf *= 1.0e+3;
 
 	if (payload.FaultBlock != cencalvm::storage::Payload::NODATABLOCK) {
-	  std::cerr 
-	    << std::resetiosflags(std::ios::fixed)
-	    << std::setiosflags(std::ios::scientific)
-	    << std::setprecision(6)
-	    << lon << ", " << lat << ", " << elev << ", No fault block\n";
+	  if (!_quiet)
+	    std::cerr 
+	      << std::resetiosflags(std::ios::fixed)
+	      << std::setiosflags(std::ios::scientific)
+	      << std::setprecision(6)
+	      << lon << ", " << lat << ", " << elev << ", No fault block\n";
 	  numIgnored++;
 	} else {
-	  std::cerr
-	    << std::resetiosflags(std::ios::fixed)
-	    << std::setiosflags(std::ios::scientific)
-	    << std::setprecision(6)
-	    << lon << ", " << lat << ", " << elev << ", Ignoring\n";
+	  if (!_quiet)
+	    std::cerr
+	      << std::resetiosflags(std::ios::fixed)
+	      << std::setiosflags(std::ios::scientific)
+	      << std::setprecision(6)
+	      << lon << ", " << lat << ", " << elev << ", Ignoring\n";
 	  numIgnored++;
 	} // if/else
       
@@ -272,7 +268,7 @@ cencalvm::create::GridIngester::_addGrid(VMCreator* pCreator,
       << "Successfully added " << numAdded << " points and ignored "
       << numIgnored << " others.\n"
       << "Error message: " << err.what();
-    return;
+    throw std::runtime_error(err.what());
   } // if
 
   if (!_quiet)

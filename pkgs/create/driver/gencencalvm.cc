@@ -14,6 +14,8 @@
 // velocity model.
 
 #include "cencalvm/create/GridIngester.h" // USES GridIngester
+#include "cencalvm/storage/Geometry.h" // USES Geometry
+#include "cencalvm/storage/GeomCenCA.h" // USES GeomCenCA
 
 #include <stdlib.h> // USES exit()
 #include <unistd.h> // USES getopt()
@@ -115,6 +117,9 @@ main(int argc,
   try {
     cencalvm::create::GridIngester db;
     
+    cencalvm::storage::GeomCenCA geom;
+
+    db.geometry(&geom);
     db.filenameParams(filenameParams.c_str());
     db.filenameOut(filenameOut.c_str());
     db.filenameTmp(filenameTmp.c_str());

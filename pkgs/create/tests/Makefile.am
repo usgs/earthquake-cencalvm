@@ -20,10 +20,12 @@ TESTS = testcreate
 check_PROGRAMS = testcreate
 
 testcreate_SOURCES = \
+	TestGridIngester.cc \
 	TestVMCreator.cc \
 	testcreate.cc
 
 noinst_HEADERS = \
+	TestGridIngester.h
 	TestVMCreator.h
 
 testcreate_LDFLAGS =

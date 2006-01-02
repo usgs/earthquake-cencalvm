@@ -26,6 +26,9 @@ namespace cencalvm {
   namespace vsgrader {
     class TestVsGrader;
   } // vsgrader
+  namespace storage {
+    class Geometry; // HOLDSA Geometry
+  } // storage
 } // cencalvm
 
 /// C++ unit testing for VsGrader
@@ -39,7 +42,6 @@ class cencalvm::vsgrader::TestVsGrader : public CppUnit::TestFixture
   CPPUNIT_TEST( testFilenameIn );
   CPPUNIT_TEST( testFilenameOut );
   CPPUNIT_TEST( testFilenameTmp );
-  CPPUNIT_TEST( testErrorHandler );
   CPPUNIT_TEST( testQuiet );
   CPPUNIT_TEST( testReadParams );
   CPPUNIT_TEST( testInitialize );
@@ -52,6 +54,12 @@ class cencalvm::vsgrader::TestVsGrader : public CppUnit::TestFixture
 
   // PUBLIC METHODS /////////////////////////////////////////////////////
 public :
+
+  /// Setup
+  void setUp(void);
+
+  /// Tear down
+  void tearDown(void);
 
   /// Test constructor
   void testConstructor(void);
@@ -67,9 +75,6 @@ public :
 
   /// Test filenameTmp()
   void testFilenameTmp(void);
-
-  /// Test errorHandler()
-  void testErrorHandler(void);
 
   /// Test quiet()
   void testQuiet(void);
@@ -103,6 +108,8 @@ private :
 
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 private :
+
+  storage::Geometry* _pGeom; ///< Pointer to velocity model geometry
 
   static const double _SWCORNERLON; ///< Longitude for top SW corner of domain
   static const double _SWCORNERLAT; ///< Latitude for top SW corner of domain

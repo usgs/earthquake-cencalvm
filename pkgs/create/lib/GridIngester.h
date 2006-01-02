@@ -25,6 +25,7 @@ namespace cencalvm {
   namespace create {
     class GridIngester;
     class VMCreator; // USES VMCreator
+    class TestGridIngester; // friend
   } // namespace create
   namespace storage {
     class Geometry; // HOLDSA Geometry
@@ -35,6 +36,7 @@ namespace cencalvm {
 /// and inserting them into the database.
 class cencalvm::create::GridIngester
 { // GridIngester
+  friend class TestGridIngester;
 
 public :
   // PUBLIC METHODS /////////////////////////////////////////////////////

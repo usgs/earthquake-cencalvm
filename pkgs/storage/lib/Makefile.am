@@ -17,6 +17,7 @@ lib_LTLIBRARIES = libcencalvmstorage.la
 
 libcencalvmstorage_la_SOURCES = \
 	ErrorHandler.cc \
+	GeomCenCA.cc \
 	Geometry.cc \
 	Payload.cc \
 	Projector.cc
@@ -32,8 +33,9 @@ libcencalvmstorage_la_LIBADD = \
 subpkginclude_HEADERS = \
 	ErrorHandler.h \
 	ErrorHandler.icc \
+	GeomCenCA.h \
+	GeomCenCA.icc \
 	Geometry.h \
-	Geometry.icc \
 	Payload.h \
 	Projector.h \
 	etreefwd.h \

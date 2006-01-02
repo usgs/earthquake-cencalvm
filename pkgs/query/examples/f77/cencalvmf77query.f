@@ -40,6 +40,9 @@ c
 
 	real*8 queryRes
 
+	integer*4 cacheSize
+	parameter(cacheSize=128)
+
 	character*256 errorMsg
 
 	integer numVals
@@ -127,11 +130,16 @@ c       Set database filename
 	call cencalvm_filename_f(query, filenameDB, ok)
 	if (ok.ne.0) goto 998
 
+	call cencalvm_cachesize_f(query, cacheSize, ok)
+	if (ok.ne.0) goto 998
+
 c       Set extended database filename
 c       ****************************************************************
 c       Uncomment this to use the extended database
 c       ****************************************************************
 c	call cencalvm_filenameext_f(query, filenameDBExt, ok)
+c	if (ok.ne.0) goto 998
+c	call cencalvm_cachesizeext_f(query, cacheSize, ok)
 c	if (ok.ne.0) goto 998
 
 c       Open database for querying
