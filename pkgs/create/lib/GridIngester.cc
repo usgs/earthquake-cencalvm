@@ -21,6 +21,7 @@ extern "C" {
 }
 
 #include <vector> // USES std::vector
+#include <math.h> // USES fabs()
 
 #include <fstream> // USES std::ifstream
 #include <iostream> // USES std::cout
