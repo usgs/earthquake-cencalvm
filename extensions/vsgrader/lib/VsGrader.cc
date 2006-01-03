@@ -32,6 +32,8 @@ extern "C" {
 // ----------------------------------------------------------------------
 const double cencalvm::vsgrader::VsGrader::_AZIMUTHLEN = -36.3620 * M_PI/180.0;
 const double cencalvm::vsgrader::VsGrader::_NODATAVAL = 1.0e+10;
+const int16_t cencalvm::vsgrader::VsGrader::_NODATABLOCK = 999;
+const int16_t cencalvm::vsgrader::VsGrader::_NODATAZONE = 999;
 
 // ----------------------------------------------------------------------
 // Constructor
@@ -319,9 +321,9 @@ cencalvm::vsgrader::VsGrader::_extract(void) const
 	  payload.Density = _NODATAVAL;
 	  payload.Qp = _NODATAVAL;
 	  payload.Qs = _NODATAVAL;
-	  payload.DepthFreeSurf = cencalvm::storage::Payload::NODATAVAL;
-	  payload.FaultBlock = cencalvm::storage::Payload::NODATABLOCK;
-	  payload.Zone = cencalvm::storage::Payload::NODATAZONE;
+	  payload.DepthFreeSurf = _NODATAVAL;
+	  payload.FaultBlock = _NODATABLOCK;
+	  payload.Zone = _NODATAZONE;
 	} else if (payload.Vs < _minVs)
 	  payload.Vs = _minVs;
 

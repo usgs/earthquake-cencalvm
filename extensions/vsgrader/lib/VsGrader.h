@@ -220,6 +220,12 @@ private :
   /// Value for locations not in input database
   static const double _NODATAVAL;
 
+  /// Fault block for locations not in input database
+  static const int16_t _NODATABLOCK;
+
+  /// Zone for locations not in input database
+  static const int16_t _NODATAZONE;
+
 }; // VsGrader
 
 #include "VsGrader.icc" // inline methods
