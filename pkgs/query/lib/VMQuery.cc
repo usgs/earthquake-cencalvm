@@ -212,7 +212,7 @@ cencalvm::query::VMQuery::query(double** ppVals,
     _pErrHandler->error("Unknown C++ error");
   } // catch
 
-  // If not found in any model, set data to NODATA values
+  // If not found in any model, trigger warning
   if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock) {
     std::ostringstream msg;
     msg
