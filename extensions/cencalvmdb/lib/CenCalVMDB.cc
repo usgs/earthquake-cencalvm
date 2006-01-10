@@ -148,10 +148,10 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
     double* pVs = &(*pVals)[_vsVal];
     int iter = 1;
     while (*pVs < 0.0) {
-      const int maxIter = 8;
+      const int maxIter = 6;
       const double elevDiff = 25.0;
       pErrHandler->resetStatus();
-      const double newElev = pCoords[2] - iter*elevDiff;
+      const double newElev = pCoords[2] - pow(2,iter-1)*elevDiff;
       _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], newElev);
       if (iter < maxIter)
 	++iter;
