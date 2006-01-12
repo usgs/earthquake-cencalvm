@@ -139,9 +139,8 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
   if (pCoords[2] < -44.95e+3)
     pCoords[2] = -44.95e+3;
 
-  int err = 0;
-  cencalvm::storage::ErrorHandler* pErrHandler = _pQuery->errorHandler();
   _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], pCoords[2]);
+  cencalvm::storage::ErrorHandler* pErrHandler = _pQuery->errorHandler();
   if (storage::ErrorHandler::ERROR == pErrHandler->status())
     throw std::runtime_error(pErrHandler->message());
 
@@ -163,6 +162,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
       *pVs = _minVs;
   } // if
 
+  int err = 0;
   if (cencalvm::storage::ErrorHandler::WARNING == pErrHandler->status()) {
     err = 1;
     pErrHandler->resetStatus();
