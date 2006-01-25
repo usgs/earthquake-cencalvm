@@ -23,7 +23,7 @@ const char* cencalvm::storage::ErrorHandler::_NULLFILE = "/dev/null";
 cencalvm::storage::ErrorHandler::ErrorHandler(void) :
   _message(""),
   _logFilename(_NULLFILE),
-  _pLogFile(new std::ofstream),
+  _pLogFile(new std::ofstream(_NULLFILE)),
   _status(OK)
 { // constructor
 } // constructor
