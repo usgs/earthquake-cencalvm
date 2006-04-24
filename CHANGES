@@ -13,6 +13,18 @@
 /**
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
+ *
+ * \section ver041 Version 0.4.1, 2006/03/21
+ *
+ * @li Restructured geometry routines in order to generalize geometry
+ * interface. Etree databases with different geometries (different
+ * locations) can now use the same query routines. The default
+ * geometry is the one for central CA; this can be changed via
+ * VMQuery::geometry().
+ * @li Improved compliance with C++ standards which eliminated
+ * compiler warnings for some compilers.
+ * @li Miscellaneous minor improvements in documentation.
+ *
  * \section ver040 Version 0.4.0, 2005/11/05
  *
  * @li Restructured query routines, adding the ability to query the
