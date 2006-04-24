@@ -102,15 +102,17 @@ class cencalvm::query::VMQuery
   void queryType(const QueryEnum queryType);
 
   /** Set query resolution. Resolution is associated with vertical
-   * resolution, which is 4 times greater than the horizontal
-   * resolution.
+   * resolution. Vertical resolution is 4 times greater than the
+   * horizontal resolution (i.e., discretization size in vertical
+   * direction is 1/4 discretization size in horizontal direction).
    *
    * Meaning depends on type of query:
    *   @li MAXRES Resolution is not applicable
    *   @li FIXEDRES Query etree at level corresponding to resolution
-   *   @li WAVERES Resolution corresponds to minimum period of waves;
-   *     etree is queried at level corresponding to minimum wavelength
-   *     for shear waves.
+   *     (resolution is given in meters)
+   *   @li WAVERES Resolution corresponds to minimum period of waves
+   *     (resolution is given in seconds); etree is queried at level 
+   *     corresponding to minimum wavelength for shear waves.
    *
    * @param res Resolution of query.
    */
