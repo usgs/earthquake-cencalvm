@@ -25,7 +25,7 @@ testcreate_SOURCES = \
 	testcreate.cc
 
 noinst_HEADERS = \
-	TestGridIngester.h
+	TestGridIngester.h \
 	TestVMCreator.h
 
 testcreate_LDFLAGS =
