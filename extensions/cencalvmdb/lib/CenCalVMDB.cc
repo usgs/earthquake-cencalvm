@@ -30,6 +30,7 @@
 #include "pythiautil/FireWallUtil.h" // USES FIREWALL
 #else
 #define FIREWALL assert
+#include <assert.h>
 #endif
 
 // ----------------------------------------------------------------------
