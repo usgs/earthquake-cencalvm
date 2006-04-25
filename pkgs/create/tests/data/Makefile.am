@@ -16,6 +16,7 @@ data_DATA = \
 
 data_TMP = \
 	one.etree \
+	two.etree \
 	tmp.etree
 
 noinst_HEADERS = \
