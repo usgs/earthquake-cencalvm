@@ -13,7 +13,8 @@
 data_DATA = \
 	paramfile.txt
 
-data_TMP =
+data_TMP = \
+	test.etree
 
 noinst_HEADERS = \
 	TestVsGrader.dat \
