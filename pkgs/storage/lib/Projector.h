@@ -34,10 +34,7 @@ class cencalvm::storage::Projector
 public :
   // PUBLIC METHODS /////////////////////////////////////////////////////
 
-  /** Constructor.
-   *
-   * @param errHandler Error handler
-   */
+  /// Constructor.
   Projector(void);
 
   /// Destructor

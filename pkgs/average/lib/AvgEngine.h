@@ -69,9 +69,10 @@ private :
 public :
   // PRIVATE STRUCTS ////////////////////////////////////////////////////
 
+  /// Object to hold pending octant data
   struct PendingDataStruct {
-    cencalvm::storage::PayloadStruct* pSum;
-    size_t numChildren;
+    cencalvm::storage::PayloadStruct* pSum; ///< Sum values
+    size_t numChildren; ///< Number of children in sum
   }; // PendingDataStruct
 
 private :

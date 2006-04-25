@@ -77,7 +77,7 @@ public :
 
   /** Set cache size.
    *
-   * @param Size of cache in MB
+   * @param size of cache in MB
    */
   void cacheSize(const int size);
 
