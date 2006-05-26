@@ -12,26 +12,19 @@
 
 #include <portinfo>
 
-#include "spatialdata/spatialdb/SpatialDB.h" // ISA SpatialDB object
+#include "spatialdata/spatialdb/SpatialDB.hh" // ISA SpatialDB object
 #include "CenCalVMDB.h" // Implementation of class methods
 
 #include "cencalvm/query/VMQuery.h" // USES VMQuery
-#include "spatialdata/geocoords/CoordSys.h" // USES CoordSys
-#include "spatialdata/geocoords/CSGeo.h" // USES CoordSys
-#include "spatialdata/geocoords/Converter.h" // USES Converter
+#include "spatialdata/geocoords/CoordSys.hh" // USES CoordSys
+#include "spatialdata/geocoords/CSGeo.hh" // USES CoordSys
+#include "spatialdata/geocoords/Converter.hh" // USES Converter
 #include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 #include "cencalvm/storage/Payload.h" // USES Payload::NODATAVAL
 
 #include <stdexcept> // USES std::runtime_error
 #include <math.h> // USES pow()
-
-#if defined(USE_PYTHIA)
-#include "journal/firewall.h" // USES FIREWALL
-#include "pythiautil/FireWallUtil.h" // USES FIREWALL
-#else
-#define FIREWALL assert
-#include <assert.h>
-#endif
+#include <assert.h> // USES assert()
 
 // ----------------------------------------------------------------------
 /// Default constructor
@@ -62,7 +55,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::~CenCalVMDB(void)
 void
 cencalvm::extensions::cencalvmdb::CenCalVMDB::open(void)
 { // open
-  FIREWALL(0 != _pQuery);
+  assert(0 != _pQuery);
 
   _pQuery->open();
   if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
@@ -74,7 +67,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::open(void)
 void
 cencalvm::extensions::cencalvmdb::CenCalVMDB::close(void)
 { // close
-  FIREWALL(0 != _pQuery);
+  assert(0 != _pQuery);
 
   _pQuery->close(); 
   if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
@@ -86,7 +79,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::close(void)
 void
 cencalvm::extensions::cencalvmdb::CenCalVMDB::queryType(const query::VMQuery::QueryEnum queryType)
 { // queryType
-  FIREWALL(0 != _pQuery);
+  assert(0 != _pQuery);
 
   _pQuery->queryType(queryType);
   if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
@@ -99,7 +92,7 @@ void
 cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
 							const int numVals)
 { // queryVals
-  FIREWALL(0 != _pQuery);
+  assert(0 != _pQuery);
 
   _pQuery->queryVals(names, numVals);
   if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
@@ -123,7 +116,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
 					const double z,
 			      const spatialdata::geocoords::CoordSys* pCSQuery)
 { // query
-  FIREWALL(0 != _pQuery);
+  assert(0 != _pQuery);
 
   double* pCoords = new double[3];
   const int numLocs = 1;

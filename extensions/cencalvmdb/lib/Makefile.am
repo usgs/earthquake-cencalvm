@@ -24,7 +24,7 @@ INCLUDES +=
 
 libcencalvmdb_la_LIBADD = \
 	$(top_builddir)/pkgs/query/lib/libcencalvmquery.la \
-	-lspatialdata -lspatialdatageocoords
+	-lspatialdataspatialdb -lspatialdatageocoords
 
 subpkginclude_HEADERS = \
 	CenCalVMDB.h \
