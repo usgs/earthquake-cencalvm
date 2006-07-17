@@ -288,9 +288,9 @@ main(int argc,
     fileOut
       << std::resetiosflags(std::ios::scientific)
       << std::setiosflags(std::ios::fixed)
-      << std::setprecision(4)
-      << std::setw(9) << lon
-      << std::setw(8) << lat
+      << std::setprecision(5)
+      << std::setw(10) << lon
+      << std::setw(9) << lat
       << std::setprecision(1) << std::setw(9) << elev;
 #if !defined(ALLVALS)
     fileOut
