@@ -109,7 +109,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
 // ----------------------------------------------------------------------
 // Query the database.
 int
-cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
+cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double* pVals,
 					const int numVals,
 					const double x,
 					const double y,
@@ -124,7 +124,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
   pCoords[1] = y;
   pCoords[2] = z;
 
-  spatialdata::geocoords::Converter::convert(&pCoords, numLocs, 
+  spatialdata::geocoords::Converter::convert(pCoords, numLocs, 
 					     _pCS, pCSQuery);
 
   /** :KLUDGE:
@@ -133,20 +133,20 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double** pVals,
   if (pCoords[2] < -44.95e+3)
     pCoords[2] = -44.95e+3;
 
-  _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], pCoords[2]);
+  _pQuery->query(&pVals, numVals, pCoords[0], pCoords[1], pCoords[2]);
   cencalvm::storage::ErrorHandler* pErrHandler = _pQuery->errorHandler();
   if (storage::ErrorHandler::ERROR == pErrHandler->status())
     throw std::runtime_error(pErrHandler->message());
 
   if (_vsVal >= 0) {
-    double* pVs = &(*pVals)[_vsVal];
+    double* pVs = &pVals[_vsVal];
     int iter = 1;
     while (*pVs < 0.0) {
       const int maxIter = 6;
       const double elevDiff = 25.0;
       pErrHandler->resetStatus();
       const double newElev = pCoords[2] - pow(2,iter-1)*elevDiff;
-      _pQuery->query(pVals, numVals, pCoords[0], pCoords[1], newElev);
+      _pQuery->query(&pVals, numVals, pCoords[0], pCoords[1], newElev);
       if (iter < maxIter)
 	++iter;
       else

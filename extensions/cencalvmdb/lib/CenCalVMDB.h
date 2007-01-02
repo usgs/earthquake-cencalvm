@@ -127,7 +127,7 @@ class cencalvm::extensions::cencalvmdb::CenCalVMDB :
    *
    * @pre Must call open() before query()
    *
-   * @param pVals Pointer to computed values (output from query)
+   * @param pVals Array for computed values (output from query)
    * @param numVals Number of values expected (size of pVals array)
    * @param x X coordinate of location for query
    * @param y Y coordinate of location for query
@@ -136,7 +136,7 @@ class cencalvm::extensions::cencalvmdb::CenCalVMDB :
    *
    * @returns 0 on success, 1 on failure (i.e., values not set)
    */
-  int query(double** pVals,
+  int query(double* pVals,
 	    const int numVals,
 	    const double x,
 	    const double y,
