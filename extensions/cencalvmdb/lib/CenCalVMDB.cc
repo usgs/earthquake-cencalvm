@@ -111,30 +111,26 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
 int
 cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double* pVals,
 					const int numVals,
-					const double x,
-					const double y,
-					const double z,
+					const double* coords,
+					const int numDims,
 			      const spatialdata::geocoords::CoordSys* pCSQuery)
 { // query
   assert(0 != _pQuery);
 
-  const int numDims = 3;
-  double* pCoords = new double[numDims];
+  double* buffer = new double[numDims];
   const int numLocs = 1;
-  pCoords[0] = x;
-  pCoords[1] = y;
-  pCoords[2] = z;
-
-  spatialdata::geocoords::Converter::convert(pCoords, numLocs, numDims,
+  for (int i=0; i < numDims; ++i)
+    buffer[i] = coords[i];
+  spatialdata::geocoords::Converter::convert(buffer, numLocs, numDims,
 					     _pCS, pCSQuery);
-
+  
   /** :KLUDGE:
    * Prevent elevations from being deeper than 45.0 km.
    */
-  if (pCoords[2] < -44.95e+3)
-    pCoords[2] = -44.95e+3;
+  if (buffer[2] < -44.95e+3)
+    buffer[2] = -44.95e+3;
 
-  _pQuery->query(&pVals, numVals, pCoords[0], pCoords[1], pCoords[2]);
+  _pQuery->query(&pVals, numVals, buffer[0], buffer[1], buffer[2]);
   cencalvm::storage::ErrorHandler* pErrHandler = _pQuery->errorHandler();
   if (storage::ErrorHandler::ERROR == pErrHandler->status())
     throw std::runtime_error(pErrHandler->message());
@@ -146,8 +142,8 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double* pVals,
       const int maxIter = 6;
       const double elevDiff = 25.0;
       pErrHandler->resetStatus();
-      const double newElev = pCoords[2] - pow(2,iter-1)*elevDiff;
-      _pQuery->query(&pVals, numVals, pCoords[0], pCoords[1], newElev);
+      const double newElev = buffer[2] - pow(2,iter-1)*elevDiff;
+      _pQuery->query(&pVals, numVals, buffer[0], buffer[1], newElev);
       if (iter < maxIter)
 	++iter;
       else
@@ -162,13 +158,11 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double* pVals,
     err = 1;
     pErrHandler->resetStatus();
   } // if
-  
-  delete[] pCoords; pCoords = 0;
 
+  delete[] buffer; buffer = 0;
+  
   return err;
 } // query
 
-// version
-// $Id$
 
 // End of file 

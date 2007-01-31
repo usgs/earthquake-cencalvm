@@ -129,18 +129,16 @@ class cencalvm::extensions::cencalvmdb::CenCalVMDB :
    *
    * @param pVals Array for computed values (output from query)
    * @param numVals Number of values expected (size of pVals array)
-   * @param x X coordinate of location for query
-   * @param y Y coordinate of location for query
-   * @param z Z coordinate of location for query
+   * @param coords Coordinates of location for query
+   * @param numDims Number of dimensions for location
    * @param pCSQuery Coordinate system of coordinates
    *
    * @returns 0 on success, 1 on failure (i.e., values not set)
    */
   int query(double* pVals,
 	    const int numVals,
-	    const double x,
-	    const double y,
-	    const double z,
+	    const double* coords,
+	    const int numDims,
 	    const spatialdata::geocoords::CoordSys* pCSQuery);
 
  private :
