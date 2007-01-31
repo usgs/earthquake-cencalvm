@@ -118,13 +118,14 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double* pVals,
 { // query
   assert(0 != _pQuery);
 
-  double* pCoords = new double[3];
+  const int numDims = 3;
+  double* pCoords = new double[numDims];
   const int numLocs = 1;
   pCoords[0] = x;
   pCoords[1] = y;
   pCoords[2] = z;
 
-  spatialdata::geocoords::Converter::convert(pCoords, numLocs, 
+  spatialdata::geocoords::Converter::convert(pCoords, numLocs, numDims,
 					     _pCS, pCSQuery);
 
   /** :KLUDGE:
