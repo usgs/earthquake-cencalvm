@@ -47,7 +47,9 @@
  *
  * @section dirs Directories
  *
- * @li \b doc Directory where the documentation for the query API
+ * <ul>
+ *
+ * <li> \b doc Directory where the documentation for the query API
  * resides. The documentation is available online at
  * http://www.sf06simulation.org/geology/velocitymodel/querydoc/. You
  * can generate the documentation if you have doxygen installed by
@@ -55,38 +57,57 @@
  * associated with the user interface are labeled as such in the html
  * documentation.
  *
- * @li \b libsrc Top-level directory for source files comprising
+ * </li>
+ *
+ * <li> \b libsrc Top-level directory for source files comprising
  * cencalvm library.
  *
- * @subsection average Subpackage 'average'
+ * </li>
  *
- * This subpackage is used to populate the interior octants of the
- * etree with averages of the children. In general, it is for internal
- * use only.
+ * <ul>
  *
- * @subsection create Subpackage 'create'
+ * <li> \b average
  *
- * This package is used to create the Etree database from Earth Vision
- * files. In general, it is for internal use only.
+ * The average subpackage is used to populate the interior octants of
+ * the etree with averages of the children. In general, it is for
+ * internal use only.
  *
- * @subsection query Subpackage 'query'
+ * </li>
  *
- * This package is used to query the etree database holding the
- * velocity model. See \link libsrc/query/README libsrc/query/README \endlink for
- * additional information on the query routines.
+ * <li> \b create
  *
- * @subsection storage Subpackage 'storage'
+ * The create subpackage is used to create the Etree database from
+ * Earth Vision files. In general, it is for internal use only.
+ * 
+ * </li>
  *
- * This package defines the geometry of the velocity model and
- * performs transformation of geographic coordinates to the Etree
+ * <li> \b query
+ *
+ * The query subpackage is used to query the etree database holding
+ * the velocity model. See \link libsrc/query/README
+ * libsrc/query/README \endlink for additional information on the
+ * query routines.
+ *
+ * </li>
+ *
+ * <li> \b storage
+ *
+ * The storage subpackage defines the geometry of the velocity model
+ * and performs transformation of geographic coordinates to the Etree
  * ticks. This package is used by the other packages. You should never
  * need to call the routines in this subpackage directly.
  *
- * @li \b tests Unit testing of all routines.
+ * </li>
  *
- * @li \b applications Source directory for applications (executables).
+ * </ul>
  *
- * @li \b examples Source directory for query examples.
+ * <li> \b tests Unit testing of all routines.</li>
+ *
+ * <li> \b applications Source directory for applications (executables).</li>
+ *
+ * <li> \b examples Source directory for query examples.</li>
+ *
+ * </ul>
  *
  * @section version Version history
  *
