@@ -19,6 +19,7 @@ noinst_HEADERS = \
 SUBDIRS = \
 	libsrc \
 	applications \
+	examples \
 	extensions
 
 if ENABLE_DOCUMENTATION
