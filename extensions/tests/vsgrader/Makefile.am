@@ -17,7 +17,7 @@ TESTS = testgrader
 check_PROGRAMS = testgrader
 
 testgrader_SOURCES = \
-	$(top_srcddir)/extensions/applications/vsgrader/VsGrader.cc \
+	$(top_srcdir)/extensions/applications/vsgrader/VsGrader.cc \
 	TestVsGrader.cc \
 	testgrader.cc
 

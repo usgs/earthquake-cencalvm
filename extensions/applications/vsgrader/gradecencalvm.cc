@@ -13,7 +13,7 @@
 // Application driver to limit gradient in Vs in etree database of central CA
 // velocity model.
 
-#include "cencalvm/vsgrader/VsGrader.h" // USES VMCreator
+#include "VsGrader.h" // USES VMCreator
 
 #include <stdlib.h> // USES exit()
 #include <unistd.h> // USES getopt()

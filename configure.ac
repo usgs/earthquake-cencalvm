@@ -151,7 +151,6 @@ AC_CONFIG_FILES([Makefile
 	extensions/Makefile
 	extensions/libsrc/Makefile
 	extensions/libsrc/cencalvmdb/Makefile
-	extensions/libsrc/vsgrader/Makefile
 	extensions/applications/Makefile
 	extensions/applications/vsgrader/Makefile
 	extensions/tests/Makefile

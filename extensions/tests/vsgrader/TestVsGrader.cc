@@ -12,7 +12,7 @@
 
 #include "TestVsGrader.h" // Implementation of class methods
 
-#include "cencalvm/vsgrader/VsGrader.h" // USES VsGrader
+#include "VsGrader.h" // USES VsGrader
 #include "cencalvm/storage/Payload.h" // USES PayloadStruct
 #include "cencalvm/storage/Geometry.h" // USES Geometry
 #include "cencalvm/storage/GeomCenCA.h" // USES GeomCenCA
