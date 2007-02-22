@@ -10,12 +10,10 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	lib \
-	driver
+SUBDIRS = 
 
-if ENABLE_TESTING
-  SUBDIRS += tests
+if ENABLE_VSGRADER
+  SUBDIRS += vsgrader
 endif
 
 

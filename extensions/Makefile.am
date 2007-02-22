@@ -10,14 +10,13 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = 
+SUBDIRS = \
+	libsrc \
+	applications
 
-if ENABLE_SPATIAL
-  SUBDIRS += cencalvmdb
+if ENABLE_TESTING
+  SUBDIRS += tests
 endif
 
-if ENABLE_VSGRADER
-  SUBDIRS += vsgrader
-endif
 
 # End of file 

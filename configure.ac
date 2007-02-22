@@ -40,6 +40,7 @@ AC_ARG_ENABLE([documentation],
 	[  --enable-documentation  Enable buuilding html documentation (requires doxygen) [[default=no]]],
 	[enable_documentation=yes],
 	[enable_documentation=no])
+
 # ----------------------------------------------------------------------
 
 AC_PROG_CXX
@@ -148,13 +149,14 @@ AC_CONFIG_FILES([Makefile
 	examples/query/f77/Makefile
 	examples/query/data/Makefile
 	extensions/Makefile
-	extensions/cencalvmdb/Makefile
-	extensions/cencalvmdb/lib/Makefile
-	extensions/vsgrader/Makefile
-	extensions/vsgrader/lib/Makefile
-	extensions/vsgrader/driver/Makefile
-	extensions/vsgrader/tests/Makefile
-	extensions/vsgrader/tests/data/Makefile
+	extensions/libsrc/Makefile
+	extensions/libsrc/cencalvmdb/Makefile
+	extensions/libsrc/vsgrader/Makefile
+	extensions/applications/Makefile
+	extensions/applications/vsgrader/Makefile
+	extensions/tests/Makefile
+	extensions/tests/vsgrader/Makefile
+	extensions/tests/vsgrader/data/Makefile
 	doc/Makefile])
 
 AC_OUTPUT

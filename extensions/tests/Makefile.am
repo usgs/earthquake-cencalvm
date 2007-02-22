@@ -10,17 +10,11 @@
 # ----------------------------------------------------------------------
 #
 
-bin_PROGRAMS = gradecencalvm
+SUBDIRS = 
 
-gradecencalvm_SOURCES = \
-	gradecencalvm.cc
-
-INCLUDES = -I$(top_builddir)/include
-
-gradecencalvm_LDADD = \
-	-letree \
-	$(top_builddir)/extensions/vsgrader/lib/libcencalvmvsgrader.la \
-	$(top_builddir)/libsrc/libcencalvm.la
+if ENABLE_VSGRADER
+  SUBDIRS += vsgrader
+endif
 
 
 # End of file 

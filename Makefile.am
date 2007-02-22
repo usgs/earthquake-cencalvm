@@ -19,8 +19,14 @@ noinst_HEADERS = \
 SUBDIRS = \
 	libsrc \
 	applications \
-	examples \
-	extensions
+	examples
+
+if ENABLE_SPATIAL
+  SUBDIRS += extensions
+endif
+if ENABLE_VSGRADER
+  SUBDIRS += extensions
+endif
 
 if ENABLE_DOCUMENTATION
   SUBDIRS += doc
