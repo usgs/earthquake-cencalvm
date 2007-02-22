@@ -10,7 +10,7 @@
 // ----------------------------------------------------------------------
 //
 
-/** @file extensions/cencalvmdb/lib/CenCalVMDB.h
+/** @file cencalvmdb/CenCalVMDB.h
  *
  * @brief C++ CenCalVMDB.
  *

@@ -10,7 +10,7 @@
 // ======================================================================
 //
 
-/** @file lib/VsGrader.h
+/** @file VsGrader.h
  *
  * @brief C++ manager for limiting gradient in shear wave speed in
  * velocity model stored as an Etree database.
