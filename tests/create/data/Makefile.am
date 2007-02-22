@@ -11,17 +11,21 @@
 #
 
 data_DATA = \
+	one.dat \
 	paramfile.txt
 
 data_TMP = \
-	test.etree
+	one.etree \
+	two.etree \
+	tmp.etree
 
 noinst_HEADERS = \
-	TestVsGrader.dat \
+	TestVMCreator.dat \
+	TestGridIngester.dat \
 	$(data_DATA)
 
 # 'export' the input files by performing a mock install
-export_datadir = $(top_builddir)/extensions/vsgrader/tests/data
+export_datadir = $(top_builddir)/tests/create/data
 export-data: $(data_DATA)
 	for f in $(data_DATA); do $(install_sh_DATA) $(srcdir)/$$f $(export_datadir); done
 

@@ -10,16 +10,28 @@
 # ----------------------------------------------------------------------
 #
 
-bin_PROGRAMS = gradecencalvm
+SUBDIRS = data
 
-gradecencalvm_SOURCES = \
-	gradecencalvm.cc
+TESTS = testcreate
+
+check_PROGRAMS = testcreate
+
+testcreate_SOURCES = \
+	TestGridIngester.cc \
+	TestVMCreator.cc \
+	testcreate.cc
+
+noinst_HEADERS = \
+	TestGridIngester.h \
+	TestVMCreator.h
+
+testcreate_LDFLAGS =
 
 INCLUDES = -I$(top_builddir)/include
 
-gradecencalvm_LDADD = \
+testcreate_LDADD = \
+	-lcppunit -ldl \
 	-letree \
-	$(top_builddir)/extensions/vsgrader/lib/libcencalvmvsgrader.la \
 	$(top_builddir)/libsrc/libcencalvm.la
 
 

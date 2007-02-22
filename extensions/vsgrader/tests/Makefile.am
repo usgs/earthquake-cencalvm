@@ -10,9 +10,6 @@
 # ----------------------------------------------------------------------
 #
 
-subpackage = vsgrader
-include $(top_srcdir)/pkgs/subpackage.am
-
 SUBDIRS = data
 
 TESTS = testgrader
@@ -28,16 +25,13 @@ noinst_HEADERS = \
 
 testgrader_LDFLAGS =
 
-INCLUDES +=
+INCLUDES = -I$(top_builddir)/include
 
 testgrader_LDADD = \
 	-lcppunit -ldl \
 	-letree \
 	$(top_builddir)/extensions/vsgrader/lib/libcencalvmvsgrader.la \
-	$(top_builddir)/pkgs/create/lib/libcencalvmcreate.la \
-	$(top_builddir)/pkgs/query/lib/libcencalvmquery.la
+	$(top_builddir)/libsrc/libcencalvm.la
 
-# version
-# $Id$
 
 # End of file 

@@ -13,7 +13,5 @@
 noinst_HEADERS = \
 	doxyconfig
 
-# version
-# $Id$
 
 # End of file 

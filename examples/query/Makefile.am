@@ -11,12 +11,10 @@
 #
 
 SUBDIRS = \
-	lib \
-	driver
-
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+	data \
+	cpp \
+	c \
+	f77
 
 
 # End of file 

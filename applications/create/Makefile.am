@@ -10,16 +10,24 @@
 # ----------------------------------------------------------------------
 #
 
-bin_PROGRAMS = gradecencalvm
+bin_PROGRAMS = \
+	gencencalvm \
+	packcencalvm
 
-gradecencalvm_SOURCES = \
-	gradecencalvm.cc
+gencencalvm_SOURCES = \
+	gencencalvm.cc
 
 INCLUDES = -I$(top_builddir)/include
 
-gradecencalvm_LDADD = \
+gencencalvm_LDADD = \
 	-letree \
-	$(top_builddir)/extensions/vsgrader/lib/libcencalvmvsgrader.la \
+	$(top_builddir)/libsrc/libcencalvm.la
+
+packcencalvm_SOURCES = \
+	packcencalvm.cc
+
+packcencalvm_LDADD = \
+	-letree \
 	$(top_builddir)/libsrc/libcencalvm.la
 
 

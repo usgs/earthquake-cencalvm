@@ -23,11 +23,17 @@ AC_ARG_ENABLE([testing],
 	[enable_testing=yes],
 	[enable_testing=no])
 
-# SPATIAL w/spatialdata
+# SPATIAL w/spatialdata extension
 AC_ARG_ENABLE([spatial],
 	[  --enable-spatial        Enable use of spatialdata package (requires spatialdata) [[default=no]]],
 	[enable_spatial=yes],
 	[enable_spatial=no])
+
+# GRADER w/vsgrader extention
+AC_ARG_ENABLE([vsgrader],
+	[  --enable-vsgrader       Enable vsgrader extension [[default=no]]],
+	[enable_vsgrader=yes],
+	[enable_vsgrader=no])
 
 # DOCUMENTATION w/doxygen
 AC_ARG_ENABLE([documentation],
@@ -100,6 +106,9 @@ if test "$enable_spatial" = "yes" ; then
   ])
 fi
 
+# SPATIALDATA
+AM_CONDITIONAL([ENABLE_VSGRADER], [test "$enable_vsgrader" = yes])
+
 # DOXYGEN
 AM_CONDITIONAL([ENABLE_DOCUMENTATION], [test "$enable_documentation" = yes])
 if test "$enable_documentation" = "yes" ; then
@@ -114,33 +123,30 @@ fi
 
 # ----------------------------------------------------------------------
 AC_CONFIG_FILES([Makefile
-	pkgs/Makefile
-	pkgs/storage/Makefile
-	pkgs/storage/lib/Makefile
-	pkgs/storage/tests/Makefile
-	pkgs/storage/tests/data/Makefile
-	pkgs/create/Makefile
-	pkgs/create/lib/Makefile
-	pkgs/create/driver/Makefile
-	pkgs/create/tests/Makefile
-	pkgs/create/tests/data/Makefile
-	pkgs/average/Makefile
-	pkgs/average/lib/Makefile
-	pkgs/average/driver/Makefile
-	pkgs/average/tests/Makefile
-	pkgs/average/tests/data/Makefile
-	pkgs/query/Makefile
-	pkgs/query/lib/Makefile
-	pkgs/query/tests/Makefile
-	pkgs/query/tests/data/Makefile
-	pkgs/query/liblang/Makefile
-	pkgs/query/apps/Makefile
-	pkgs/query/apps/cencalvminfo/Makefile
-	pkgs/query/examples/Makefile
-	pkgs/query/examples/cpp/Makefile
-	pkgs/query/examples/c/Makefile
-	pkgs/query/examples/f77/Makefile
-	pkgs/query/examples/data/Makefile
+	libsrc/Makefile
+	libsrc/average/Makefile
+	libsrc/create/Makefile
+	libsrc/storage/Makefile
+	libsrc/query/Makefile
+	tests/Makefile
+	tests/average/Makefile
+	tests/average/data/Makefile
+	tests/create/Makefile
+	tests/create/data/Makefile
+	tests/storage/Makefile
+	tests/storage/data/Makefile
+	tests/query/Makefile
+	tests/query/data/Makefile
+	applications/Makefile
+	applications/average/Makefile
+	applications/create/Makefile
+	applications/query/Makefile
+	examples/Makefile
+	examples/query/Makefile
+	examples/query/cpp/Makefile
+	examples/query/c/Makefile
+	examples/query/f77/Makefile
+	examples/query/data/Makefile
 	extensions/Makefile
 	extensions/cencalvmdb/Makefile
 	extensions/cencalvmdb/lib/Makefile
@@ -153,8 +159,5 @@ AC_CONFIG_FILES([Makefile
 
 AC_OUTPUT
 
-
-# version
-# $Id$
 
 # End of file 

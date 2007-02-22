@@ -10,13 +10,27 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	lib \
-	driver
+SUBDIRS = data
 
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+TESTS = testquery
+
+check_PROGRAMS = testquery
+
+testquery_SOURCES = \
+	TestVMQuery.cc \
+	testquery.cc
+
+noinst_HEADERS = \
+	TestVMQuery.h
+
+testquery_LDFLAGS =
+
+INCLUDES = -I$(top_builddir)/include
+
+testquery_LDADD = \
+	-lcppunit -ldl \
+	-letree \
+	$(top_builddir)/libsrc/libcencalvm.la
 
 
 # End of file 

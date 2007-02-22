@@ -13,8 +13,8 @@
 /** @mainpage
  *
  * @author Brad Aagaard
- * @date 2006/03/21
- * @version 0.4.1
+ * @date 2007/02/21
+ * @version 0.5.0
  *
  * @section summary Summary
  *
@@ -35,9 +35,9 @@
  * to query the velocity model from their own code. As a result, an
  * API is provided for the query routines. Examples of how to use the
  * query routines from C++, C, and Fortran are provided in
- * pkgs/query/examples with sample input and output in
- * pkgs/query/examples/data. Any of these examples could be used to
- * get material property values for locations, but performance will be
+ * examples/query with sample input and output in
+ * examples/query/data. Any of these examples could be used to get
+ * material property values for locations, but performance will be
  * improved if you use the API because the data won't have to be
  * written to and then read from a file.
  *
@@ -51,34 +51,42 @@
  * resides. The documentation is available online at
  * http://www.sf06simulation.org/geology/velocitymodel/querydoc/. You
  * can generate the documentation if you have doxygen installed by
- * running 'make' in the doc directory. The routines associated with
- * the user interface are labeled as such in the html documentation.
+ * running 'doxygen doxyconfig' in the doc directory. The routines
+ * associated with the user interface are labeled as such in the html
+ * documentation.
  *
- * @li \b pkgs Packages comprising cencalvm
+ * @li \b libsrc Top-level directory for source files comprising
+ * cencalvm library.
  *
- * @subsection average Package 'average'
+ * @subsection average Subpackage 'average'
  *
- * This package is used to populate the interior octants of the etree
- * with averages of the children. In general, it is for internal use
- * only.
+ * This subpackage is used to populate the interior octants of the
+ * etree with averages of the children. In general, it is for internal
+ * use only.
  *
- * @subsection create Package 'create'
+ * @subsection create Subpackage 'create'
  *
- * This package is used to create the etree database from Earth Vision
+ * This package is used to create the Etree database from Earth Vision
  * files. In general, it is for internal use only.
  *
- * @subsection query Package 'query'
+ * @subsection query Subpackage 'query'
  *
  * This package is used to query the etree database holding the
- * velocity model. See \link pkgs/query/README pkgs/query/README \endlink for
+ * velocity model. See \link libsrc/query/README libsrc/query/README \endlink for
  * additional information on the query routines.
  *
- * @subsection storage Package 'storage'
+ * @subsection storage Subpackage 'storage'
  *
  * This package defines the geometry of the velocity model and
- * performs transformation of geographic coordinates to the etree
+ * performs transformation of geographic coordinates to the Etree
  * ticks. This package is used by the other packages. You should never
- * need to call the routines in this library directly.
+ * need to call the routines in this subpackage directly.
+ *
+ * @li \b tests Unit testing of all routines.
+ *
+ * @li \b applications Source directory for applications (executables).
+ *
+ * @li \b examples Source directory for query examples.
  *
  * @section version Version history
  *
@@ -86,8 +94,5 @@
  * fixes, etc. see \link CHANGES CHANGES \endlink.
  * 
  */
-
-// version
-// $Id$
 
 // End of file 

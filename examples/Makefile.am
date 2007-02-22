@@ -11,12 +11,7 @@
 #
 
 SUBDIRS = \
-	lib \
-	driver
-
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+	query
 
 
 # End of file 

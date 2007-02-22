@@ -11,12 +11,9 @@
 #
 
 SUBDIRS = \
-	lib \
-	driver
-
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+	create \
+	average \
+	query
 
 
 # End of file 

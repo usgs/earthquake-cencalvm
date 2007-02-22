@@ -10,13 +10,14 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = vsgrader
+SUBDIRS = 
 
 if ENABLE_SPATIAL
   SUBDIRS += cencalvmdb
 endif
 
-# version
-# $Id$
+if ENABLE_VSGRADER
+  SUBDIRS += vsgrader
+endif
 
 # End of file 

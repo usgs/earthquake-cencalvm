@@ -14,6 +14,11 @@
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
  *
+ * \section ver050 Version 0.5.0, 2007/02/21
+ *
+ * @li Simplified code layout. Condensed multiple libraries into one
+ * main library.
+ *
  * \section ver041 Version 0.4.1, 2006/03/21
  *
  * @li Restructured geometry routines in order to generalize geometry
@@ -88,7 +93,7 @@
  * values cannnot be found for locations. Coordinates of locations
  * where data was not found can be written to a log file. Values for
  * locations not found are set to predefined value (see \link
- * pkgs/query/README pkgs/query/README \endlink for details).
+ * libsrc/query/README libsrc/query/README \endlink for details).
  * @li Fixed bugs in C and C++ examples associated with setting values
  * to be returned in a query.
  * @li Fixed documentation for units of cache size. Units are MB.

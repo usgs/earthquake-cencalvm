@@ -10,16 +10,26 @@
 # ----------------------------------------------------------------------
 #
 
-bin_PROGRAMS = gradecencalvm
+SUBDIRS = data
 
-gradecencalvm_SOURCES = \
-	gradecencalvm.cc
+TESTS = testaverage
+
+check_PROGRAMS = testaverage
+
+testaverage_SOURCES = \
+	TestAverager.cc \
+	testaverage.cc
+
+noinst_HEADERS = \
+	TestAverager.h
+
+testaverage_LDFLAGS =
 
 INCLUDES = -I$(top_builddir)/include
 
-gradecencalvm_LDADD = \
+testaverage_LDADD = \
+	-lcppunit -ldl \
 	-letree \
-	$(top_builddir)/extensions/vsgrader/lib/libcencalvmvsgrader.la \
 	$(top_builddir)/libsrc/libcencalvm.la
 
 

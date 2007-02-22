@@ -17,11 +17,16 @@ noinst_HEADERS = \
 	TODO
 
 SUBDIRS = \
-	pkgs \
+	libsrc \
+	applications \
 	extensions
 
 if ENABLE_DOCUMENTATION
   SUBDIRS += doc
+endif
+
+if ENABLE_TESTING
+  SUBDIRS += tests
 endif
 
 
@@ -31,7 +36,5 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	CPPFLAGS="-I${ETREE_INCDIR} -I${PROJ4_INCDIR} -I${CPPUNIT_INCDIR}" \
 	LDFLAGS="-L${ETREE_LIBDIR} -L${PROJ4_LIBDIR} -L${CPPUNIT_LIBDIR}"
 
-# version
-# $Id$
 
 # End of file 

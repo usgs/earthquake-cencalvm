@@ -10,25 +10,23 @@
 # ----------------------------------------------------------------------
 #
 
-subpackage = extensions/cencalvmdb
+subpackage = query
 include $(top_srcdir)/subpackage.am
 
-lib_LTLIBRARIES = libcencalvmdb.la
-
-libcencalvmdb_la_SOURCES = \
-	CenCalVMDB.cc
-
-libcencalvmdb_la_LDFLAGS =
-
-INCLUDES +=
-
-libcencalvmdb_la_LIBADD = \
-	$(top_builddir)/libsrc/libcencalvm.la \
-	-lspatialdata
-
 subpkginclude_HEADERS = \
-	CenCalVMDB.h \
-	CenCalVMDB.icc
+	VMQuery.h \
+	VMQuery.icc \
+	cvmerror.h \
+	cvmquery.h
+
+noinst_HEADERS = \
+	f77vmerror.h \
+	f77vmquery.h
+
+# export
+clean-local: clean-subpkgincludeHEADERS
+BUILT_SOURCES = export-subpkgincludeHEADERS
+CLEANFILES = export-subpkgincludeHEADERS
 
 
 # End of file 

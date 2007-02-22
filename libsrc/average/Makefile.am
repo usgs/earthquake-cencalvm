@@ -10,13 +10,20 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	lib \
-	driver
+subpackage = average
+include $(top_srcdir)/subpackage.am
 
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+subpkginclude_HEADERS = \
+	Averager.icc \
+	Averager.h
+
+noinst_HEADERS = \
+	AvgEngine.h
+
+# export
+clean-local: clean-subpkgincludeHEADERS
+BUILT_SOURCES = export-subpkgincludeHEADERS
+CLEANFILES = export-subpkgincludeHEADERS
 
 
 # End of file 

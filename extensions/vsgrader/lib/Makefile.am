@@ -11,7 +11,7 @@
 #
 
 subpackage = vsgrader
-include $(top_srcdir)/pkgs/subpackage.am
+include $(top_srcdir)/subpackage.am
 
 lib_LTLIBRARIES = libcencalvmvsgrader.la
 
@@ -24,8 +24,7 @@ INCLUDES +=
 
 libcencalvmvsgrader_la_LIBADD = \
 	-letree \
-	$(top_builddir)/pkgs/storage/lib/libcencalvmstorage.la
-	$(top_builddir)/pkgs/storage/lib/libcencalvmquery.la
+	$(top_builddir)/libsrc/libcencalvm.la
 
 subpkginclude_HEADERS = \
 	VsGrader.h \
@@ -38,7 +37,5 @@ clean-local: clean-subpkgincludeHEADERS
 BUILT_SOURCES = export-subpkgincludeHEADERS
 CLEANFILES = export-subpkgincludeHEADERS
 
-# version
-# $Id$
 
 # End of file 

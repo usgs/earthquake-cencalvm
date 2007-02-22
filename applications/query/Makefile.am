@@ -10,13 +10,15 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	lib \
-	driver
+bin_PROGRAMS = cencalvminfo
 
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+cencalvminfo_SOURCES = \
+	cencalvminfo.cc
+
+cencalvminfo_LDFLAGS =
+
+cencalvminfo_LDADD = \
+	-letree
 
 
 # End of file 

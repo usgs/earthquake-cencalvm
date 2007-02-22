@@ -10,13 +10,19 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	lib \
-	driver
+subpackage = create
+include $(top_srcdir)/subpackage.am
 
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+subpkginclude_HEADERS = \
+	VMCreator.h \
+	VMCreator.icc \
+	GridIngester.h \
+	GridIngester.icc
+
+# export
+clean-local: clean-subpkgincludeHEADERS
+BUILT_SOURCES = export-subpkgincludeHEADERS
+CLEANFILES = export-subpkgincludeHEADERS
 
 
 # End of file 

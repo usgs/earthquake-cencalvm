@@ -10,13 +10,18 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	lib \
-	driver
+data_TMP = \
+	in.etree \
+	out.etree
 
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+noinst_HEADERS = \
+	TestAverager.dat
+
+# 'export' the input files by performing a mock install
+export_datadir = $(top_builddir)/tests/average/data
+
+CLEANFILES = \
+	$(export_datadir)/$(data_TMP)
 
 
 # End of file 

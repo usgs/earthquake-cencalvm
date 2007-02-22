@@ -10,13 +10,15 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	lib \
-	driver
+bin_PROGRAMS = avgcencalvm
 
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+avgcencalvm_SOURCES = \
+	avgcencalvm.cc
+
+INCLUDES = -I$(top_builddir)/include
+
+avgcencalvm_LDADD = \
+	$(top_builddir)/libsrc/libcencalvm.la
 
 
 # End of file 

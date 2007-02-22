@@ -15,7 +15,7 @@
  * 
  * @brief Installation instructions
  *
- * See \link pkgs/query/README pkgs/query/README \endlink for a
+ * See \link libsrc/query/README libsrc/query/README \endlink for a
  * description of the velocity model querying software and how to use
  * it.
  *
@@ -209,7 +209,7 @@ configure FC=f95 CC=cc CXX=CC
  *
  * In the current configuration, the detailed model is required while
  * the extended (regional) model is optional. Use of the extended model is
- * disabled by default. See \link pkgs/query/README pkgs/query/README
+ * disabled by default. See \link libsrc/query/README libsrc/query/README
  * \endlink for details on how to enable use of the extended model.
  *
  * Download the MD5SUM files and check to the integrity of the
@@ -223,9 +223,9 @@ configure FC=f95 CC=cc CXX=CC
  * <li> OPTIONAL
  *
  * Run the examples for the languages you are interested in. The
- * examples are in the pkgs/query/examples directory. See \link
- * pkgs/query/examples/README pkgs/query/examples/README \endlink for
- * more information.
+ * examples are in the examples/query directory. See \link
+ * examples/query/README examples/query/README \endlink for more
+ * information.
  *
  * <li> Set environment variables to find libraries and executables
  * that are in PREFIX. If the libraries and executables are not
@@ -291,7 +291,5 @@ typedef struct btree_t { int a; } btree_t;
  *
  */
 
-// version
-// $Id$
 
 // End of file 

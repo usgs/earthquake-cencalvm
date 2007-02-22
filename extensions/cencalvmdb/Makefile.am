@@ -17,7 +17,5 @@ SUBDIRS = \
 #  SUBDIRS += tests
 #endif
 
-# version
-# $Id$
 
 # End of file 

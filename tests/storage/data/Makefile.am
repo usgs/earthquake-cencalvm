@@ -10,13 +10,17 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	lib \
-	driver
+data_TMP = \
+	test.log
 
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+noinst_HEADERS = \
+	TestProjector.dat
+
+# 'export' the input files by performing a mock install
+export_datadir = $(top_builddir)/tests/storage/data
+
+CLEANFILES = \
+	$(export_datadir)/$(data_TMP)
 
 
 # End of file 
