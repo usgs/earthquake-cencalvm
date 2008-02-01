@@ -105,9 +105,32 @@ if test "$enable_spatial" = "yes" ; then
     [AC_MSG_RESULT(no)
      AC_MSG_ERROR([spatialdata library not found; try LDFLAGS="-L<spatialdata lib dir>"])
   ])
+
+  # Check for Python modules and packages.
+  AC_ARG_VAR(PYTHON, [Python interpreter])
+  AC_ARG_VAR(PYTHONPATH, [Python module search path])
+  CIT_PYTHON_SYSCONFIG
+  CIT_PYTHON_EGG_SETUP
+  AM_PATH_PYTHON([2.3])
+
+  # PYREX/PYREXEMBED
+  AC_CHECK_PROG([have_pyrex],
+    [pyrexc],
+    [yes],
+    [no])
+  if test "$have_pyrex" = "no"; then
+    AC_MSG_ERROR([Pyrex not found in current path.])
+  fi
+  AC_CHECK_PROG([have_pyrexembed],
+    [pyrexembed],
+    [yes],
+    [no])
+  if test "$have_pyrexembed" = "no"; then
+    AC_MSG_ERROR([Pyrexembed not found in current path.])
+  fi
 fi
 
-# SPATIALDATA
+# VSGRADER
 AM_CONDITIONAL([ENABLE_VSGRADER], [test "$enable_vsgrader" = yes])
 
 # DOXYGEN
@@ -151,6 +174,8 @@ AC_CONFIG_FILES([Makefile
 	extensions/Makefile
 	extensions/libsrc/Makefile
 	extensions/libsrc/cencalvmdb/Makefile
+	extensions/modulesrc/Makefile
+	extensions/cencalvm/Makefile
 	extensions/applications/Makefile
 	extensions/applications/vsgrader/Makefile
 	extensions/tests/Makefile

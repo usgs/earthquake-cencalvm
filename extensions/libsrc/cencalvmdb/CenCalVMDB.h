@@ -20,6 +20,7 @@
 #if !defined(cencalvm_cencalvmdb_cencalvmdb_h)
 #define cencalvm_cencalvmdb_cencalvmdb_h
 
+#include "spatialdata/spatialdb/SpatialDB.hh" // ISA SpatialDB
 #include "cencalvm/query/VMQuery.h" // USES VMQuery
 
 namespace cencalvm {

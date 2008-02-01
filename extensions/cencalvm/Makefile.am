@@ -10,15 +10,9 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	libsrc \
-	cencalvm \
-	modulesrc \
-	applications
-
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+nobase_pkgpyexec_PYTHON = \
+	__init__.py \
+	CenCalVMDB.py
 
 
 # End of file 

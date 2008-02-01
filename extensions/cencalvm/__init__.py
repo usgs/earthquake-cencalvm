@@ -1,4 +1,4 @@
-# -*- Makefile -*-
+#!/usr/bin/env python
 #
 # ----------------------------------------------------------------------
 #
@@ -10,15 +10,11 @@
 # ----------------------------------------------------------------------
 #
 
-SUBDIRS = \
-	libsrc \
-	cencalvm \
-	modulesrc \
-	applications
+## @file cencalvm/__init__.py
+##
+## @brief Python top-level CenCalVM module initialization
 
-if ENABLE_TESTING
-  SUBDIRS += tests
-endif
+__all__ = ['CenCalVMDB']
 
 
-# End of file 
+# End of file
