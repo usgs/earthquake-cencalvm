@@ -56,7 +56,12 @@ cencalvm::query::VMQuery::errorHandler(void) {
   return _pErrHandler;
 }
 
-// version
-// $Id$
+// Set flag indicating if topography will be squashed- the ground
+inline
+void
+cencalvm::query::VMQuery::squashTopography(const bool value) {
+  _squashTopo = value;
+} // squashTopography
+
 
 // End of file 

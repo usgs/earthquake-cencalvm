@@ -159,7 +159,5 @@ private :
 
 #endif // cencalvm_storage_geomcenca_h
 
-// version
-// $Id$
 
 // End of file 

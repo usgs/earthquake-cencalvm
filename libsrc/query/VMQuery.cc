@@ -32,15 +32,16 @@ cencalvm::query::VMQuery::VMQuery(void) :
   _queryRes(0),
   _db(0),
   _dbExt(0),
+  _pQueryVals(0),
+  _pGeom(new cencalvm::storage::GeomCenCA),
+  _pErrHandler(new cencalvm::storage::ErrorHandler),
   _filename(""),
   _filenameExt(""),
-  _pQueryVals(0),
+  _queryFn(&cencalvm::query::VMQuery::_queryMax),
   _querySize(0),
   _cacheSize(128),
   _cacheSizeExt(128),
-  _queryFn(&cencalvm::query::VMQuery::_queryMax),
-  _pErrHandler(new cencalvm::storage::ErrorHandler),
-  _pGeom(new cencalvm::storage::GeomCenCA)
+  _squashTopo(false)
 { // constructor
   const int querySize = 8;
   _pQueryVals = (querySize > 0) ? new int[querySize] : 0;
@@ -167,12 +168,15 @@ cencalvm::query::VMQuery::queryVals(const char** names,
 	_pQueryVals[iVal] = 6;
       else if (0 == strcasecmp("Zone", names[iVal]))
 	_pQueryVals[iVal] = 7;
+      else if (0 == strcasecmp("elevation", names[iVal]))
+	_pQueryVals[iVal] = 8;
       else {
 	std::ostringstream msg;
 	msg << "Value name '" << names[iVal] << "' does not match any "
 	    << "of the values in the velocity database.\n"
 	    << "Values in database are:\n"
-	    << "  Vp, Vs, Density, Qp, Qs, DepthFreeSurf, FaultBlock, Zone.";
+	    << "  Vp, Vs, Density, Qp, Qs, DepthFreeSurf, FaultBlock, Zone,"
+	    << " elevation.";
 	_pErrHandler->error(msg.str().c_str());
       } // else
     } // for
@@ -192,19 +196,27 @@ cencalvm::query::VMQuery::query(double** ppVals,
   assert(0 != ppVals);
   assert(numVals == _querySize);
   assert(0 != _pGeom);
+  
+  double elevQuery = elev;
 
   cencalvm::storage::PayloadStruct payload;
   try {
     bool useAddr = false;
+    double elevRef = 0.0;
     etree_addr_t addr;
-    (this->*_queryFn)(&payload, &addr, _db, lon, lat, elev, useAddr);
+    if (_squashTopo) {
+      elevRef = _queryElev(&addr, lon, lat, elev, useAddr);
+      elevQuery = elev - elevRef;
+      useAddr = true;
+    } // if
+    (this->*_queryFn)(&payload, &addr, _db, lon, lat, elevQuery, useAddr);
 
     // If not found in detailed model, query the regional model
     char buf[ETREE_MAXBUF];
     if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock &&
 	0 != _dbExt) {
       useAddr = true;
-      (this->*_queryFn)(&payload, &addr, _dbExt, lon, lat, elev, useAddr);
+      (this->*_queryFn)(&payload, &addr, _dbExt, lon, lat, elevQuery, useAddr);
     } // if
   } catch (const std::exception& err) {
     _pErrHandler->error(err.what());
@@ -258,6 +270,11 @@ cencalvm::query::VMQuery::query(double** ppVals,
 	break;
       case 7 :
 	(*ppVals)[i] = payload.Zone;
+	break;
+      case 8 :
+	if (!_squashTopo)
+	  elevRef = queryElev(&addr, lon, lat, elevQuery, useAddr);
+	(*ppVals)[i] = elevRef;
 	break;
       default :
 	_pErrHandler->error("Could not parse requested query value.");
@@ -403,6 +420,57 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
   pPayload->DepthFreeSurf = 
     0.5 * (childPayload.DepthFreeSurf + pPayload->DepthFreeSurf);
 } // _queryWave
+
+// ----------------------------------------------------------------------
+// Query to get elevation of ground surface at location.
+double
+cencalvm::query::VMQuery::_queryElev(etree_addr_t* pAddr,
+				     const double lon,
+				     const double lat,
+				     const double elev,
+				     const bool useAddr)
+{ // _queryElev
+  assert(0 != _pGeom);
+  assert(0 != pAddr);
+
+  double elevRef = 0.0;
+
+  if (!useAddr) {
+    pAddr->level = ETREE_MAXLEVEL;
+    pAddr->type = ETREE_LEAF;
+    _pGeom->lonLatElevToAddr(pAddr, lon, lat, elev);
+  } // if
+
+  cencalvm::storage::PayloadStruct payload;
+  etree_addr_t resAddr;
+  int err = etree_search(_db, *pAddr, &resAddr, "*", pPayload);
+
+  // If not found in detailed model, query the regional model
+  if ( (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock ||
+	ETREE_INTERIOR == resAddr.type) &&
+       0 != _dbExt) {
+    useAddr = true;
+    err = etree_search(_dbExt, *pAddr, &resAddr, "*", pPayload);
+  } // if
+
+  if (0 == err && ETREE_LEAF == resAddr.type) {
+    // If found elevation for octant
+    const double depthO = payload.DepthFreeSurf;
+    double lonO = 0.0;
+    double latO = 0.0;
+    double elevO = 0.0;
+    _pGeom->addrToLonLatElev(&lonO, &latO, elevO, &resAddr);
+    elevRef = elevO + depthO;
+  } else {
+    // If search returned interior octant (averaged), return no data
+    // instead of averaged values since query request is for maximum
+    // resolution and we don't have a leaf octant (data) at that
+    // location.
+    elevRef = cencalvm::storage::Payload::NODATAVAL;
+  } // else
+
+  return elevRef;
+} // _queryElev
 
 // ----------------------------------------------------------------------
 // Set payload to NODATA values.

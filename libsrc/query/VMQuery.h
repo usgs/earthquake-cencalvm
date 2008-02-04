@@ -151,6 +151,13 @@ class cencalvm::query::VMQuery
    */
   void cacheSizeExt(const int size);
 
+  /** Set flag indicating if topography will be squashed- the ground
+   * surface is at lowered/raised to sea level.
+   *
+   * @param flag True to turn on squashing.
+   */
+  void squashTopography(const bool value);
+
   /** Query the database.
    *
    * @warning Array for values to be returned must be allocated BEFORE
@@ -247,18 +254,41 @@ private :
 		  const double elev,
 		  const bool useAddr);
   
+  /** Query to get elevation of ground surface at location.
+   *
+   * @param pAddr Pointer to Etree address
+   * @param lon Longitude of location for query in degrees
+   * @param lat Latitude of location for query in degrees
+   * @param elev Elevation of location wrt MSL in meters
+   * @param useAddr Use supplied address
+   *
+   * @returns Elevation of ground surface at location.
+   */
+  double _queryElev(etree_addr_t* pAddr,
+		    const double lon,
+		    const double lat,
+		    const double elev,
+		    const bool useAddr);
+
   /** Set payload to NODATA values.
    *
    * @param payload Pointer to database payload
    */
   static void _setNoData(cencalvm::storage::PayloadStruct* pPayload);
 
- private :
-  // PRIVATE METHODS ////////////////////////////////////////////////////
+private :
+  // NOT IMPLEMENTED ////////////////////////////////////////////////////
 
   VMQuery(const VMQuery& q); ///< Not implemented
   const VMQuery& operator=(const VMQuery& q); ///< Not implemented
   
+private :
+ // PRIVATE TYPEDEFS ///////////////////////////////////////////////////
+  
+  typedef void (cencalvm::query::VMQuery::*queryFn_t)
+    (cencalvm::storage::PayloadStruct*, etree_addr_t*, etree_t*, 
+     double, double, double, bool);
+
 private :
  // PRIVATE MEMBERS ////////////////////////////////////////////////////
   
@@ -266,21 +296,22 @@ private :
 
   etree_t* _db; ///< Database for detailed model
   etree_t* _dbExt; ///< Database for extended model
+
+  int* _pQueryVals; ///< Address offsets in payload for query values
+
+  cencalvm::storage::Geometry* _pGeom; ///< Velocity model geometry
+  cencalvm::storage::ErrorHandler* _pErrHandler; ///< Error handler
+
   std::string _filename; ///< Name of database file for detailed model
   std::string _filenameExt; ///< Name of database file for extended model
 
-  int* _pQueryVals; ///< Address offsets in payload for query values
+  queryFn_t _queryFn; ///< Method to call for queries
+
   int _querySize; ///< Number of values requested to be return in queries
   int _cacheSize; ///< Size of query cache for detailed model
   int _cacheSizeExt; ///< Size of query cache for extended model
 
-  typedef void (cencalvm::query::VMQuery::*queryFn_t)
-    (cencalvm::storage::PayloadStruct*, etree_addr_t*, etree_t*, 
-     double, double, double, bool);
-  queryFn_t _queryFn; ///< Method to call for queries
-
-  cencalvm::storage::Geometry* _pGeom; ///< Velocity model geometry
-  cencalvm::storage::ErrorHandler* _pErrHandler; ///< Error handler
+  bool _squashTopo; ///< True if squashing topography
 
 }; // class VMQuery 
 
@@ -288,7 +319,5 @@ private :
 
 #endif // cencalvm_query_vmquery_h
 
-// version
-// $Id$
 
 // End of file 
