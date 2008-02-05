@@ -30,6 +30,7 @@ extern "C" {
 /// Default constructor
 cencalvm::query::VMQuery::VMQuery(void) :
   _queryRes(0),
+  _squashLimit(-2000.0),
   _db(0),
   _dbExt(0),
   _pQueryVals(0),
@@ -202,7 +203,7 @@ cencalvm::query::VMQuery::query(double** ppVals,
   cencalvm::storage::PayloadStruct payload;
   try {
     double elevQuery = elev;
-    if (_squashTopo) {
+    if (_squashTopo && elev > _squashLimit) {
       const double elevRef = _queryElev(&addr, lon, lat, elev);
       if (cencalvm::storage::Payload::NODATAVAL != elevRef)
 	elevQuery = elev + elevRef;

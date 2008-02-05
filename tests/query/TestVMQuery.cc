@@ -156,23 +156,35 @@ cencalvm::query::TestVMQuery::testCacheSize(void)
 } // testCacheSize
 
 // ----------------------------------------------------------------------
-// Test squashTopography()
+// Test squash()
 void
-cencalvm::query::TestVMQuery::testSquashTopography(void)
-{ // testSquashTopography
+cencalvm::query::TestVMQuery::testSquash(void)
+{ // testSquash
+  const double tolerance = 0.01;
+
   VMQuery query;
 
   // default should be false
   CPPUNIT_ASSERT(false == query._squashTopo);
 
+  // default should be -2000.0
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(-2000.0, query._squashLimit, tolerance);
+
   bool value = true;
-  query.squashTopography(value);
+  query.squash(value);
   CPPUNIT_ASSERT_EQUAL(value, query._squashTopo);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(-2000.0, query._squashLimit, tolerance);
 
   value = false;
-  query.squashTopography(value);
+  query.squash(value);
   CPPUNIT_ASSERT_EQUAL(value, query._squashTopo);
-} // testSquashTopography
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(-2000.0, query._squashLimit, tolerance);
+
+  value = true;
+  query.squash(value, -3000.0);
+  CPPUNIT_ASSERT_EQUAL(value, query._squashTopo);
+  CPPUNIT_ASSERT_DOUBLES_EQUAL(-3000.0, query._squashLimit, tolerance);
+} // testSquash
 
 // ----------------------------------------------------------------------
 // Test query() with max query
@@ -323,7 +335,7 @@ cencalvm::query::TestVMQuery::testQueryWave(void)
   const int numLocs = 3;
   const int pOctIndices[] = { 1, 7, 11 };
   const double periodMin[] = { 800.0, 1.0, 4000.0 };
-  const double octValsWave[] = { 3.8875, 3.1, 4.04375 };
+  const double octValsWave[] = { 3.575, 1.1, 3.8875 };
   const bool isResLeaf[] = { false, true, false };
 
 
@@ -378,7 +390,7 @@ cencalvm::query::TestVMQuery::testQuerySquash(void)
   VMQuery query;
   query.filename(_DBFILENAME);
   query.queryType(cencalvm::query::VMQuery::MAXRES);
-  query.squashTopography(true);
+  query.squash(true);
   query.open();
 
   CPPUNIT_ASSERT_EQUAL(true, query._squashTopo);
@@ -397,8 +409,11 @@ cencalvm::query::TestVMQuery::testQuerySquash(void)
   for (int iLoc=0, i=0; iLoc < numLocs; ++iLoc, i+=3) {
     const double val = _OCTVALS[iLoc];
     const double depth = _RELPAY[5]*val;
+    const double elevQ = (pLonLatElev[i+2] < -2000.0) ? 
+      pLonLatElev[i+2] :
+      -depth;
     query.query(&pVals, numVals, 
-		pLonLatElev[i  ], pLonLatElev[i+1], -depth);
+		pLonLatElev[i  ], pLonLatElev[i+1], elevQ);
 
     const double tolerance = 1.0e-06;
     const double elevE = pLonLatElev[i+2] + depth;

@@ -56,11 +56,14 @@ cencalvm::query::VMQuery::errorHandler(void) {
   return _pErrHandler;
 }
 
-// Set flag indicating if topography will be squashed- the ground
+// Set squashed topography/bathymetry flag and minimum elevation of
+// squashing.
 inline
 void
-cencalvm::query::VMQuery::squashTopography(const bool value) {
-  _squashTopo = value;
+cencalvm::query::VMQuery::squash(const bool flag,
+				 const double limit) {
+  _squashTopo = flag;
+  _squashLimit = limit;
 } // squashTopography
 
 

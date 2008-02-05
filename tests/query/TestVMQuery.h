@@ -47,7 +47,7 @@ class cencalvm::query::TestVMQuery : public CppUnit::TestFixture
   CPPUNIT_TEST( testQueryType );
   CPPUNIT_TEST( testQueryVals );
   CPPUNIT_TEST( testCacheSize );
-  CPPUNIT_TEST( testSquashTopography );
+  CPPUNIT_TEST( testSquash );
   CPPUNIT_TEST( testQueryMax );
   CPPUNIT_TEST( testQueryFixed );
   CPPUNIT_TEST( testQueryWave );
@@ -86,8 +86,8 @@ public :
   /// Test cacheSize()
   void testCacheSize(void);
 
-  /// Test squashTopography()
-  void testSquashTopography(void);
+  /// Test squash()
+  void testSquash(void);
 
   /// Test query() with max query
   void testQueryMax(void);
@@ -157,7 +157,5 @@ private :
 
 #endif // cencalvm_query_testvmquery
 
-// version
-// $Id$
 
 // End of file 

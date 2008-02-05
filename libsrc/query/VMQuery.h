@@ -151,12 +151,14 @@ class cencalvm::query::VMQuery
    */
   void cacheSizeExt(const int size);
 
-  /** Set flag indicating if topography will be squashed- the ground
-   * surface is at lowered/raised to sea level.
+  /** Set squashed topography/bathymetry flag and minimum elevation of
+   * squashing.
    *
-   * @param flag True to turn on squashing.
+   * @param flag True if squashing, false otherwise.
+   * @param limit Minimum elevation for squashing.
    */
-  void squashTopography(const bool value);
+  void squash(const bool flag,
+	      const double limit =-2000.0);
 
   /** Query the database.
    *
@@ -291,6 +293,7 @@ private :
  // PRIVATE MEMBERS ////////////////////////////////////////////////////
   
   double _queryRes; ///< Vertical resolution of query (if specified)
+  double _squashLimit; ///< Elevation above which topography is squashed.
 
   etree_t* _db; ///< Database for detailed model
   etree_t* _dbExt; ///< Database for extended model
