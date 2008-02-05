@@ -28,10 +28,10 @@ c
 	parameter(unitOut=11)
 
         character*64 filenameDB
-	parameter(filenameDB='USGSBayAreaVM-05.1.0.etree')
+	parameter(filenameDB='USGSBayAreaVM-08.0.0.etree')
 
         character*64 filenameDBExt
-	parameter(filenameDBExt='USGSBayAreaVMExt-05.1.0.etree')
+	parameter(filenameDBExt='USGSBayAreaVMExt-08.0.0.etree')
 
         character*64 filenameLog
 	parameter(filenameLog='test.log')
@@ -46,7 +46,7 @@ c
 	character*256 errorMsg
 
 	integer numVals
-	parameter(numVals=8)
+	parameter(numVals=9)
 	real*8 vals(numVals)
 
 	real*8 lon, lat, elev
@@ -54,7 +54,7 @@ c
 	integer ok
 
 c       ****************************************************************
-c	Uncomment one of the following lines
+c	UNCOMMENT ONE OF THE FOLLOWING LINES.
 c
 c       Note: Only 1 set can be uncommented at a time.
 c       ****************************************************************
@@ -68,7 +68,7 @@ c       (Sets 4-6)
 c	parameter(filenameIn='../data/sample_ext-05.1.x.in')
 
 c       ****************************************************************
-c	Uncomment one of the following sets of 3 lines
+c	UNCOMMENT ONE OF THE FOLLOWING SETS OF 3 LINES.
 c
 c       Note: Only 1 set can be uncommented at a time.
 c       ****************************************************************
@@ -193,8 +193,8 @@ c          If query generated an error, then bail out, otherwise reset status
 
 c       Write values returned by query to output file
 	write(unitOut,20) lon,lat,elev,vals(1),vals(2),vals(3),
-     &    vals(4),vals(5),vals(6),int(vals(7)),int(vals(8))
- 20	format(f9.4,f8.4,f9.1,f8.1,f8.1,f8.1,f9.1,f9.1,f9.1,i5,i5)
+     &    vals(4),vals(5),vals(6),int(vals(7)),int(vals(8)),vals(9)
+ 20	format(f9.4,f8.4,f9.1,f8.1,f8.1,f8.1,f9.1,f9.1,f9.1,i5,i5,f9.1)
 
 	goto 10
 
@@ -223,7 +223,5 @@ c       Destroy query handle
  999	write(6,*) 'ERROR'
  100	end
 
-c version
-c $Id$
 
 c End of file

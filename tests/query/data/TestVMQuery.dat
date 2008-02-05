@@ -16,42 +16,43 @@
 const int cencalvm::query::TestVMQuery::_NUMOCTANTS = 21;
 const int cencalvm::query::TestVMQuery::_NUMOCTANTSLEAF = 12;
 const int cencalvm::query::TestVMQuery::_COORDS[] = {
-  40, 16, 88, 7, // 0, leaf
-  41, 16, 88, 7, // 1, leaf
-  42, 16, 88, 7, // 2, leaf
-  40, 17, 88, 7, // 3, leaf
-  41, 17, 88, 7, // 4, leaf
-  42, 17, 88, 7, // 5, leaf
-  40, 16, 89, 7, // 6, leaf
-  41, 16, 89, 7, // 7, leaf
-  40, 17, 89, 7, // 8, leaf
-  41, 17, 89, 7, // 9, leaf
-  40, 18, 88, 7, // 10, leaf
-  20, 8, 45, 6, // 11, leaf
-  20, 8, 44, 6, // 12, avg
-  21, 8, 44, 6, // 13, avg
-  20, 9, 44, 6, // 14, avg
-  10, 4, 22, 5, // 15, avg
-  5, 2, 11, 4, // 16, avg
-  2, 1, 5, 3, // 17, avg
-  1, 0, 2, 2, // 18, avg
+  40, 16, 122, 7, // 0, leaf
+  41, 16, 122, 7, // 1, leaf
+  42, 16, 122, 7, // 2, leaf
+  40, 17, 122, 7, // 3, leaf
+  41, 17, 122, 7, // 4, leaf
+  42, 17, 122, 7, // 5, leaf
+  40, 16, 123, 7, // 6, leaf
+  41, 16, 123, 7, // 7, leaf
+  40, 17, 123, 7, // 8, leaf
+  41, 17, 123, 7, // 9, leaf
+  40, 18, 122, 7, // 10, leaf
+  21, 9, 61, 6, // 11, leaf
+  20, 8, 61, 6, // 12, avg
+  21, 8, 61, 6, // 13, avg
+  20, 9, 61, 6, // 14, avg
+  10, 4, 30, 5, // 15, avg
+  5, 2, 15, 4, // 16, avg
+  2, 1, 7, 3, // 17, avg
+  1, 0, 3, 2, // 18, avg
   0, 0, 1, 1, // 19, avg
   0, 0, 0, 0 // 20, avg
 };
 
 const double cencalvm::query::TestVMQuery::_OCTVALS[] = {
-  7.9, 4.3, 7.8, 6.3, 8.8, 3.8, 4.8, 9.9, 8.9, 7.4, 4.9, // level 7
-  3.7, 7.2875, 5.8, 4.9, // level 6
-  5.421875, // level 5
-  5.421875, // level 4
-  5.421875, // level 3
-  5.421875, // level 2
-  5.421875, // level 1
-  5.421875 // level 0
+  3.9, 4.3, 5.8, 6.3, 3.4, 3.8, 1.5, 3.1, 2.9, 2.4, 3.3, // level 7
+  4.6, // level 6 leaf
+  3.475, 4.8, 3.3, // level 6
+  4.04375, // level 5
+  4.04375, // level 4
+  4.04375, // level 3
+  4.04375, // level 2
+  4.04375, // level 1
+  4.04375 // level 0
 };
 
 const double cencalvm::query::TestVMQuery::_RELPAY[] = {
-  10.0, 1.0, 0.1, 0.01, 0.001, 100.0, 1.0, 1.0
+  10.0, 1.0, 0.1, 0.01, 0.001, 1000.0, 1.0, 1.0
 };
 
 const char* cencalvm::query::TestVMQuery::_DBFILENAME = "data/full.etree";
@@ -78,7 +79,5 @@ const double cencalvm::query::TestVMQuery::_RELPAYEXT[] = {
 
 const char* cencalvm::query::TestVMQuery::_DBFILENAMEEXT = "data/fullext.etree";
 
-// version
-// $Id$
 
 // End of file

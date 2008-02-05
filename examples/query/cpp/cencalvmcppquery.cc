@@ -12,7 +12,8 @@
 
 // Application demonstrating how to do queries from C++ code.
 
-// Comment out the following line to use code that doesn't use all query values
+// Comment out the following line to use code that doesn't use all
+// query values.
 #define ALLVALS
 
 
@@ -212,7 +213,7 @@ main(int argc,
     return 1;
   } // if
 #else
-  const int numVals = 8;
+  const int numVals = 9;
 #endif
 
   // Open database for querying
@@ -308,6 +309,7 @@ main(int argc,
       << std::setw(9) << pVals[5]
       << std::setw(5) << int(pVals[6])
       << std::setw(5) << int(pVals[7])
+      << std::setw(9) << pVals[8]
       << "\n";
 #endif
     
@@ -331,7 +333,5 @@ main(int argc,
   return 0;
 } // main
 
-// version
-// $Id$
 
 // End of file 

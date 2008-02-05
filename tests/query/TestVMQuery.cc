@@ -112,19 +112,31 @@ cencalvm::query::TestVMQuery::testQueryVals(void)
   VMQuery query;
 
   // default should be all values
-  const int defaultNumVals = 8;
+  const int defaultNumVals = 9;
   CPPUNIT_ASSERT(0 != query._pQueryVals);
   for (int i=0; i < defaultNumVals; ++i)
     CPPUNIT_ASSERT_EQUAL(i, query._pQueryVals[i]);
 
 
-  const int numVals = 3;
-  const char* pNames[] = { "Vp", "Zone", "Qs" };
-  const int pVals[] = { 0, 7, 4 };
-  query.queryVals(pNames, numVals);
-  CPPUNIT_ASSERT_EQUAL(numVals, query._querySize);
-  for (int i=0; i < numVals; ++i)
-    CPPUNIT_ASSERT_EQUAL(pVals[i], query._pQueryVals[i]);
+  { // Set A
+    const int numVals = 3;
+    const char* pNames[] = { "Vp", "Zone", "Qs" };
+    const int pVals[] = { 0, 7, 4 };
+    query.queryVals(pNames, numVals);
+    CPPUNIT_ASSERT_EQUAL(numVals, query._querySize);
+    for (int i=0; i < numVals; ++i)
+      CPPUNIT_ASSERT_EQUAL(pVals[i], query._pQueryVals[i]);
+  } // Set A
+
+  { // Set B
+    const int numVals = 3;
+    const char* pNames[] = { "Vp", "Qs", "Elevation" };
+    const int pVals[] = { 0, 4, 8 };
+    query.queryVals(pNames, numVals);
+    CPPUNIT_ASSERT_EQUAL(numVals, query._querySize);
+    for (int i=0; i < numVals; ++i)
+      CPPUNIT_ASSERT_EQUAL(pVals[i], query._pQueryVals[i]);
+  } // Set B
 } // testQueryVals
 
 // ----------------------------------------------------------------------
@@ -144,6 +156,25 @@ cencalvm::query::TestVMQuery::testCacheSize(void)
 } // testCacheSize
 
 // ----------------------------------------------------------------------
+// Test squashTopography()
+void
+cencalvm::query::TestVMQuery::testSquashTopography(void)
+{ // testSquashTopography
+  VMQuery query;
+
+  // default should be false
+  CPPUNIT_ASSERT(false == query._squashTopo);
+
+  bool value = true;
+  query.squashTopography(value);
+  CPPUNIT_ASSERT_EQUAL(value, query._squashTopo);
+
+  value = false;
+  query.squashTopography(value);
+  CPPUNIT_ASSERT_EQUAL(value, query._squashTopo);
+} // testSquashTopography
+
+// ----------------------------------------------------------------------
 // Test query() with max query
 void 
 cencalvm::query::TestVMQuery::testQueryMax(void)
@@ -157,7 +188,7 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
 
   const cencalvm::storage::ErrorHandler* pHandler = query.errorHandler();
 
-  const int numVals = 8;
+  const int numVals = 9;
   double* pVals = (numVals > 0) ? new double[numVals] : 0;
 
   double* pLonLatElev = 0;
@@ -173,15 +204,21 @@ cencalvm::query::TestVMQuery::testQueryMax(void)
       const double  valE = _RELPAY[iVal]*val;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
     } // for
+
     int iVal = 6; // Block
     double valE = (iLoc < _NUMOCTANTSLEAF) ? 
       _RELPAY[iVal] :
       cencalvm::storage::Payload::INTERIORBLOCK;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+
     iVal = 7; // Zone
     valE = (iLoc < _NUMOCTANTSLEAF) ? 
       _RELPAY[iVal] :
       cencalvm::storage::Payload::INTERIORZONE;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+
+    iVal = 8; // Elevation
+    valE = pLonLatElev[i+2] + pVals[5];
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
   } // for
 
@@ -209,7 +246,7 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
   cencalvm::storage::ErrorHandler* pHandler = query.errorHandler();
 //   pHandler->logFilename("fixed.log");
 
-  const int numVals = 8;
+  const int numVals = 9;
   double* pVals = (numVals > 0) ? new double[numVals] : 0;
 
   double* pLonLatElev = 0;
@@ -238,15 +275,21 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
       const double  valE = _RELPAY[iVal]*val;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
     } // for
+
     int iVal = 6; // Block
     double valE = (iOctant < _NUMOCTANTSLEAF) ? 
       _RELPAY[iVal] :
       cencalvm::storage::Payload::INTERIORBLOCK;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+
     iVal = 7; // Zone
     valE = (iOctant < _NUMOCTANTSLEAF) ? 
       _RELPAY[iVal] :
       cencalvm::storage::Payload::INTERIORZONE;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+
+    iVal = 8; // Elevation
+    valE = pLonLatElev[3*iOctant+2] + pVals[5];
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
   } // for
 
@@ -271,7 +314,7 @@ cencalvm::query::TestVMQuery::testQueryWave(void)
   cencalvm::storage::ErrorHandler* pHandler = query.errorHandler();
   //  pHandler->logFilename("wave.log");
   
-  const int numVals = 8;
+  const int numVals = 9;
   double* pVals = (numVals > 0) ? new double[numVals] : 0;
 
   double* pLonLatElev = 0;
@@ -280,7 +323,7 @@ cencalvm::query::TestVMQuery::testQueryWave(void)
   const int numLocs = 3;
   const int pOctIndices[] = { 1, 7, 11 };
   const double periodMin[] = { 800.0, 1.0, 4000.0 };
-  const double octValsWave[] = { 5.79375, 9.9, 5.421875 };
+  const double octValsWave[] = { 3.8875, 3.1, 4.04375 };
   const bool isResLeaf[] = { false, true, false };
 
 
@@ -302,12 +345,19 @@ cencalvm::query::TestVMQuery::testQueryWave(void)
       const double  valE = _RELPAY[iVal]*val;
       CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
     } // for
+
     int iVal = 6; // Block
-    double valE = 
-      isResLeaf[iLoc] ? _RELPAY[iVal] : cencalvm::storage::Payload::INTERIORBLOCK;
+    double valE = isResLeaf[iLoc] ? 
+      _RELPAY[iVal] : cencalvm::storage::Payload::INTERIORBLOCK;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+
     iVal = 7; // Zone
-    valE = isResLeaf[iLoc] ? _RELPAY[iVal] : cencalvm::storage::Payload::INTERIORZONE;
+    valE = isResLeaf[iLoc] ?
+      _RELPAY[iVal] : cencalvm::storage::Payload::INTERIORZONE;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
+
+    iVal = 8; // Elevation
+    valE = pLonLatElev[3*iOctant+2] + pVals[5];
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
   } // for
 
@@ -317,6 +367,50 @@ cencalvm::query::TestVMQuery::testQueryWave(void)
 
   delete[] pLonLatElev; pLonLatElev = 0;
 } // testQueryWave
+
+// ----------------------------------------------------------------------
+// Test query() with max query and squashing.
+void 
+cencalvm::query::TestVMQuery::testQuerySquash(void)
+{ // testQueryMaxSquash
+  _createDB();
+
+  VMQuery query;
+  query.filename(_DBFILENAME);
+  query.queryType(cencalvm::query::VMQuery::MAXRES);
+  query.squashTopography(true);
+  query.open();
+
+  CPPUNIT_ASSERT_EQUAL(true, query._squashTopo);
+
+  const cencalvm::storage::ErrorHandler* pHandler = query.errorHandler();
+
+  const int numVals = 1;
+  const char* queryVals[] = { "Elevation" };
+  double* pVals = (numVals > 0) ? new double[numVals] : 0;
+
+  query.queryVals(queryVals, numVals);
+
+  double* pLonLatElev = 0;
+  _dbLonLatElev(&pLonLatElev);
+  const int numLocs = _NUMOCTANTSLEAF;
+  for (int iLoc=0, i=0; iLoc < numLocs; ++iLoc, i+=3) {
+    const double val = _OCTVALS[iLoc];
+    const double depth = _RELPAY[5]*val;
+    query.query(&pVals, numVals, 
+		pLonLatElev[i  ], pLonLatElev[i+1], -depth);
+
+    const double tolerance = 1.0e-06;
+    const double elevE = pLonLatElev[i+2] + depth;
+    CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[0]/elevE, tolerance);
+  } // for
+
+  query.close();
+
+  CPPUNIT_ASSERT(cencalvm::storage::ErrorHandler::OK == pHandler->status());
+
+  delete[] pLonLatElev; pLonLatElev = 0;
+} // testQueryMax
 
 // ----------------------------------------------------------------------
 // Test errorHandler()
@@ -372,7 +466,7 @@ cencalvm::query::TestVMQuery::testQueryMaxExt(void)
 
   const cencalvm::storage::ErrorHandler* pHandler = query.errorHandler();
 
-  const int numVals = 8;
+  const int numVals = 9;
   double* pVals = (numVals > 0) ? new double[numVals] : 0;
 
   double* pLonLatElev = 0;
@@ -589,7 +683,5 @@ cencalvm::query::TestVMQuery::_dbLonLatElevExt(double** ppCoords) const
   } // for
 } // _dbLonLatElevExt
 
-// version
-// $Id$
 
 // End of file 

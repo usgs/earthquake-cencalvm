@@ -40,19 +40,23 @@ class cencalvm::query::TestVMQuery : public CppUnit::TestFixture
 
   // CPPUNIT TEST SUITE /////////////////////////////////////////////////
   CPPUNIT_TEST_SUITE( TestVMQuery );
+
   CPPUNIT_TEST( testConstructor );
   CPPUNIT_TEST( testFilename );
   CPPUNIT_TEST( testOpenClose );
   CPPUNIT_TEST( testQueryType );
   CPPUNIT_TEST( testQueryVals );
   CPPUNIT_TEST( testCacheSize );
+  CPPUNIT_TEST( testSquashTopography );
   CPPUNIT_TEST( testQueryMax );
   CPPUNIT_TEST( testQueryFixed );
   CPPUNIT_TEST( testQueryWave );
+  CPPUNIT_TEST( testQuerySquash );
   CPPUNIT_TEST( testErrorHandler );
   CPPUNIT_TEST( testCacheSizeExt );
   CPPUNIT_TEST( testFilenameExt );
   CPPUNIT_TEST( testQueryMaxExt );
+
   CPPUNIT_TEST_SUITE_END();
 
   // PUBLIC METHODS /////////////////////////////////////////////////////
@@ -82,6 +86,9 @@ public :
   /// Test cacheSize()
   void testCacheSize(void);
 
+  /// Test squashTopography()
+  void testSquashTopography(void);
+
   /// Test query() with max query
   void testQueryMax(void);
 
@@ -90,6 +97,9 @@ public :
 
   /// Test query() for wave query
   void testQueryWave(void);
+
+  /// Test query() with squashing.
+  void testQuerySquash(void);
 
   /// Test errorHandler()
   void testErrorHandler(void);

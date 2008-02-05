@@ -208,7 +208,7 @@ main(int argc,
     return 1;
   } /* if */
 #else
-  int numVals = 8;
+  int numVals = 9;
 #endif
 
   /* Open database for querying */
@@ -280,9 +280,9 @@ main(int argc,
 #if !defined(ALLVALS)
     fprintf(fileOut, "%5d%5d\n", (int)pVals[0], (int)pVals[1]);
 #else
-    fprintf(fileOut, "%8.1f%8.1f%8.1f%9.1f%9.1f%9.1f%5d%5d\n",
+    fprintf(fileOut, "%8.1f%8.1f%8.1f%9.1f%9.1f%9.1f%5d%5d%9.1f\n",
 	    pVals[0], pVals[1], pVals[2], pVals[3], pVals[4], pVals[5],
-	    (int) pVals[6], (int) pVals[7]);
+	    (int) pVals[6], (int) pVals[7], pVals[8]);
 #endif
       
     /* Read in next location from input file */
@@ -308,7 +308,5 @@ main(int argc,
   return 0;
 } // main
 
-// version
-// $Id$
 
 // End of file 

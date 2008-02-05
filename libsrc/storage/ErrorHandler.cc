@@ -73,7 +73,5 @@ cencalvm::storage::ErrorHandler::log(const char* msg)
   (*_pLogFile) << msg;
 } // log
 
-// version
-// $Id$
 
 // End of file 

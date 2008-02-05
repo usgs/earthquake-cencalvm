@@ -260,15 +260,13 @@ private :
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
    * @param elev Elevation of location wrt MSL in meters
-   * @param useAddr Use supplied address
    *
    * @returns Elevation of ground surface at location.
    */
   double _queryElev(etree_addr_t* pAddr,
 		    const double lon,
 		    const double lat,
-		    const double elev,
-		    const bool useAddr);
+		    const double elev);
 
   /** Set payload to NODATA values.
    *

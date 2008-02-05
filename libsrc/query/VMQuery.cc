@@ -43,7 +43,7 @@ cencalvm::query::VMQuery::VMQuery(void) :
   _cacheSizeExt(128),
   _squashTopo(false)
 { // constructor
-  const int querySize = 8;
+  const int querySize = 9;
   _pQueryVals = (querySize > 0) ? new int[querySize] : 0;
   for (int i=0; i < querySize; ++i)
     _pQueryVals[i] = i;
@@ -197,25 +197,23 @@ cencalvm::query::VMQuery::query(double** ppVals,
   assert(numVals == _querySize);
   assert(0 != _pGeom);
   
-  double elevQuery = elev;
+  etree_addr_t addr;
 
   cencalvm::storage::PayloadStruct payload;
   try {
-    bool useAddr = false;
-    double elevRef = 0.0;
-    etree_addr_t addr;
+    double elevQuery = elev;
     if (_squashTopo) {
-      elevRef = _queryElev(&addr, lon, lat, elev, useAddr);
-      elevQuery = elev - elevRef;
-      useAddr = true;
+      const double elevRef = _queryElev(&addr, lon, lat, elev);
+      if (cencalvm::storage::Payload::NODATAVAL != elevRef)
+	elevQuery = elev + elevRef;
     } // if
+    bool useAddr = false;
     (this->*_queryFn)(&payload, &addr, _db, lon, lat, elevQuery, useAddr);
+    useAddr = true;
 
     // If not found in detailed model, query the regional model
-    char buf[ETREE_MAXBUF];
     if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock &&
 	0 != _dbExt) {
-      useAddr = true;
       (this->*_queryFn)(&payload, &addr, _dbExt, lon, lat, elevQuery, useAddr);
     } // if
   } catch (const std::exception& err) {
@@ -272,9 +270,16 @@ cencalvm::query::VMQuery::query(double** ppVals,
 	(*ppVals)[i] = payload.Zone;
 	break;
       case 8 :
-	if (!_squashTopo)
-	  elevRef = queryElev(&addr, lon, lat, elevQuery, useAddr);
-	(*ppVals)[i] = elevRef;
+	if (cencalvm::storage::Payload::NODATAVAL != payload.DepthFreeSurf) {
+	  // Correct for difference b/t elevation of octant centroid and
+	  // elevation of query location.
+	  double lonO = 0.0;
+	  double latO = 0.0;
+	  double elevO = 0.0;
+	  _pGeom->addrToLonLatElev(&lonO, &latO, &elevO, &addr);
+	  (*ppVals)[i] = elevO + payload.DepthFreeSurf;
+	} else
+	  (*ppVals)[i] = cencalvm::storage::Payload::NODATAVAL;
 	break;
       default :
 	_pErrHandler->error("Could not parse requested query value.");
@@ -427,47 +432,41 @@ double
 cencalvm::query::VMQuery::_queryElev(etree_addr_t* pAddr,
 				     const double lon,
 				     const double lat,
-				     const double elev,
-				     const bool useAddr)
+				     const double elev)
 { // _queryElev
   assert(0 != _pGeom);
   assert(0 != pAddr);
 
   double elevRef = 0.0;
 
-  if (!useAddr) {
-    pAddr->level = ETREE_MAXLEVEL;
-    pAddr->type = ETREE_LEAF;
-    _pGeom->lonLatElevToAddr(pAddr, lon, lat, elev);
-  } // if
+  // Query using maximum resolution.
+  pAddr->level = ETREE_MAXLEVEL;
+  pAddr->type = ETREE_LEAF;
+  _pGeom->lonLatElevToAddr(pAddr, lon, lat, elev);
 
   cencalvm::storage::PayloadStruct payload;
   etree_addr_t resAddr;
-  int err = etree_search(_db, *pAddr, &resAddr, "*", pPayload);
+  int err = etree_search(_db, *pAddr, &resAddr, "*", &payload);
 
   // If not found in detailed model, query the regional model
-  if ( (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock ||
-	ETREE_INTERIOR == resAddr.type) &&
-       0 != _dbExt) {
-    useAddr = true;
-    err = etree_search(_dbExt, *pAddr, &resAddr, "*", pPayload);
+  bool notfound = 0 != err || ETREE_INTERIOR == resAddr.type;
+  if (notfound && 0 != _dbExt) {
+    err = etree_search(_dbExt, *pAddr, &resAddr, "*", &payload);
+    notfound = 0 != err || ETREE_INTERIOR == resAddr.type;
   } // if
 
-  if (0 == err && ETREE_LEAF == resAddr.type) {
+  if (!notfound) {
     // If found elevation for octant
     const double depthO = payload.DepthFreeSurf;
     double lonO = 0.0;
     double latO = 0.0;
     double elevO = 0.0;
-    _pGeom->addrToLonLatElev(&lonO, &latO, elevO, &resAddr);
+    // Correct for difference b/t elevation of octant centroid and
+    // elevation of query location.
+    _pGeom->addrToLonLatElev(&lonO, &latO, &elevO, &resAddr);
     elevRef = elevO + depthO;
-  } else {
-    // If search returned interior octant (averaged), return no data
-    // instead of averaged values since query request is for maximum
-    // resolution and we don't have a leaf octant (data) at that
-    // location.
+  } else
     elevRef = cencalvm::storage::Payload::NODATAVAL;
-  } // else
 
   return elevRef;
 } // _queryElev
