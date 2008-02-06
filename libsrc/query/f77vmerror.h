@@ -31,7 +31,7 @@
  */
 
 #if !defined(cencalvm_f77vmerror_h)
-#define cencalvm_f77vmerror_h
+#define cencalvm_f77vmerror_h ///< include protection
 
 // ----------------------------------------------------------------------
 /** Fortran name mangling */

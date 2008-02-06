@@ -29,6 +29,8 @@
  * <li> Create query object using cencalvm::query::VMQuery::VMQuery()
  * <li> Set filename of database using cencalvm::query::VMQuery::filename()
  * <li> Optionally, set cache size using cencalvm::query::VMQuery::cacheSize()
+ * <li> Optionally, set squashing flag and limit using 
+ *   cencalvm::query::VMQuery::squash()
  * <li> Optionally, set values to return in query using 
  *   cencalvm::query::VMQuery::queryVals()
  * <li> Open database using cencalvm::query::VMQuery::open()
@@ -152,7 +154,7 @@ class cencalvm::query::VMQuery
   void cacheSizeExt(const int size);
 
   /** Set squashed topography/bathymetry flag and minimum elevation of
-   * squashing.
+   * squashing. Squashing is turned off by default.
    *
    * @param flag True if squashing, false otherwise.
    * @param limit Minimum elevation for squashing.

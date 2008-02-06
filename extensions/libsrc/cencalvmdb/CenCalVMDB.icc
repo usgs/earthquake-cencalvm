@@ -51,7 +51,14 @@ void
 cencalvm::extensions::cencalvmdb::CenCalVMDB::cacheSizeExt(const int size)
 { _pQuery->cacheSizeExt(size); }
 
-// version
-// $Id$
+// Set squashed topography/bathymetry flag and minimum elevation of
+// squashing.
+inline
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::squash(const bool flag,
+						     const double limit) {
+  _pQuery->squash(flag, limit);
+} // squash
+
 
 // End of file 

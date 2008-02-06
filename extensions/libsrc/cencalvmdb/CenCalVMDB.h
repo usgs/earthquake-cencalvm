@@ -124,6 +124,15 @@ class cencalvm::extensions::cencalvmdb::CenCalVMDB :
    */
   void cacheSizeExt(const int size);
 
+  /** Set squashed topography/bathymetry flag and minimum elevation of
+   * squashing.
+   *
+   * @param flag True if squashing, false otherwise.
+   * @param limit Minimum elevation for squashing.
+   */
+  void squash(const bool flag,
+	      const double limit =-2000.0);
+
   /** Query the database.
    *
    * @pre Must call open() before query()
@@ -163,7 +172,5 @@ private :
 
 #endif // cencalvm_cencalvmdb_cencalvmdb_h
 
-// version
-// $Id$
 
 // End of file 

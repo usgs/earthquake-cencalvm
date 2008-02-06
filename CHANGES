@@ -14,6 +14,16 @@
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
  *
+ * \section ver060 Version 0.6.0, 2008/02/06
+ *
+ * @li Added ability to query for elevation of topography/bathymetry
+ * and squash topography/bathymetry to retain low-velocity material
+ * when using the velocity model in models with a flat ground
+ * surface. Added extension to the query routines for Python to allow
+ * seamless integration into PyLith via CIG's spatialdata
+ * software. These new features can be used with any release of the
+ * velocity model.
+ *
  * \section ver050 Version 0.5.0, 2007/02/21
  *
  * @li Simplified code layout. Condensed multiple libraries into one
@@ -114,7 +124,5 @@
  *
  */
 
-// version
-// $Id$
 
 // End of file 

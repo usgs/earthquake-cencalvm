@@ -46,7 +46,7 @@
  */
 
 #if !defined(cencalvm_f77vmquery_h)
-#define cencalvm_f77vmquery_h
+#define cencalvm_f77vmquery_h ///< include protection
 
 // ----------------------------------------------------------------------
 /** Fortran name mangling */

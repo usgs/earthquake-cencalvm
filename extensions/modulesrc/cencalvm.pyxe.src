@@ -281,6 +281,21 @@ cdef class CenCalVMDB(SpatialDB):
     return
 
 
+  def squash(self, flag, limit):
+    """
+    Set squashed topography/bathymetry flag and minimum elevation of 
+    squashing.
+    """
+    # create shim for method 'squash'
+    #embed{ void CenCalVMDB_squash(void* pObj, int flag, double limit)
+    assert(0 != pObj);
+    ((cencalvm::extensions::cencalvmdb::CenCalVMDB*) pObj)->squash(flag, limit);
+    #}embed
+
+    CenCalVMDB_squash(self.thisptr, flag, limit)
+    return
+
+
   property queryType:
     def __set__(self, value):
       """

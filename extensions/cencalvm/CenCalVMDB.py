@@ -44,6 +44,8 @@ class CenCalVMDB(SpatialDB):
     ## @li cache_size Size of cache for database.
     ## @li filename_ext Name of extended database file.
     ## @li cache_size_ext Size of cache for extended database.
+    ## @li \b squash Squash topography/bathymetry to sea level.
+    ## @li \b squash_limit Elevation above which topography is squashed.
     ##
     ## \b Facilities
     ## @li None
@@ -72,6 +74,14 @@ class CenCalVMDB(SpatialDB):
     cacheSizeExt = pyre.inventory.int("cache_size", default=128)
     cacheSizeExt.meta['tip'] = "Size of cache for database."
 
+    squash = pyre.inventory.bool("squash", default=False)
+    squash.meta['tip'] = "Squash topography/bathymetry to sea level."
+
+    from pyre.units.length import km
+    squashLimit = pyre.inventory.dimensional("squash_limit",
+                                             default=-2.0*km)
+    squashLimit.meta['tip'] = "Elevation above which topography is squashed."
+
 
   # PUBLIC METHODS /////////////////////////////////////////////////////
 
@@ -96,6 +106,7 @@ class CenCalVMDB(SpatialDB):
     self.cppHandle.cacheSize = self.cacheSize
     self.cppHandle.filenameExt = self.filenameExt
     self.cppHandle.cacheSizeExt = self.cacheSizeExt
+    self.cppHandle.squash(self.squash, self.squashLimit.value)
     return
   
 
@@ -112,6 +123,8 @@ class CenCalVMDB(SpatialDB):
     self.cacheSize = self.inventory.cacheSize
     self.filenameExt = self.inventory.filenameExt
     self.cacheSizeExt = self.inventory.cacheSizeExt
+    self.squash = self.inventory.squash
+    self.squashLimit = self.inventory.squashLimit
     return
 
 
