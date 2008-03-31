@@ -14,6 +14,11 @@
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
  *
+ * \section ver061 Version 0.6.1, 2008/03/31
+ *
+ * @li Added C and Fortran bindings to squash(). Added sample data
+ * files for USGS Bay Area Velocity Model 08.2.0.
+ *
  * \section ver060 Version 0.6.0, 2008/02/06
  *
  * @li Added ability to query for elevation of topography/bathymetry
