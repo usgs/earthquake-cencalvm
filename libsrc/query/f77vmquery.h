@@ -71,7 +71,7 @@ void cencalvm_createquery_f(size_t* handleAddr);
  * Calls ~VMQuery().
  *
  * @param handleAddr Address of handle to VMQuery object
- * @param err set to status of error handler
+ * @param err Set to status of error handler
  */
 extern "C"
 void cencalvm_destroyquery_f(size_t* handleAddr,
@@ -84,7 +84,7 @@ void cencalvm_destroyquery_f(size_t* handleAddr,
 /** Open database for querying.
  *
  * @param handleAddr Address of handle to VMQuery object
- * @param err set to status of error handler
+ * @param err Set to status of error handler
  */
 extern "C"
 void cencalvm_open_f(size_t* handleAddr,
@@ -97,7 +97,7 @@ void cencalvm_open_f(size_t* handleAddr,
 /** Close the database.
  *
  * @param handleAddr Address of handle to VMQuery object
- * @param err set to status of error handler
+ * @param err Set to status of error handler
  */
 extern "C"
 void cencalvm_close_f(size_t* handleAddr,
@@ -118,7 +118,7 @@ void cencalvm_close_f(size_t* handleAddr,
  *   @li =0  Query at maximum resolution
  *   @li =1  Query at fixed resolution
  *   @li =2  Query at resolution tuned to wavelength of shear waves
- * @param err set to status of error handler
+ * @param err Set to status of error handler
  */
 extern "C"
 void cencalvm_querytype_f(size_t* handleAddr,
@@ -140,7 +140,7 @@ void cencalvm_querytype_f(size_t* handleAddr,
  *
  * @param handleAddr Address of handle to VMQuery object
  * @param res Resolution of query.
- * @param err set to status of error handler
+ * @param err Set to status of error handler
  */
 extern "C"
 void cencalvm_queryres_f(size_t* handleAddr,
@@ -156,7 +156,7 @@ void cencalvm_queryres_f(size_t* handleAddr,
  * @param handleAddr Address of handle to VMQuery object
  * @param filename Name of database file
  * @param len Length of string (IMPLICIT IN FORTRAN)
- * @param err set to status of error handler
+ * @param err Set to status of error handler
  */
 extern "C"
 void cencalvm_filename_f(size_t* handleAddr,
@@ -172,7 +172,7 @@ void cencalvm_filename_f(size_t* handleAddr,
  *
  * @param handleAddr Address of handle to VMQuery object
  * @param size Size of cache in MB
- * @param err set to status of error handler
+ * @param err Set to status of error handler
  */
 extern "C"
 void cencalvm_cachesize_f(size_t* handleAddr,
@@ -188,7 +188,7 @@ void cencalvm_cachesize_f(size_t* handleAddr,
  * @param handleAddr Address of handle to VMQuery object
  * @param filename Name of database file
  * @param len Length of string (IMPLICIT IN FORTRAN)
- * @param err set to status of error handler
+ * @param err Set to status of error handler
  */
 extern "C"
 void cencalvm_filenameext_f(size_t* handleAddr,
@@ -204,12 +204,30 @@ void cencalvm_filenameext_f(size_t* handleAddr,
  *
  * @param handleAddr Address of handle to VMQuery object
  * @param size Size of cache in MB
- * @param err set to status of error handler
+ * @param err Set to status of error handler
  */
 extern "C"
 void cencalvm_cachesizeext_f(size_t* handleAddr,
 			     const int* size,
 			     int* err);
+
+// ----------------------------------------------------------------------
+/** Fortran name mangling */
+#define cencalvm_squash_f \
+  FC_FUNC_(cencalvm_squash_f, CENCALVM_SQUASH_F)
+/** Set squashed topography/bathymetry flag and minimum elevation of
+ * squashing. Squashing is turned off by default.
+ *
+ * @param handleAddr Address of handle to VMQuery object
+ * @param flag True if squashing, false otherwise.
+ * @param limit Minimum elevation for squashing.
+ * @param err Set to status of error handler
+ */
+extern "C"
+void cencalvm_squash_f(size_t* handleAddr,
+		       const int* flag,
+		       const double* limit,
+		       int* err);
 
 // ----------------------------------------------------------------------
 /** Fortran name mangling */
@@ -234,7 +252,7 @@ void cencalvm_cachesizeext_f(size_t* handleAddr,
  * @param lon Longitude of location for query in degrees
  * @param lat Latitude of location for query in degrees
  * @param elev Elevation of location wrt MSL in meters
- * @param err set to status of error handler
+ * @param err Set to status of error handler
  */
 extern "C"
 void cencalvm_query_f(size_t* handleAddr,
@@ -263,7 +281,5 @@ void cencalvm_errorhandler_f(size_t* handleAddr,
 
 #endif // cencalvm77vmquery_h
 
-// version
-// $Id$
 
 // End of file

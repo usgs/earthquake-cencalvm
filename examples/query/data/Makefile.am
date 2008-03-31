@@ -23,7 +23,13 @@ data_DATA = \
 	sample_ext-05.1.x.in \
 	sample_ext-05.1.0_maxres.out \
 	sample_ext-05.1.0_fixedres.out \
-	sample_ext-05.1.0_waveres.out
+	sample_ext-05.1.0_waveres.out \
+	sample-08.2.0_maxres.out \
+	sample-08.2.0_fixedres.out \
+	sample-08.2.0_waveres.out \
+	sample_ext-08.2.0_maxres.out \
+	sample_ext-08.2.0_fixedres.out \
+	sample_ext-08.2.0_waveres.out
 
 noinst_HEADERS = \
 	$(data_DATA)
@@ -31,10 +37,10 @@ noinst_HEADERS = \
 # 'export' the input files by performing a mock install
 export_datadir = $(top_builddir)/examples/query/data
 export-data: $(data_DATA)
-	for f in $(data_DATA); do $(install_sh_DATA) $(srcdir)/$$f $(export_datadir); done
+	if [ "X$(src_dir)" != "X$(export_datadir)" ]; then for f in $(data_DATA); do $(install_sh_DATA) $(srcdir)/$$f $(export_datadir); done; fi
 
 clean-data:
-	for f in $(data_DATA); do $(RM) $(RM_FLAGS) $(export_datadir)/$$f; done
+	if [ "X$(src_dir)" != "X$(export_datadir)" ]; then for f in $(data_DATA); do $(RM) $(RM_FLAGS) $(export_datadir)/$$f; done; fi
 
 # export
 clean-local: clean-data

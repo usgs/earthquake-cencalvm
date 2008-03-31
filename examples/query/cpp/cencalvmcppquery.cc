@@ -41,7 +41,7 @@ usage(void)
   std::cerr
     << "usage: cencalvmcppquery [-h] -i fileIn -o fileOut -d dbfile\n"
     << "       [-l logfile] [-t queryType] [-r res] [-e dbextfile]\n"
-    << "       [-c cacheSize]\n"
+    << "       [-c cacheSize] [-s squashLimit]\n"
     << "\n"
     << "  -i fileIn     File containing list of locations: 'lon lat elev'.\n"
     << "  -o fileOut    Output file with locations and material properties.\n"
@@ -50,6 +50,7 @@ usage(void)
     << "  -t queryType  Type of query {'maxres', 'fixedres', 'waveres'}\n"
     << "  -r res        Resolution for query (not needed for maxres queries\n"
     << "  -c cacheSize  Size of cache in MB to use in query\n"
+    << "  -s squashLim  Turn on squashing of topography and set limit\n"
     << "  -h            Display usage and exit.\n"
     << "  -l logfile    Log file for warnings about no data for locations.\n";
 } // usage
@@ -65,6 +66,7 @@ parseArgs(std::string* pFilenameIn,
 	  std::string* pQueryType,
 	  double* pQueryRes,
 	  int* pCacheSize,
+	  double* pSquashLimit,
 	  int argc,
 	  char** argv)
 { // parseArgs
@@ -76,6 +78,7 @@ parseArgs(std::string* pFilenameIn,
   assert(0 != pQueryType);
   assert(0 != pQueryRes);
   assert(0 != pCacheSize);
+  assert(0 != pSquashLimit);
 
   extern char* optarg;
 
@@ -86,7 +89,7 @@ parseArgs(std::string* pFilenameIn,
   *pFilenameDBExt = "";
   *pFilenameLog = "";
   int c = EOF;
-  while ( (c = getopt(argc, argv, "c:d:e:hi:l:o:r:t:") ) != EOF) {
+  while ( (c = getopt(argc, argv, "c:d:e:hi:l:o:r:s:t:") ) != EOF) {
     switch (c)
       { // switch
       case 'c' : // process -c option
@@ -126,6 +129,10 @@ parseArgs(std::string* pFilenameIn,
 	*pQueryRes = atof(optarg);
 	nparsed += 2;
 	break;
+      case 's': // process -s option
+	*pSquashLimit = atof(optarg);
+	nparsed += 2;
+	break;
       default :
 	usage();
       } // switch
@@ -154,10 +161,11 @@ main(int argc,
   std::string queryType = "maxres";
   double queryRes = 0.0;
   int cacheSize = 128;
+  double squashLimit = 9999.0;
   
   // Parse command line arguments
   parseArgs(&filenameIn, &filenameOut, &filenameDB, &filenameDBExt,
-	    &filenameLog, &queryType, &queryRes, &cacheSize,
+	    &filenameLog, &queryType, &queryRes, &cacheSize, &squashLimit,
 	    argc, argv);
 
   // Create query
@@ -202,6 +210,15 @@ main(int argc,
       return 1;
     } // if
   } // if
+
+  // Turn on squashing if requested
+  if (squashLimit != 9999.0) {
+    query.squash(true, squashLimit);
+    if (cencalvm::storage::ErrorHandler::OK != pErrHandler->status()) {
+      std::cerr << pErrHandler->message();
+      return 1;
+    } // if
+  } // if    
 
   // Set values to be returned in queries (or not)
 #if !defined(ALLVALS)

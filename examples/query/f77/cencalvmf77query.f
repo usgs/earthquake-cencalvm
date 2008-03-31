@@ -28,10 +28,10 @@ c
 	parameter(unitOut=11)
 
         character*64 filenameDB
-	parameter(filenameDB='USGSBayAreaVM-08.0.0.etree')
+	parameter(filenameDB='USGSBayAreaVM-08.2.0.etree')
 
         character*64 filenameDBExt
-	parameter(filenameDBExt='USGSBayAreaVMExt-08.0.0.etree')
+	parameter(filenameDBExt='USGSBayAreaVMExt-08.2.0.etree')
 
         character*64 filenameLog
 	parameter(filenameLog='test.log')
@@ -39,6 +39,9 @@ c
         character*64 queryType
 
 	real*8 queryRes
+
+	real*8 squashLimit
+	parameter(squashLimit=-2000.0)
 
 	integer*4 cacheSize
 	parameter(cacheSize=128)
@@ -140,6 +143,13 @@ c       ****************************************************************
 c	call cencalvm_filenameext_f(query, filenameDBExt, ok)
 c	if (ok.ne.0) goto 998
 c	call cencalvm_cachesizeext_f(query, cacheSize, ok)
+c	if (ok.ne.0) goto 998
+
+c       Set squashing limit
+c       ****************************************************************
+c       Uncomment this to use squashing of topography
+c       ****************************************************************
+c	call cencalvm_squash_f(query, 1, squashLimit, ok)
 c	if (ok.ne.0) goto 998
 
 c       Open database for querying

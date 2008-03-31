@@ -24,8 +24,8 @@ cencalvmcppquery_LDADD = \
 
 # ----------------------------------------------------------------------
 
-VELMODEL = USGSBayAreaVM-05.1.0.etree
-VELMODELEXT = USGSBayAreaVMExt-05.1.0.etree
+VELMODEL = USGSBayAreaVM-08.2.0.etree
+VELMODELEXT = USGSBayAreaVMExt-08.2.0.etree
 
 testmaxres:
 	cencalvmcppquery \

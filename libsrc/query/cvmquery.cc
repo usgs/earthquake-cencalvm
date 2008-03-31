@@ -214,6 +214,27 @@ cencalvm_cacheSizeExt(void* handle,
 } // cacheSizeExt
 
 // ----------------------------------------------------------------------
+// Set squashed topography/bathymetry flag and minimum elevation of
+// squashing. Squashing is turned off by default.
+int
+cencalvm_squash(void* handle,
+		const int flag,
+		const double limit)
+{ // squash
+  if (0 == handle) {
+    std::cerr << "Null handle for query manager in call to squash()."
+	      << std::endl;
+    return cencalvm::storage::ErrorHandler::ERROR;
+  } // if
+
+  cencalvm::query::VMQuery* pQuery = (cencalvm::query::VMQuery*) handle;
+  pQuery->squash(flag, limit);
+
+  const cencalvm::storage::ErrorHandler* pErrHandler = pQuery->errorHandler();
+  return pErrHandler->status();
+} // squash
+
+// ----------------------------------------------------------------------
 // Query the database.
 int
 cencalvm_query(void* handle,
@@ -251,7 +272,5 @@ cencalvm_errorHandler(void* handle)
   return pQuery->errorHandler();
 } // errorHandler
 
-// version
-// $Id$
 
 // End of file

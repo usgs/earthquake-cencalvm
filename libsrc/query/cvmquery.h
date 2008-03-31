@@ -171,6 +171,17 @@ int cencalvm_filenameExt(void* handle,
 int cencalvm_cacheSizeExt(void* handle,
 			  const int size);
 
+/** Set squashed topography/bathymetry flag and minimum elevation of
+ * squashing. Squashing is turned off by default.
+ *
+ * @param handle Pointer to query
+ * @param flag True if squashing, false otherwise.
+ * @param limit Minimum elevation for squashing.
+ */
+int cencalvm_squash(void* handle,
+		    const int flag,
+		    const double limit);
+
 /** Query the database.
  *
  * @warning Array for values to be returned must be allocated BEFORE
@@ -210,7 +221,5 @@ void* cencalvm_errorHandler(void* handle);
 
 #endif /* cencalvm_cvmquery_h */
 
-/* version */
-/* $Id$ */
 
 /* End of file  */

@@ -36,17 +36,18 @@ usage(void)
   fprintf(stderr,
 	  "usage: cencalvmcquery [-h] -i fileIn -o fileOut -d dbfile\n"
 	  "       [-l logfile] [-t queryType] [-r res] [-e dbextfile]\n"
-	  "       [-c cacheSize]\n"
+	  "       [-c cacheSize] [-s squashlimit] \n"
 	  "\n"
-	  "  -i fileIn   File containing list of locations: 'lon lat elev'.\n"
-	  "  -o fileOut  Output file with locations and material properties.\n"
-	  "  -d dbfile   Etree database file to query.\n"
+	  "  -i fileIn     File containing list of locations: 'lon lat elev'.\n"
+	  "  -o fileOut    Output file with locations and material properties.\n"
+	  "  -d dbfile     Etree database file to query.\n"
 	  "  -e dbextfile  Etree extended database file to query.\n"
 	  "  -t queryType  Type of query {'maxres', 'fixedres', 'waveres'}\n"
 	  "  -r res        Resolution for query (not needed for maxres queries\n"
 	  "  -c cacheSize  Size of cache in MB to use in query\n"
-	  "  -h          Display usage and exit.\n"
-	  "  -l logfile  Log file for messages.\n");
+	  "  -s squashLim  Turn on squashing of topography and set limit\n"
+	  "  -h            Display usage and exit.\n"
+	  "  -l logfile    Log file for messages.\n");
 } /* usage */
 
 /* ------------------------------------------------------------------- */
@@ -60,6 +61,7 @@ parseArgs(char* filenameIn,
 	  char* queryType,
 	  double* pQueryRes,
 	  int* pCacheSize,
+	  double* squashLimit,
 	  int argc,
 	  char** argv)
 { // parseArgs
@@ -71,12 +73,13 @@ parseArgs(char* filenameIn,
   assert(0 != queryType);
   assert(0 != pQueryRes);
   assert(0 != pCacheSize);
+  assert(0 != squashLimit);
 
   extern char* optarg;
 
   int nparsed = 1;
   int c = EOF;
-  while ( (c = getopt(argc, argv, "c:d:e:hi:l:o:r:t:") ) != EOF) {
+  while ( (c = getopt(argc, argv, "c:d:e:hi:l:o:r:s:t:") ) != EOF) {
     switch (c)
       { /* switch */
       case 'c' : // process -c option
@@ -116,6 +119,10 @@ parseArgs(char* filenameIn,
 	*pQueryRes = atof(optarg);
 	nparsed += 2;
 	break;
+      case 's': // process -s option
+	*squashLimit = atof(optarg);
+	nparsed += 2;
+	break;
       default :
 	usage();
       } /* switch */
@@ -150,10 +157,11 @@ main(int argc,
   strcpy(queryType, "maxres");
   double queryRes = 0.0;
   int cacheSize = 128;
+  double squashLimit = 9999.0;
   
   /* Parse command line arguments */
   parseArgs(filenameIn, filenameOut, filenameDB, filenameDBExt,
-	    filenameLog, queryType, &queryRes, &cacheSize,
+	    filenameLog, queryType, &queryRes, &cacheSize, &squashLimit,
 	    argc, argv);
 
   /* Create query */
@@ -198,6 +206,13 @@ main(int argc,
       return 1;
     } /* if */
   } /* if */
+
+  /* Turn on squashing if requested */
+  if (squashLimit != 9999.0)
+    if (0 != cencalvm_squash(query, 1, squashLimit)) {
+      fprintf(stderr, "%s\n", cencalvm_error_message(errHandler));
+      return 1;
+    } /* if */
 
   /* Set values to be returned in queries (or not) */
 #if !defined(ALLVALS)
@@ -276,7 +291,7 @@ main(int argc,
     } /* if */
 
     /* Write values returned by query to output file */
-    fprintf(fileOut, "%9.4f%8.4f%9.1f", lon, lat, elev);
+    fprintf(fileOut, "%10.5f%9.5f%9.1f", lon, lat, elev);
 #if !defined(ALLVALS)
     fprintf(fileOut, "%5d%5d\n", (int)pVals[0], (int)pVals[1]);
 #else

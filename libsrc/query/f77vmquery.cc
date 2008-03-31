@@ -152,6 +152,20 @@ cencalvm_cachesizeext_f(size_t* handleAddr,
 } // cacheSizeExt
 
 // ----------------------------------------------------------------------
+// Set squashed topography/bathymetry flag and minimum elevation of
+// squashing. Squashing is turned off by default.
+void
+cencalvm_squash_f(size_t* handleAddr,
+		  const int* flag,
+		  const double* limit,
+		  int* err)
+{ // squash
+  assert(0 != err);
+
+  *err = cencalvm_squash((void*) *handleAddr, *flag, *limit);
+} // squash
+
+// ----------------------------------------------------------------------
 // Query the database.
 void
 cencalvm_query_f(size_t* handleAddr,
@@ -179,7 +193,5 @@ cencalvm_errorhandler_f(size_t* handleAddr,
   *errAddr = (size_t) cencalvm_errorHandler((void*) *handleAddr);
 } // errorHandler
 
-// version
-// $Id$
 
 // End of file
