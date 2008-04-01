@@ -161,7 +161,8 @@ main(int argc,
   std::string queryType = "maxres";
   double queryRes = 0.0;
   int cacheSize = 128;
-  double squashLimit = 9999.0;
+  const double squashDefault = 1.0e+06;
+  double squashLimit = squashDefault;
   
   // Parse command line arguments
   parseArgs(&filenameIn, &filenameOut, &filenameDB, &filenameDBExt,
@@ -212,7 +213,7 @@ main(int argc,
   } // if
 
   // Turn on squashing if requested
-  if (squashLimit != 9999.0) {
+  if (squashLimit != squashDefault) {
     query.squash(true, squashLimit);
     if (cencalvm::storage::ErrorHandler::OK != pErrHandler->status()) {
       std::cerr << pErrHandler->message();

@@ -199,12 +199,15 @@ cencalvm::query::VMQuery::query(double** ppVals,
   assert(0 != _pGeom);
   
   etree_addr_t addr;
+  bool queriedElev = false;
+  double elevRef = 0.0;
 
   cencalvm::storage::PayloadStruct payload;
   try {
     double elevQuery = elev;
     if (_squashTopo && elev > _squashLimit) {
-      const double elevRef = _queryElev(&addr, lon, lat, elev);
+      elevRef = _queryElev(&addr, lon, lat, elev);
+      queriedElev = true;
       if (cencalvm::storage::Payload::NODATAVAL != elevRef)
 	elevQuery = elev + elevRef;
     } // if
@@ -271,16 +274,17 @@ cencalvm::query::VMQuery::query(double** ppVals,
 	(*ppVals)[i] = payload.Zone;
 	break;
       case 8 :
-	if (cencalvm::storage::Payload::NODATAVAL != payload.DepthFreeSurf) {
-	  // Correct for difference b/t elevation of octant centroid and
-	  // elevation of query location.
-	  double lonO = 0.0;
-	  double latO = 0.0;
-	  double elevO = 0.0;
-	  _pGeom->addrToLonLatElev(&lonO, &latO, &elevO, &addr);
-	  (*ppVals)[i] = elevO + payload.DepthFreeSurf;
-	} else
-	  (*ppVals)[i] = cencalvm::storage::Payload::NODATAVAL;
+	if (!queriedElev) {
+	  try {
+	    elevRef = _queryElev(&addr, lon, lat, elev);
+	    queriedElev = true;
+	  } catch (const std::exception& err) {
+	    _pErrHandler->error(err.what());
+	  } catch (...) {
+	    _pErrHandler->error("Unknown C++ error");
+	  } // catch
+	} // if
+	(*ppVals)[i] = elevRef;
 	break;
       default :
 	_pErrHandler->error("Could not parse requested query value.");
@@ -450,13 +454,13 @@ cencalvm::query::VMQuery::_queryElev(etree_addr_t* pAddr,
   int err = etree_search(_db, *pAddr, &resAddr, "*", &payload);
 
   // If not found in detailed model, query the regional model
-  bool notfound = 0 != err || ETREE_INTERIOR == resAddr.type;
-  if (notfound && 0 != _dbExt) {
+  bool found = 0 == err;
+  if (!found && 0 != _dbExt) {
     err = etree_search(_dbExt, *pAddr, &resAddr, "*", &payload);
-    notfound = 0 != err || ETREE_INTERIOR == resAddr.type;
+    found = 0;
   } // if
 
-  if (!notfound) {
+  if (found) {
     // If found elevation for octant
     const double depthO = payload.DepthFreeSurf;
     double lonO = 0.0;
@@ -488,7 +492,5 @@ cencalvm::query::VMQuery::_setNoData(cencalvm::storage::PayloadStruct*
   pPayload->Zone = cencalvm::storage::Payload::NODATAZONE;
 } // _setNoData
 
-// version
-// $Id$
 
 // End of file 

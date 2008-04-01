@@ -300,8 +300,12 @@ cencalvm::query::TestVMQuery::testQueryFixed(void)
       cencalvm::storage::Payload::INTERIORZONE;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
 
-    iVal = 8; // Elevation
-    valE = pLonLatElev[3*iOctant+2] + pVals[5];
+    iVal = 8; // Elevation (same result as maxres query)
+    etree_addr_t addr;
+    valE = query._queryElev(&addr,
+			    pLonLatElev[3*iOctant  ], 
+			    pLonLatElev[3*iOctant+1],
+			    pLonLatElev[3*iOctant+2]);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
   } // for
 
@@ -368,8 +372,12 @@ cencalvm::query::TestVMQuery::testQueryWave(void)
       _RELPAY[iVal] : cencalvm::storage::Payload::INTERIORZONE;
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
 
-    iVal = 8; // Elevation
-    valE = pLonLatElev[3*iOctant+2] + pVals[5];
+    iVal = 8; // Elevation (same result as maxres query)
+    etree_addr_t addr;
+    valE = query._queryElev(&addr,
+			    pLonLatElev[3*iOctant  ], 
+			    pLonLatElev[3*iOctant+1],
+			    pLonLatElev[3*iOctant+2]);
     CPPUNIT_ASSERT_DOUBLES_EQUAL(1.0, pVals[iVal]/valE, tolerance);
   } // for
 

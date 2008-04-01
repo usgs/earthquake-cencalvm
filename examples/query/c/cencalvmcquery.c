@@ -157,7 +157,8 @@ main(int argc,
   strcpy(queryType, "maxres");
   double queryRes = 0.0;
   int cacheSize = 128;
-  double squashLimit = 9999.0;
+  double squashDefault = 1.0e+06;
+  double squashLimit = squashDefault;
   
   /* Parse command line arguments */
   parseArgs(filenameIn, filenameOut, filenameDB, filenameDBExt,
@@ -208,7 +209,7 @@ main(int argc,
   } /* if */
 
   /* Turn on squashing if requested */
-  if (squashLimit != 9999.0)
+  if (squashLimit != squashDefault)
     if (0 != cencalvm_squash(query, 1, squashLimit)) {
       fprintf(stderr, "%s\n", cencalvm_error_message(errHandler));
       return 1;

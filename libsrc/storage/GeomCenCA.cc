@@ -144,7 +144,5 @@ cencalvm::storage::GeomCenCA::addrToLonLatElev(double* pLon,
   _pProj->invProject(pLon, pLat, x, y);
 } // addrToLonLatElev
   
-// version
-// $Id$
 
 // End of file 
