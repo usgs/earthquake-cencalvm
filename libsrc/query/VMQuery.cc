@@ -457,7 +457,7 @@ cencalvm::query::VMQuery::_queryElev(etree_addr_t* pAddr,
   bool found = 0 == err;
   if (!found && 0 != _dbExt) {
     err = etree_search(_dbExt, *pAddr, &resAddr, "*", &payload);
-    found = 0;
+    found = 0 == err;
   } // if
 
   if (found) {
