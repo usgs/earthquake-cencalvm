@@ -14,6 +14,13 @@
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
  *
+ * \section ver062 Version 0.6.2, 2008/04/01
+ *
+ * @li Fixed bugs related to setting squashing flag in C and C++
+ * examples (it was always turned on). Fixed bug in determining
+ * elevation using depth from free surface (limited to querying for
+ * elevation; squashing was not affected).
+ *
  * \section ver061 Version 0.6.1, 2008/03/31
  *
  * @li Added C and Fortran bindings to squash(). Added sample data
