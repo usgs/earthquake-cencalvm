@@ -106,6 +106,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
     } // if
 } // queryVals
 
+#include <iostream>
 // ----------------------------------------------------------------------
 // Query the database.
 int
@@ -117,7 +118,9 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double* pVals,
 { // query
   assert(0 != _pQuery);
 
-  double* buffer = new double[numDims];
+  double buffer[3];
+  assert(3 == numDims);
+
   const int numLocs = 1;
   for (int i=0; i < numDims; ++i)
     buffer[i] = coords[i];
@@ -139,7 +142,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double* pVals,
     double* pVs = &pVals[_vsVal];
     int iter = 1;
     while (*pVs < 0.0) {
-      const int maxIter = 6;
+      const int maxIter = 8;
       const double elevDiff = 25.0;
       pErrHandler->resetStatus();
       const double newElev = buffer[2] - pow(2,iter-1)*elevDiff;
@@ -153,14 +156,13 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double* pVals,
       *pVs = _minVs;
   } // if
 
+
   int err = 0;
   if (cencalvm::storage::ErrorHandler::WARNING == pErrHandler->status()) {
     err = 1;
     pErrHandler->resetStatus();
   } // if
 
-  delete[] buffer; buffer = 0;
-  
   return err;
 } // query
 
