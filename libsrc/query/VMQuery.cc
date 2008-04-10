@@ -454,7 +454,7 @@ cencalvm::query::VMQuery::_queryElev(etree_addr_t* pAddr,
   int err = etree_search(_db, *pAddr, &resAddr, "*", &payload);
 
   // If not found in detailed model, query the regional model
-  bool found = 0 == err;
+  bool found = (0 == err && ETREE_INTERIOR != resAddr.type);
   if (!found && 0 != _dbExt) {
     err = etree_search(_dbExt, *pAddr, &resAddr, "*", &payload);
     found = 0 == err;
