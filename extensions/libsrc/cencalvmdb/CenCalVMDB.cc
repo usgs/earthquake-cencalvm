@@ -31,6 +31,8 @@
 cencalvm::extensions::cencalvmdb::CenCalVMDB::CenCalVMDB(void) :
   _minVs(0),
   _vsVal(-1),
+  _vpVal(-1),
+  _densityVal(-1),
   _pQuery(new cencalvm::query::VMQuery),
   _pCS(new spatialdata::geocoords::CSGeo)
 { // constructor
@@ -99,14 +101,18 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
     throw std::runtime_error(_pQuery->errorHandler()->message());
 
   _vsVal = -1;
-  for (int i=0; i < numVals; ++i)
-    if (0 == strcasecmp(names[i], "Vs")) {
+  _vpVal = -1;
+  _densityVal = -1;
+  for (int i=0; i < numVals; ++i) {
+    if (0 == strcasecmp(names[i], "Vs"))
       _vsVal = i;
-      break;
-    } // if
+    if (0 == strcasecmp(names[i], "Vp"))
+      _vpVal = i;
+    if (0 == strcasecmp(names[i], "density"))
+      _densityVal = i;
+  } // for
 } // queryVals
 
-#include <iostream>
 // ----------------------------------------------------------------------
 // Query the database.
 int
@@ -155,6 +161,20 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double* pVals,
     if (0.0 < *pVs && *pVs < _minVs)
       *pVs = _minVs;
   } // if
+  if (_vpVal >= 0) {
+    // Enforce minimum Vp
+    double* pVp = &pVals[_vpVal];
+    const double minVp = 1360.0 + 1.16 * _minVs;
+    if (*pVp > 0 && *pVp < minVp)
+      *pVp = minVp;
+  } // if    
+  if (_densityVal >= 0) {
+    double* pDensity = &pVals[_densityVal];
+    const double minDensity = 2000.0;
+    // If not water enforce minimum density
+    if (*pDensity > 1000.0 && *pDensity < minDensity)
+      *pDensity = minDensity;
+  } // if    
 
 
   int err = 0;

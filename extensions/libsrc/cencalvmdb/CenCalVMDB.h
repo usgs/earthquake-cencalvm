@@ -162,6 +162,8 @@ private :
   
   double _minVs; ///< Minimum shear wave speed
   int _vsVal; ///< Index of query value corresponding to Vs
+  int _vpVal; ///< Index of query value corresponding to Vp
+  int _densityVal; ///< Index of query value corresponding to density
 
   cencalvm::query::VMQuery* _pQuery; ///< Pointer to velocity model query
   spatialdata::geocoords::CSGeo* _pCS; ///< Pointer to coord system of VMQuery
