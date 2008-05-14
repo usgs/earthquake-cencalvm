@@ -11,8 +11,10 @@
 #
 
 # Link using C++ compiler to make sure we satisfy all of the C++
-# symbols in the C++ query library which this program uses
-F77LD = @CXX@
+# symbols in the C++ query library which this program uses.
+# This may only be required by the Sun compiler and appears to break
+# linking with the Intel compiler, so will comment it out.
+#F77LD = @CXX@
 
 bin_PROGRAMS = cencalvmf77query
 
