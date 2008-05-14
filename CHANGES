@@ -14,6 +14,18 @@
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
  *
+ * \section ver065 Version 0.6.5, 2008/05/14
+ *
+ * @li Improved Makefiles so that files are not removed by 'make
+ * clean' when the building in the source tree. When building outside
+ * the source tree, data files copied from the source tree are removed
+ * from the build tree.
+ * @li Switched from linking Fortran example query code with C++
+ * compiler to linking with Fortran compiler. This appears to fix
+ * build problems with the Intel compiler, but may required adding C++
+ * libraries to the link line for the Sun compiler (by passing
+ * arguments to configure).
+ *
  * \section ver064 Version 0.6.4, 2008/04/10
  *
  * @li Fixed bug for finding elevation in extended model (cannot allow
