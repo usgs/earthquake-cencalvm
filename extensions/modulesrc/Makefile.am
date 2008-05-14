@@ -17,9 +17,9 @@ pkgpyexec_LTLIBRARIES = cencalvmmodule.la
 cencalvmmodule_la_LDFLAGS = -module -avoid-version \
 	$(AM_LDFLAGS) $(PYTHON_LA_LDFLAGS)
 
-cencalvmmodule_la_SOURCES = cencalvm.pyxe
-
+dist_cencalvmmodule_la_SOURCES = cencalvm.pyxe.src
 nodist_cencalvmmodule_la_SOURCES = \
+	cencalvm.pyxe \
 	cencalvm.c cencalvm_embed.cpp cencalvm_embed.h
 
 cencalvmmodule_la_LIBADD = \
@@ -44,6 +44,6 @@ cencalvm_embed.h: cencalvm.pyx
 .pyx.c:
 	pyrexc $<
 
-CLEANFILES = cencalvm.pyx cencalvm.c *_embed.*
+CLEANFILES = cencalvm.pyxe cencalvm.pyx cencalvm.c *_embed.*
 
 # End of file 
