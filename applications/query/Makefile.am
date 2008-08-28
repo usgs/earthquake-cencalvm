@@ -10,15 +10,16 @@
 # ----------------------------------------------------------------------
 #
 
-bin_PROGRAMS = cencalvminfo
+bin_PROGRAMS = cencalvminfo cencalvmisosurface
 
-cencalvminfo_SOURCES = \
-	cencalvminfo.cc
+INCLUDES = -I$(top_builddir)/include
 
-cencalvminfo_LDFLAGS =
+cencalvminfo_SOURCES = cencalvminfo.cc
+cencalvminfo_LDADD = -letree
 
-cencalvminfo_LDADD = \
-	-letree
+
+cencalvmisosurface_SOURCES = cencalvmisosurface.cc
+cencalvmisosurface_LDADD = $(top_builddir)/libsrc/libcencalvm.la
 
 
 # End of file 
