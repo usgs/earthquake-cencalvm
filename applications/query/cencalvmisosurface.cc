@@ -235,7 +235,24 @@ queryElev(cencalvm::query::VMQuery* query,
 
   // Query for elevation at location
   query->query(&vals, numVals, lon, lat, -5.0e+3);
-  const double elev = vals[0];
+  double elev = vals[0];
+  
+  // Correct elevation for stair-stepping grid
+  const char* valNames[] = { "Vs" };
+  query->queryVals(valNames, numVals);
+
+  const int niters = 10.0;
+  const double dx = -12.5;
+  for (int iter=0; iter < niters; ++iter) {
+    const double elevQ = elev + iter*dx;
+    query->query(&vals, numVals, lon, lat, elevQ);
+    const double vs = vals[0];
+    if (vs > 0.0) {
+      elev = elevQ;
+      break;
+    } // if
+  } // for
+
   delete[] vals; vals = 0;
 
   return elev;
@@ -268,19 +285,15 @@ searchVs(cencalvm::query::VMQuery* query,
   query->queryVals(valNames, numVals);
 
   for (int iter=0; iter < niters; ++iter) {
-    // Query database
     query->query(&vals, numVals, lon, lat, elevUpper);
-    double vsU = vals[0];
-    assert(vsU > 0.0);
+    const double vsU = vals[0];
 
     query->query(&vals, numVals, lon, lat, elevLower);
-    double vsL = vals[0];
-    assert(vsL > 0.0);
+    const double vsL = vals[0];
 
     const double elevMiddle = 0.5 * (elevUpper + elevLower);
     query->query(&vals, numVals, lon, lat, elevMiddle);
-    double vsM = vals[0];
-    assert(vsM > 0.0);
+    const double vsM = vals[0];
   
     if (vsTarget > vsU && vsTarget <= vsM) {
       elevLower = elevMiddle;
@@ -288,8 +301,11 @@ searchVs(cencalvm::query::VMQuery* query,
     } else if (vsTarget > vsM && vsTarget <= vsL) {
       elevUpper = elevMiddle;
       elevVs = elevLower;
-    } else if (vsTarget >= vsU) {
+    } else if (vsTarget <= vsU) {
       elevVs = elevUpper;
+      break;
+    } else if (vsL < 0.0) {
+      elevVs = 9999.0;
       break;
     } else {
       std::cerr
