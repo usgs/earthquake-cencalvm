@@ -241,7 +241,7 @@ queryElev(cencalvm::query::VMQuery* query,
   const char* valNames[] = { "Vs" };
   query->queryVals(valNames, numVals);
 
-  const int niters = 10.0;
+  const int niters = 10;
   const double dx = -12.5;
   for (int iter=0; iter < niters; ++iter) {
     const double elevQ = elev + iter*dx;
@@ -404,6 +404,8 @@ main(int argc,
       errHandler->resetStatus();
     } // if
 
+    const double distIsosurf = (elevVs != 9999.0) ? elevTopo - elevVs : -9999.0;
+
     // Write values returned by query to output file
     fileOut
       << std::resetiosflags(std::ios::scientific)
@@ -411,7 +413,7 @@ main(int argc,
       << std::setprecision(5)
       << std::setw(10) << lon
       << std::setw(9) << lat
-      << std::setprecision(1) << std::setw(9) << elevVs
+      << std::setprecision(1) << std::setw(9) << distIsosurf
       << "\n";
     
     // Read in next location from input file
