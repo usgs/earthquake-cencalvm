@@ -23,6 +23,7 @@ extern "C" {
 #include <sstream> // USES std::ostringstream
 #include <iomanip> // USES setw(), setiosflags(), resetiosflags()
 #include <assert.h> // USES assert()
+#include <string.h> // USES strcmp()
 
 // ----------------------------------------------------------------------
 // Default constructor

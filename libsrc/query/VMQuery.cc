@@ -24,6 +24,7 @@ extern "C" {
 #include <sstream> // USES std::ostringstream
 #include <iomanip> // USES setw(), setiosflags(), resetiosflags()
 #include <strings.h> // USES strcasecmp()
+#include <string.h> // USES strcmp()
 #include <assert.h> // USES assert()
 
 // ----------------------------------------------------------------------

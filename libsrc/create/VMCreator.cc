@@ -23,6 +23,7 @@ extern "C" {
 
 #include <time.h> // USES strftime(), gettimeofday(), localtime()
 #include <unistd.h> // USES gethostname()
+#include <stdlib.h> // USES free()
 
 #include <stdexcept> // USES std::runtime_error
 #include <sstream> // USES std::ostringstream

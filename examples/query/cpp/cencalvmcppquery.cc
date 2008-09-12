@@ -22,6 +22,7 @@
 
 #include <stdlib.h> // USES exit()
 #include <unistd.h> // USES getopt()
+#include <strings.h> // USES strcasecmp()
 
 #include <fstream> // USES std::ifstream, std::ofstream
 #include <iomanip> // USES setw(), setiosflags(), resetiosflags()

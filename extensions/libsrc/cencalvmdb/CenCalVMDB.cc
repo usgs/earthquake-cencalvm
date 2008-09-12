@@ -22,6 +22,7 @@
 #include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 #include "cencalvm/storage/Payload.h" // USES Payload::NODATAVAL
 
+#include <strings.h> // USES strcasecmp()
 #include <stdexcept> // USES std::runtime_error
 #include <math.h> // USES pow()
 #include <assert.h> // USES assert()

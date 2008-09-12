@@ -23,6 +23,7 @@ extern "C" {
 }
 
 #include <fstream> // USES std::ifstream
+#include <strings.h> // USES strcasecmp()
 
 #include <stdexcept> // USES std::runtime_error
 #include <sstream> // USES std::ostringstream
