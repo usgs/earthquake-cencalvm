@@ -144,7 +144,7 @@ cencalvm::query::VMQuery::queryType(const QueryEnum queryType)
 // ----------------------------------------------------------------------
 // Set values to be returned by queries.
 void
-cencalvm::query::VMQuery::queryVals(const char** names,
+cencalvm::query::VMQuery::queryVals(const char* const* names,
 				    const int numVals)
 { // queryVals
   assert(0 != names);

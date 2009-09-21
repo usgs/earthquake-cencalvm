@@ -126,7 +126,7 @@ class cencalvm::query::VMQuery
    * @param names Names of values to be returned in queries
    * @param numVals Number of values to be returned in queries
    */
-  void queryVals(const char** names,
+  void queryVals(const char* const* names,
 		 const int numVals);
 
   /** Set the database filename.

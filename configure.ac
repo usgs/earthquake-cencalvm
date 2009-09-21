@@ -95,7 +95,7 @@ if test "$enable_spatial" = "yes" ; then
   AC_CHECK_HEADER([spatialdata/spatialdb/SpatialDB.hh], [], [
     AC_MSG_ERROR([SpatialDB header not found; try CPPFLAGS="-I<spatialdata include dir>"])
   ])
-  AC_MSG_CHECKING([for spatialdata::spatialdb::SimpleDB in -lspatialdataspatialdb])
+  AC_MSG_CHECKING([for spatialdata::spatialdb::SimpleDB in -lspatialdata])
   AC_REQUIRE_CPP
   AC_COMPILE_IFELSE(
     [AC_LANG_PROGRAM([[#include <spatialdata/spatialdb/SpatialDB.hh>]
