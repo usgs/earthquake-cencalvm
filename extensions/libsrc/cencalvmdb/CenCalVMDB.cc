@@ -92,7 +92,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::queryType(const query::VMQuery::Qu
 // ----------------------------------------------------------------------
 // Set values to be returned by queries.
 void
-cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char** names,
+cencalvm::extensions::cencalvmdb::CenCalVMDB::queryVals(const char* const* names,
 							const int numVals)
 { // queryVals
   assert(0 != _pQuery);
