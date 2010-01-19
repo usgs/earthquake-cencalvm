@@ -46,6 +46,7 @@ AC_ARG_ENABLE([documentation],
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_FC
+AC_PROG_F77
 AC_FC_WRAPPERS
 AC_FC_LIBRARY_LDFLAGS
 AC_PROG_LIBTOOL
@@ -114,20 +115,20 @@ if test "$enable_spatial" = "yes" ; then
   AM_PATH_PYTHON([2.3])
 
   # PYREX/PYREXEMBED
-  AC_CHECK_PROG([have_pyrex],
-    [pyrexc],
-    [yes],
-    [no])
-  if test "$have_pyrex" = "no"; then
-    AC_MSG_ERROR([Pyrex not found in current path.])
-  fi
-  AC_CHECK_PROG([have_pyrexembed],
-    [pyrexembed],
-    [yes],
-    [no])
-  if test "$have_pyrexembed" = "no"; then
-    AC_MSG_ERROR([Pyrexembed not found in current path.])
-  fi
+  #AC_CHECK_PROG([have_pyrex],
+  #  [pyrexc],
+  #  [yes],
+  #  [no])
+  #if test "$have_pyrex" = "no"; then
+  #  AC_MSG_ERROR([Pyrex not found in current path.])
+  #fi
+  #AC_CHECK_PROG([have_pyrexembed],
+  #  [pyrexembed],
+  #  [yes],
+  #  [no])
+  #if test "$have_pyrexembed" = "no"; then
+  #  AC_MSG_ERROR([Pyrexembed not found in current path.])
+  #fi
 fi
 
 # VSGRADER
