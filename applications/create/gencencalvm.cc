@@ -19,6 +19,7 @@
 
 #include <stdlib.h> // USES exit()
 #include <unistd.h> // USES getopt()
+#include <stdio.h> // USES EOF
 
 #include <iostream> // USES std::cerr
 #include <stdexcept> // USES std::exception
