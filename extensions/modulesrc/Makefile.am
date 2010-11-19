@@ -12,38 +12,39 @@
 
 package = cencalvm
 
-pkgpyexec_LTLIBRARIES = cencalvmmodule.la
+pkgpyexec_LTLIBRARIES = _cencalvmmodule.la
 
-cencalvmmodule_la_LDFLAGS = -module -avoid-version \
+pkgpyexec_PYTHON = cencalvm.py
+
+swig_sources = \
+	cencalvm.i \
+	CenCalVMDB.i
+
+swig_generated = \
+	cencalvm_wrap.cxx \
+	cencalvm.py
+
+_cencalvmmodule_la_LDFLAGS = -module -avoid-version \
 	$(AM_LDFLAGS) $(PYTHON_LA_LDFLAGS)
 
-dist_cencalvmmodule_la_SOURCES = cencalvm.pyxe.src
-nodist_cencalvmmodule_la_SOURCES = \
-	cencalvm.pyxe \
-	cencalvm.c cencalvm_embed.cpp cencalvm_embed.h
+dist__cencalvmmodule_la_SOURCES = $(swig_sources) $(swig_generated)
 
-cencalvmmodule_la_LIBADD = \
+_cencalvmmodule_la_LIBADD = \
 	$(top_builddir)/extensions/libsrc/libcencalvmextras.la \
 	$(top_builddir)/libsrc/libcencalvm.la
-#if NO_UNDEFINED
-#cencalvmmodule_la_LIBADD += \
-#	$(PYTHON_BLDLIBRARY) $(PYTHON_LIBS) $(PYTHON_SYSLIBS)
-#endif
+if NO_UNDEFINED
+_cencalvmmodule_la_LIBADD += \
+	$(PYTHON_BLDLIBRARY) $(PYTHON_LIBS) $(PYTHON_SYSLIBS)
+endif
 
-INCLUDES = -I$(top_builddir)/include \
-	-I$(top_srcdir)/extensions/libsrc/cencalvmdb \
-	-I$(PYTHON_INCDIR)
+INCLUDES = -I$(NUMPY_INCDIR) -I$(PYTHON_INCDIR) \
+	-I$(top_builddir)/include \
+	-I$(top_srcdir)/extensions/libsrc/cencalvmdb
 
-cencalvm.pyx cencalvm_embed.cpp  cencalvm_embed.h: cencalvm.pyxe
-	pyrexembed cencalvm.pyxe
-cencalvm.pyxe: $(srcdir)/cencalvm.pyxe.src
-	cp $(srcdir)/cencalvm.pyxe.src $@
-cencalvm_embed.cpp: cencalvm_embed.h
-cencalvm_embed.h: cencalvm.pyx
+$(srcdir)/cencalvm_wrap.cxx $(srcdir)/cencalvm.py: $(swig_sources)
+	$(SWIG) -Wall -c++ -python $(SWIG_FLAGS) $<
 
-.pyx.c:
-	pyrexc $<
+MAINTAINERCLEANFILES = $(swig_generated)
 
-CLEANFILES = cencalvm.pyxe cencalvm.pyx cencalvm.c *_embed.*
 
 # End of file 

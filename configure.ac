@@ -11,7 +11,7 @@
 #
 
 AC_PREREQ(2.59)
-AC_INIT([cencalvm], [0.6.6], [baagaard@usgs.gov])
+AC_INIT([cencalvm], [0.7.0], [baagaard@usgs.gov])
 AC_CONFIG_HEADER([portinfo])
 AC_CONFIG_AUX_DIR([./aux-config])
 AM_INIT_AUTOMAKE([foreign])
@@ -51,6 +51,14 @@ AC_FC_WRAPPERS
 AC_FC_LIBRARY_LDFLAGS
 AC_PROG_LIBTOOL
 AC_PROG_INSTALL
+
+AC_PROG_LIBTOOL
+if test "$allow_undefined_flag" = unsupported; then
+    # See issue119.
+    AM_LDFLAGS="-no-undefined $AM_LDFLAGS"
+fi
+AM_CONDITIONAL([NO_UNDEFINED], [test "$allow_undefined_flag" = unsupported])
+AC_SUBST(AM_LDFLAGS)
 
 # ----------------------------------------------------------------------
 # ETREE
@@ -94,41 +102,36 @@ AM_CONDITIONAL([ENABLE_SPATIAL], [test "$enable_spatial" = yes])
 if test "$enable_spatial" = "yes" ; then
   AC_LANG(C++)
   AC_CHECK_HEADER([spatialdata/spatialdb/SpatialDB.hh], [], [
-    AC_MSG_ERROR([SpatialDB header not found; try CPPFLAGS="-I<spatialdata include dir>"])
-  ])
-  AC_MSG_CHECKING([for spatialdata::spatialdb::SimpleDB in -lspatialdata])
+    AC_MSG_ERROR([SpatialDB header not found; try CPPFLAGS="-I<Spatialdata include dir>"])
+])
+  AC_MSG_CHECKING([for spatialdb::SimpleDB in -lspatialdata])
   AC_REQUIRE_CPP
   AC_COMPILE_IFELSE(
     [AC_LANG_PROGRAM([[#include <spatialdata/spatialdb/SpatialDB.hh>]
-	[#include <spatialdata/spatialdb/SimpleDB.hh>]],
-	             [[spatialdata::spatialdb::SimpleDB db;]])],
+                      [#include <spatialdata/spatialdb/SimpleDB.hh>]],
+                     [[spatialdata::spatialdb::SimpleDB db;]])],
     [AC_MSG_RESULT(yes)],
     [AC_MSG_RESULT(no)
-     AC_MSG_ERROR([spatialdata library not found; try LDFLAGS="-L<spatialdata lib dir>"])
+     AC_MSG_ERROR([Spatialdata library not found; try LDFLAGS="-L<Spatialdata lib dir>"])
   ])
+  if test "x$SPATIALDATA_SWIG_DIR" != "x" ; then
+    AC_CHECK_FILE([$SPATIALDATA_SWIG_DIR/spatialdb/SpatialDBObj.i], [], [
+      AC_MSG_ERROR([Spatialdata SpatialDBObj.i SWIG interface file not found])])
+    AC_SUBST([SWIG_FLAGS], ["-I$SPATIALDATA_SWIG_DIR $SWIG_FLAGS"])
+  else
+    AC_CHECK_FILE([spatialdata/SpatialDBObj.i], [], [
+      AC_MSG_ERROR([Spatialdata SpatialDBObj.i SWIG interface file not found; Try setting SPATIALDATA_SWIG_DIR=<directory containing spatialdb/SpatialDBObj.i>])])
+  fi
 
-  # Check for Python modules and packages.
-  AC_ARG_VAR(PYTHON, [Python interpreter])
-  AC_ARG_VAR(PYTHONPATH, [Python module search path])
-  CIT_PYTHON_SYSCONFIG
-  CIT_PYTHON_EGG_SETUP
+  # PYTHON
   AM_PATH_PYTHON([2.3])
+  CIT_PYTHON_SYSCONFIG
 
-  # PYREX/PYREXEMBED
-  #AC_CHECK_PROG([have_pyrex],
-  #  [pyrexc],
-  #  [yes],
-  #  [no])
-  #if test "$have_pyrex" = "no"; then
-  #  AC_MSG_ERROR([Pyrex not found in current path.])
-  #fi
-  #AC_CHECK_PROG([have_pyrexembed],
-  #  [pyrexembed],
-  #  [yes],
-  #  [no])
-  #if test "$have_pyrexembed" = "no"; then
-  #  AC_MSG_ERROR([Pyrexembed not found in current path.])
-  #fi
+  # SWIG
+  CIT_NUMPY_PYTHON_MODULE
+  CIT_NUMPY_INCDIR
+  AC_PROG_SWIG(1.3.33)
+
 fi
 
 # VSGRADER
