@@ -17,6 +17,7 @@
 #include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 
 #include <stdlib.h> // USES exit()
+#include <stdio.h> // USES EOF
 #include <unistd.h> // USES getopt()
 
 #include <fstream> // USES std::ifstream, std::ofstream
@@ -24,7 +25,8 @@
 
 #include <iostream> // USES std::cerr
 #include <sstream> // USES std::ostringstream
-#include <assert.h> // USES assert()
+#include <cassert> // USES assert()
+#include <stdexcept> // USES std::runtime_error()
 
 #include <string> // USES std::string
 #include <cmath> // USES log(), ceil()
@@ -227,7 +229,7 @@ queryElev(cencalvm::query::VMQuery* query,
   query->queryVals(elevName, numVals);
   if (cencalvm::storage::ErrorHandler::OK != errHandler->status()) {
     std::cerr << errHandler->message();
-    return 1;
+    throw std::runtime_error("Could not get elevation.");
   } // if
 
   double* vals = (numVals > 0) ? new double[numVals] : 0;
@@ -249,6 +251,7 @@ queryElev(cencalvm::query::VMQuery* query,
     const double vs = vals[0];
     if (vs > 0.0) {
       elev = elevQ;
+      std::cout << "Found vs of " << vs << " at elevation " << elev << std::endl;
       break;
     } // if
   } // for
@@ -302,6 +305,10 @@ searchVs(cencalvm::query::VMQuery* query,
       elevUpper = elevMiddle;
       elevVs = elevLower;
     } else if (vsTarget <= vsU) {
+      std::cout << "vsTarget: " << vsTarget
+		<< ", vsU: " << vsU
+		<< ", elevMiddle: " << elevMiddle
+		<< std::endl;
       elevVs = elevUpper;
       break;
     } else if (vsL < 0.0) {
@@ -395,6 +402,13 @@ main(int argc,
     const double elevVs = searchVs(&query, vsTarget, 
 				   lon, lat, elevUpper, elevLower);
 
+    std::cout << "lon: " << lon
+	      << ", lat: " << lat
+	      << ", elevTopo: " << elevTopo
+	      << ", elevUpper: " << elevUpper
+	      << ", elevLower: " << elevLower
+	      << ", elevVs: " << elevVs
+	      << std::endl;
     // If query generated a warning or error, dump message to std::cerr
     if (cencalvm::storage::ErrorHandler::OK != errHandler->status()) {
       std::cerr << errHandler->message();

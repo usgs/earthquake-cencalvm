@@ -16,6 +16,7 @@
 #include "VsGrader.h" // USES VMCreator
 
 #include <stdlib.h> // USES exit()
+#include <stdio.h> // USES EOF
 #include <unistd.h> // USES getopt()
 
 #include <iostream> // USES std::cerr
