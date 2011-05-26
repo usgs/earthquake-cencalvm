@@ -119,7 +119,9 @@ int cencalvm_queryRes(void* handle,
 		      const double res);
 
 /** Set values to be returned by queries. Default is to return all
- * values in order they appear in PayloadStruct.
+ * values in order they appear in PayloadStruct plus the elevation of
+ * topography/bathymetry (ground surface or ocean floor; the query
+ * value is 'elevation').
  *
  * @param handle Pointer to query
  * @param names Names of values to be returned in queries

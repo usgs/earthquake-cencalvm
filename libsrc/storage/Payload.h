@@ -27,7 +27,7 @@ namespace cencalvm {
   } // namespace storage
 } // namespace cencalvm
 
-/// Data stored in velocity model database
+/// Data stored in velocity model database.
 struct cencalvm::storage::PayloadStruct {
   float Vp; ///< P wave speed in m/s
   float Vs; ///< S wave speed in m/s

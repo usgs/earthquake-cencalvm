@@ -121,7 +121,9 @@ class cencalvm::query::VMQuery
   void queryRes(const double res);
 
   /** Set values to be returned by queries. Default is to return all
-   * values in order they appear in PayloadStruct.
+   * values in order they appear in PayloadStruct plus the elevation
+   * of topography/bathymetry (ground surface or ocean floor; the
+   * query value is 'elevation').
    *
    * @param names Names of values to be returned in queries
    * @param numVals Number of values to be returned in queries

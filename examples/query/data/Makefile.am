@@ -29,7 +29,13 @@ data_DATA = \
 	sample-08.2.0_waveres.out \
 	sample_ext-08.2.0_maxres.out \
 	sample_ext-08.2.0_fixedres.out \
-	sample_ext-08.2.0_waveres.out
+	sample_ext-08.2.0_waveres.out \
+	sample-08.3.0_maxres.out \
+	sample-08.3.0_fixedres.out \
+	sample-08.3.0_waveres.out \
+	sample_ext-08.3.0_maxres.out \
+	sample_ext-08.3.0_fixedres.out \
+	sample_ext-08.3.0_waveres.out
 
 noinst_HEADERS = \
 	$(data_DATA)

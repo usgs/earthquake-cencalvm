@@ -242,9 +242,10 @@ void cencalvm_squash_f(size_t* handleAddr,
  *
  * @note Elevation is given in meters with respect to mean sea level.
  *
- * @note Values will be returned either of the order they are shown
- * in cencalvm::storage::PayloadStruct or as specified with a call
- * to queryVals().
+ * @note Values returned include the values in
+ * cencalvm::storage::PayloadStruct plus the elevation of
+ * topography/bathymetry (ground surface or ocean floor; the query
+ * value is 'elevation').
  *
  * @param handleAddr Address of handle to VMQuery object
  * @param pVals Pointer to computed values (output from query)

@@ -28,10 +28,10 @@ c
 	parameter(unitOut=11)
 
         character*64 filenameDB
-	parameter(filenameDB='USGSBayAreaVM-08.2.0.etree')
+	parameter(filenameDB='USGSBayAreaVM-08.3.0.etree')
 
         character*64 filenameDBExt
-	parameter(filenameDBExt='USGSBayAreaVMExt-08.2.0.etree')
+	parameter(filenameDBExt='USGSBayAreaVMExt-08.3.0.etree')
 
         character*64 filenameLog
 	parameter(filenameLog='test.log')

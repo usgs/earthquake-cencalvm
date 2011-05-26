@@ -28,6 +28,13 @@ sample-05.1.0_fixedres.out      Output for FIXEDRES query of 05.1.0
 sample-05.1.0_maxres.out        Output for MAXRES query of 05.1.0
 sample-05.1.0_waveres.out       Output for WAVERES query of 05.1.0
 sample-05.1.x.in                Input for version 05.1.x
+sample-08.2.0_fixedres.out      Output for FIXEDRES query of 08.2.0
+sample-08.2.0_maxres.out        Output for MEXRES query of 08.2.0
+sample-08.2.0_waveres.out       Output for WAVERES query of 08.2.0
+sample-08.3.0_fixedres.out      Output for FIXEDRES query of 08.3.0
+sample-08.3.0_maxres.out        Output for MAXRES query of 08.3.0
+sample-08.3.0_waveres.out       Output for WAVERES query of 08.3.0
+
 \endverbatim
  *
  * @section extended Files for queries of detailed+extended models
@@ -37,6 +44,13 @@ sample_ext-05.1.0_fixedres.out  Output for FIXEDRES query of 05.1.0
 sample_ext-05.1.0_maxres.out    Output for MAXRES query of 05.1.0
 sample_ext-05.1.0_waveres.out   Output for WAVERES query of 05.1.0
 sample_ext-05.1.x.in            Input for version 05.1.x
+sample_ext-08.2.0_fixedres.out  Output for FIXEDRES query of 08.2.0
+sample_ext-08.2.0_maxres.out    Output for MAXRES query of 08.2.0
+sample_ext-08.2.0_waveres.out   Output for WAVERES query of 08.2.0
+sample_ext-08.3.0_fixedres.out  Output for FIXEDRES query of 08.3.0
+sample_ext-08.3.0_maxres.out    Output for MAXRES query of 08.3.0
+sample_ext-08.3.0_waveres.out   Output for WAVERES query of 08.3.0
+
 \endverbatim
  *
  */

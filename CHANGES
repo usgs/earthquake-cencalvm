@@ -14,6 +14,10 @@
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
  *
+ * \section ver080 Version 0.8.0, 2011/05/26
+ *
+ * @li Updated documentation with availability of elevation query value.
+ *
  * \section ver070 Version 0.7.0, 2010/11/18
  *
  * @li Switched from Pyrex/Pyrexembed to SWIG for extension (use as a
