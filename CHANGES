@@ -13,8 +13,12 @@
 /**
  * @file CHANGES Summary of changes made to cencalvm query software.
  *
+ * \section ver080 Version 0.8.1, 2011/09/28
  *
- * \section ver080 Version 0.8.0, 2011/05/26
+ * @li Switched to using Fortran 90 compiler to build Fortran code
+*    to insure name mangling macros match compiler.
+ * 
+* \section ver080 Version 0.8.0, 2011/05/26
  *
  * @li Updated documentation with availability of elevation query value.
  *
