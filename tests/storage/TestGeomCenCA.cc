@@ -19,6 +19,8 @@ extern "C" {
 #include "etree.h"
 }
 
+#include <string.h> // USES strcmp()
+
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::storage::TestGeomCenCA );
 

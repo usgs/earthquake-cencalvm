@@ -15,6 +15,7 @@
 #include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
 
 #include <fstream> // USES std::ofstream
+#include <string.h> // USES strcmp()
 
 // ----------------------------------------------------------------------
 CPPUNIT_TEST_SUITE_REGISTRATION( cencalvm::storage::TestErrorHandler );
