@@ -16,6 +16,10 @@
 # linking with the Intel compiler, so will comment it out.
 #F77LD = @CXX@
 
+# Use Fortran 90 compiler to build Fortran 77 code.
+F77=$(FC)
+FFLAGS=$(FCFLAGS)
+
 bin_PROGRAMS = cencalvmf77query
 
 cencalvmf77query_SOURCES = \

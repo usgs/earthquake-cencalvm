@@ -11,7 +11,7 @@
 #
 
 AC_PREREQ(2.59)
-AC_INIT([cencalvm], [0.8.0], [baagaard@usgs.gov])
+AC_INIT([cencalvm], [0.8.1], [baagaard@usgs.gov])
 AC_CONFIG_HEADER([portinfo])
 AC_CONFIG_AUX_DIR([./aux-config])
 AM_INIT_AUTOMAKE([foreign])
@@ -46,7 +46,7 @@ AC_ARG_ENABLE([documentation],
 AC_PROG_CXX
 AC_PROG_CC
 AC_PROG_FC
-AC_PROG_F77
+F77 = FC
 AC_FC_WRAPPERS
 AC_FC_LIBRARY_LDFLAGS
 AC_PROG_LIBTOOL
