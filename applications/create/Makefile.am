@@ -17,7 +17,7 @@ bin_PROGRAMS = \
 gencencalvm_SOURCES = \
 	gencencalvm.cc
 
-INCLUDES = -I$(top_builddir)/include
+#INCLUDES = -I$(top_builddir)/include
 
 gencencalvm_LDADD = \
 	-letree \

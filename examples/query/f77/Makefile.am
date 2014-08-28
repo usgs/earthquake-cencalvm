@@ -27,10 +27,10 @@ cencalvmf77query_SOURCES = \
 
 cencalvmf77query_LDFLAGS =
 
-INCLUDES = -I$(top_builddir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/libsrc
 
 cencalvmf77query_LDADD = \
-	$(top_builddir)/libsrc/libcencalvm.la \
+	$(top_builddir)/libsrc/cencalvm/libcencalvm.la
 	$(FCLIBS)
 
 CLEANFILES = \

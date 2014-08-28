@@ -17,10 +17,5 @@ subpkginclude_HEADERS = \
 	CenCalVMDB.h \
 	CenCalVMDB.icc
 
-# export
-clean-local: clean-subpkgincludeHEADERS
-BUILT_SOURCES = export-subpkgincludeHEADERS
-CLEANFILES = export-subpkgincludeHEADERS
-
 
 # End of file 

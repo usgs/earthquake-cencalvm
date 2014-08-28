@@ -16,11 +16,11 @@ gradecencalvm_SOURCES = \
 	gradecencalvm.cc \
 	VsGrader.cc
 
-INCLUDES = -I$(top_builddir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/libsrc
 
 gradecencalvm_LDADD = \
 	-letree \
-	$(top_builddir)/libsrc/libcencalvm.la
+	$(top_builddir)/libsrc/cencalvm/libcencalvm.la
 
 
 noinst_HEADERS = \

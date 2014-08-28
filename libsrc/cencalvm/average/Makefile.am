@@ -10,26 +10,15 @@
 # ----------------------------------------------------------------------
 #
 
-subpackage = storage
+subpackage = average
 include $(top_srcdir)/subpackage.am
 
 subpkginclude_HEADERS = \
-	ErrorHandler.h \
-	ErrorHandler.icc \
-	GeomCenCA.h \
-	GeomCenCA.icc \
-	Geometry.h \
-	Payload.h \
-	Projector.h \
-	etreefwd.h \
-	proj4fwd.h
+	Averager.icc \
+	Averager.h
 
-noinst_HEADERS =
-
-# export
-clean-local: clean-subpkgincludeHEADERS
-BUILT_SOURCES = export-subpkgincludeHEADERS
-CLEANFILES = export-subpkgincludeHEADERS
+noinst_HEADERS = \
+	AvgEngine.h
 
 
 # End of file 

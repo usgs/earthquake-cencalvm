@@ -12,7 +12,7 @@
 
 bin_PROGRAMS = cencalvminfo cencalvmisosurface
 
-INCLUDES = -I$(top_builddir)/include
+#INCLUDES = -I$(top_builddir)/include
 
 cencalvminfo_SOURCES = cencalvminfo.cc
 cencalvminfo_LDADD = -letree

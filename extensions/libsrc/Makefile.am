@@ -18,12 +18,12 @@ libcencalvmextras_la_SOURCES =
 
 libcencalvmextras_la_LDFLAGS =
 
-INCLUDES = -I$(top_builddir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/libsrc
 
 libcencalvmextras_la_LIBADD = \
 	-lproj \
 	-letree \
-	$(top_builddir)/libsrc/libcencalvm.la
+	$(top_builddir)/libsrc/cencalvm/libcencalvm.la
 
 
 if ENABLE_SPATIAL

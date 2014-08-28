@@ -15,6 +15,17 @@ namespace cencalvm {
     
       class CenCalVMDB : public spatialdata::spatialdb::SpatialDB
       { // CenCalVMDB
+
+	// PUBLIC ENUM ////////////////////////////////////////////////////
+
+      public:
+
+	enum QueryEnum {
+	  MAXRES,
+	  FIXEDRES,
+	  WAVERES,
+	};
+
  
 	// PUBLIC MEMBERS /////////////////////////////////////////////////
       public :
@@ -22,12 +33,6 @@ namespace cencalvm {
 	/// Constructor
 	CenCalVMDB(void);
 	
-	/** Constructor with label.
-	 *
-	 * @param label Label for database
-	 */
-	CenCalVMDB(const char* label);
-  
 	/// Destructor
 	~CenCalVMDB(void);
       
@@ -44,7 +49,7 @@ namespace cencalvm {
 	 *
 	 * @param queryType Set type of query
 	 */
-	void queryType(const cencalvm::query::VMQuery::QueryEnum queryType);
+	void queryType(const QueryEnum queryType);
 
 	/** Set query resolution. Resolution is associated with vertical
 	 * resolution, which is 4 times greater than the horizontal

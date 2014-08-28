@@ -17,10 +17,11 @@
 ##
 ## Factory: spatial_database
 
-from spatialdata.spatialdb.SpatialDB import SpatialDB
+from spatialdata.spatialdb.SpatialDBObj import SpatialDBObj
+from cencalvm import CenCalVMDB as ModuleCenCalVMDB
 
 # CenCalVMDB class
-class CenCalVMDB(SpatialDB):
+class CenCalVMDB(SpatialDBObj, ModuleCenCalVMDB):
   """
   Python manager for simple spatial database.
 
@@ -29,7 +30,7 @@ class CenCalVMDB(SpatialDB):
 
   # INVENTORY //////////////////////////////////////////////////////////
 
-  class Inventory(SpatialDB.Inventory):
+  class Inventory(SpatialDBObj.Inventory):
     """
     Python object for managing CenCalVMDB facilities and properties.
     """
@@ -89,26 +90,9 @@ class CenCalVMDB(SpatialDB):
     """
     Constructor.
     """
-    SpatialDB.__init__(self, name)
-    import cencalvm as bindings
-    self.cppHandle = bindings.CenCalVMDB()
+    SpatialDBObj.__init__(self, name)
     return
 
-
-  def initialize(self):
-    """
-    Initialize database.
-    """
-    SpatialDB.initialize(self)
-    self.cppHandle.queryType = self.queryType
-    self.cppHandle.queryRes = self.queryRes.value
-    self.cppHandle.filename = self.filename
-    self.cppHandle.cacheSize = self.cacheSize
-    self.cppHandle.filenameExt = self.filenameExt
-    self.cppHandle.cacheSizeExt = self.cacheSizeExt
-    self.cppHandle.squash(self.squash, self.squashLimit.value)
-    return
-  
 
   # PRIVATE METHODS ////////////////////////////////////////////////////
 
@@ -116,15 +100,31 @@ class CenCalVMDB(SpatialDB):
     """
     Set members based on inventory.
     """
-    SpatialDB._configure(self)
-    self.queryType = self.inventory.queryType
-    self.queryRes = self.inventory.queryRes
-    self.filename = self.inventory.filename
-    self.cacheSize = self.inventory.cacheSize
-    self.filenameExt = self.inventory.filenameExt
-    self.cacheSizeExt = self.inventory.cacheSizeExt
-    self.squash = self.inventory.squash
-    self.squashLimit = self.inventory.squashLimit
+    SpatialDBObj._configure(self)
+
+    if self.inventory.queryType == 'maxres':
+      self.queryType(self.MAXRES)
+    elif self.inventory.queryType == 'fixedres':
+      self.queryType(self.MAXRES)
+    elif self.inventory.queryType == 'waveres':
+      self.queryType(self.WAVERES)
+    else:
+      raise ValueError("Unknown queryType '%s'." % self.inventory.queryType)
+
+    self.queryRes(self.inventory.queryRes.value)
+    self.filename(self.inventory.filename)
+    self.cacheSize(self.inventory.cacheSize)
+    self.filenameExt(self.inventory.filenameExt)
+    self.cacheSizeExt(self.inventory.cacheSizeExt)
+    self.squash(self.inventory.squash, self.inventory.squashLimit.value)
+    return
+
+
+  def _createModuleObj(self):
+    """
+    Create Python module object.
+    """
+    ModuleCenCalVMDB.__init__(self)
     return
 
 

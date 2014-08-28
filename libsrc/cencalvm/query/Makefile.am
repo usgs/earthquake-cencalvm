@@ -10,19 +10,18 @@
 # ----------------------------------------------------------------------
 #
 
-subpackage = create
+subpackage = query
 include $(top_srcdir)/subpackage.am
 
 subpkginclude_HEADERS = \
-	VMCreator.h \
-	VMCreator.icc \
-	GridIngester.h \
-	GridIngester.icc
+	VMQuery.h \
+	VMQuery.icc \
+	cvmerror.h \
+	cvmquery.h
 
-# export
-clean-local: clean-subpkgincludeHEADERS
-BUILT_SOURCES = export-subpkgincludeHEADERS
-CLEANFILES = export-subpkgincludeHEADERS
+noinst_HEADERS = \
+	f77vmerror.h \
+	f77vmquery.h
 
 
 # End of file 

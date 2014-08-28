@@ -37,7 +37,7 @@ libcencalvm_la_SOURCES = \
 
 libcencalvm_la_LDFLAGS =
 
-INCLUDES = -I$(top_builddir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/libsrc
 
 libcencalvm_la_LIBADD = \
 	-lproj \

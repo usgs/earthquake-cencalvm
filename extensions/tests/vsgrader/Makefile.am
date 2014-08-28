@@ -26,8 +26,8 @@ noinst_HEADERS = \
 
 testgrader_LDFLAGS =
 
-INCLUDES = -I$(top_builddir)/include \
-	-I$(top_srcdir)/extensions/applications/vsgrader
+#INCLUDES = -I$(top_builddir)/include \
+#	-I$(top_srcdir)/extensions/applications/vsgrader
 
 testgrader_LDADD = \
 	-lcppunit -ldl \

@@ -80,11 +80,25 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::close(void)
 // ----------------------------------------------------------------------
 // Set query type.
 void
-cencalvm::extensions::cencalvmdb::CenCalVMDB::queryType(const query::VMQuery::QueryEnum queryType)
+cencalvm::extensions::cencalvmdb::CenCalVMDB::queryType(const QueryEnum queryType)
 { // queryType
   assert(0 != _pQuery);
 
-  _pQuery->queryType(queryType);
+  switch(queryType) {
+  case MAXRES:
+    _pQuery->queryType(cencalvm::query::VMQuery::MAXRES);
+    break;
+  case FIXEDRES:
+    _pQuery->queryType(cencalvm::query::VMQuery::FIXEDRES);
+    break;
+  case WAVERES:
+    _pQuery->queryType(cencalvm::query::VMQuery::WAVERES);
+    break;
+  default:
+    assert(0);
+    throw std::logic_error("Unknown query type.");
+  } // switch
+
   if (storage::ErrorHandler::ERROR == _pQuery->errorHandler()->status())
     throw std::runtime_error(_pQuery->errorHandler()->message());
 } // queryType

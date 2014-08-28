@@ -31,14 +31,14 @@ dist__cencalvmmodule_la_SOURCES = $(swig_sources) $(swig_generated)
 
 _cencalvmmodule_la_LIBADD = \
 	$(top_builddir)/extensions/libsrc/libcencalvmextras.la \
-	$(top_builddir)/libsrc/libcencalvm.la
+	$(top_builddir)/libsrc/cencalvm/libcencalvm.la
 if NO_UNDEFINED
 _cencalvmmodule_la_LIBADD += \
 	$(PYTHON_BLDLIBRARY) $(PYTHON_LIBS) $(PYTHON_SYSLIBS)
 endif
 
-INCLUDES = -I$(NUMPY_INCDIR) -I$(PYTHON_INCDIR) \
-	-I$(top_builddir)/include \
+AM_CPPFLAGS = -I$(NUMPY_INCDIR) -I$(PYTHON_INCDIR) \
+	-I$(top_srcdir)/libsrc \
 	-I$(top_srcdir)/extensions/libsrc/cencalvmdb
 
 $(srcdir)/cencalvm_wrap.cxx $(srcdir)/cencalvm.py: $(swig_sources)

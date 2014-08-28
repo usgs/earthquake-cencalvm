@@ -10,20 +10,14 @@
 # ----------------------------------------------------------------------
 #
 
-subpackage = average
+subpackage = create
 include $(top_srcdir)/subpackage.am
 
 subpkginclude_HEADERS = \
-	Averager.icc \
-	Averager.h
-
-noinst_HEADERS = \
-	AvgEngine.h
-
-# export
-clean-local: clean-subpkgincludeHEADERS
-BUILT_SOURCES = export-subpkgincludeHEADERS
-CLEANFILES = export-subpkgincludeHEADERS
+	VMCreator.h \
+	VMCreator.icc \
+	GridIngester.h \
+	GridIngester.icc
 
 
 # End of file 

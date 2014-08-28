@@ -5,10 +5,10 @@
 #                           Brad T. Aagaard
 #                        U.S. Geological Survey
 #
-# <LicenseText>
-#
 # ----------------------------------------------------------------------
 #
+
+include $(top_srcdir)/check.am
 
 SUBDIRS = data
 
@@ -27,12 +27,10 @@ noinst_HEADERS = \
 
 testcreate_LDFLAGS =
 
-INCLUDES = -I$(top_builddir)/include
-
 testcreate_LDADD = \
 	-lcppunit -ldl \
 	-letree \
-	$(top_builddir)/libsrc/libcencalvm.la
+	$(top_builddir)/libsrc/cencalvm/libcencalvm.la
 
 
 # End of file 

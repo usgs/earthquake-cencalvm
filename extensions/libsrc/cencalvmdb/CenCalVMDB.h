@@ -42,17 +42,21 @@ class cencalvm::extensions::cencalvmdb::CenCalVMDB :
   public spatialdata::spatialdb::SpatialDB
 { // class CenCalVMDB
 
+  // PUBLIC ENUM ////////////////////////////////////////////////////
+  
+public:
+  
+  enum QueryEnum {
+    MAXRES=cencalvm::query::VMQuery::MAXRES,
+    FIXEDRES=cencalvm::query::VMQuery::FIXEDRES,
+    WAVERES=cencalvm::query::VMQuery::WAVERES,
+  };
+
  public :
   // PUBLIC METHODS /////////////////////////////////////////////////////
   
   /// Default constructor.
   CenCalVMDB(void);
-  
-  /** Constructor with label.
-   *
-   * @param label Label for database
-   */
-  CenCalVMDB(const char* label);
   
   /// Default destructor.
   ~CenCalVMDB(void);
@@ -67,7 +71,7 @@ class cencalvm::extensions::cencalvmdb::CenCalVMDB :
    *
    * @param queryType Set type of query
    */
-  void queryType(const query::VMQuery::QueryEnum queryType);
+  void queryType(const QueryEnum queryType);
 
   /** Set query resolution. Resolution is associated with vertical
    * resolution, which is 4 times greater than the horizontal

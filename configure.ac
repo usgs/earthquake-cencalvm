@@ -5,16 +5,14 @@
 #                           Brad T. Aagaard
 #                        U.S. Geological Survey
 #
-# <LicenseText>
-#
 # ----------------------------------------------------------------------
 #
 
 AC_PREREQ(2.59)
-AC_INIT([cencalvm], [0.8.1], [baagaard@usgs.gov])
+AC_INIT([cencalvm], [0.9.0], [baagaard@usgs.gov])
 AC_CONFIG_HEADER([portinfo])
 AC_CONFIG_AUX_DIR([./aux-config])
-AM_INIT_AUTOMAKE([foreign])
+AM_INIT_AUTOMAKE([foreign subdir-objects])
 
 # ----------------------------------------------------------------------
 # TESTING w/cppunit
@@ -124,7 +122,7 @@ if test "$enable_spatial" = "yes" ; then
   fi
 
   # PYTHON
-  AM_PATH_PYTHON([2.3])
+  AM_PATH_PYTHON([2.4])
   CIT_PYTHON_SYSCONFIG
 
   # SWIG
@@ -152,10 +150,11 @@ fi
 # ----------------------------------------------------------------------
 AC_CONFIG_FILES([Makefile
 	libsrc/Makefile
-	libsrc/average/Makefile
-	libsrc/create/Makefile
-	libsrc/storage/Makefile
-	libsrc/query/Makefile
+	libsrc/cencalvm/Makefile
+	libsrc/cencalvm/average/Makefile
+	libsrc/cencalvm/create/Makefile
+	libsrc/cencalvm/storage/Makefile
+	libsrc/cencalvm/query/Makefile
 	tests/Makefile
 	tests/average/Makefile
 	tests/average/data/Makefile
