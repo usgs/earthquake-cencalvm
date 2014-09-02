@@ -1,0 +1,18 @@
+# -*- Makefile -*-
+#
+# ----------------------------------------------------------------------
+#
+#                           Brad T. Aagaard
+#                        U.S. Geological Survey
+#
+# ----------------------------------------------------------------------
+#
+
+AM_CPPFLAGS = -I$(top_srcdir)/libsrc
+
+
+check-local: check-TESTS
+	for f in $(TEST_LOGS); do printf "\n=== $$f ===\n\n"; cat $$f; done
+
+
+# End of file
