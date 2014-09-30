@@ -12,14 +12,14 @@
 
 bin_PROGRAMS = cencalvminfo cencalvmisosurface
 
-#INCLUDES = -I$(top_builddir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/libsrc
 
 cencalvminfo_SOURCES = cencalvminfo.cc
 cencalvminfo_LDADD = -letree
 
 
 cencalvmisosurface_SOURCES = cencalvmisosurface.cc
-cencalvmisosurface_LDADD = $(top_builddir)/libsrc/libcencalvm.la
+cencalvmisosurface_LDADD = $(top_builddir)/libsrc/cencalvm/libcencalvm.la
 
 
 # End of file 

@@ -17,18 +17,18 @@ bin_PROGRAMS = \
 gencencalvm_SOURCES = \
 	gencencalvm.cc
 
-#INCLUDES = -I$(top_builddir)/include
+AM_CPPFLAGS = -I$(top_srcdir)/libsrc
 
 gencencalvm_LDADD = \
 	-letree \
-	$(top_builddir)/libsrc/libcencalvm.la
+	$(top_builddir)/libsrc/cencalvm/libcencalvm.la
 
 packcencalvm_SOURCES = \
 	packcencalvm.cc
 
 packcencalvm_LDADD = \
 	-letree \
-	$(top_builddir)/libsrc/libcencalvm.la
+	$(top_builddir)/libsrc/cencalvm/libcencalvm.la
 
 
 # End of file 
