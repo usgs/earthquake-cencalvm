@@ -24,6 +24,7 @@ extern "C" {
 #include <iomanip> // USES setw(), setiosflags(), resetiosflags()
 #include <assert.h> // USES assert()
 #include <string.h> // USES strcmp()
+#include <time.h> // USES time_t
 
 // ----------------------------------------------------------------------
 // Default constructor
