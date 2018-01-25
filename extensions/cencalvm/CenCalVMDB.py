@@ -69,7 +69,7 @@ class CenCalVMDB(SpatialDBObj, ModuleCenCalVMDB):
     cacheSize = pyre.inventory.int("cache_size", default=128)
     cacheSize.meta['tip'] = "Size of cache for database."
 
-    filenameExt = pyre.inventory.str("filename", default="")
+    filenameExt = pyre.inventory.str("filename_ext", default="")
     filenameExt.meta['tip'] = "Name of database file."
 
     cacheSizeExt = pyre.inventory.int("cache_size", default=128)
