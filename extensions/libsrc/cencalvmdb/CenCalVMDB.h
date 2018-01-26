@@ -94,6 +94,13 @@ public:
    */
   void minVs(const double vs);
   
+  /** Set flag for filling voids near the ground surface, likely
+   * arising from different topographic surfaces.
+   *
+   * @param value True to drop points downward to fill voids.
+   */
+  void projectDownward(const bool value);
+  
   /** Set values to be returned by queries.
    *
    * @pre Must call open() before queryVals()
@@ -168,7 +175,8 @@ private :
   int _vsVal; ///< Index of query value corresponding to Vs
   int _vpVal; ///< Index of query value corresponding to Vp
   int _densityVal; ///< Index of query value corresponding to density
-
+  bool _projectDownward; ///< If values are not found, try to drop points down to fill artificial voids.
+    
   cencalvm::query::VMQuery* _pQuery; ///< Pointer to velocity model query
   spatialdata::geocoords::CSGeo* _pCS; ///< Pointer to coord system of VMQuery
 

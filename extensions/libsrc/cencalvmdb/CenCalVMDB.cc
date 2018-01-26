@@ -34,6 +34,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::CenCalVMDB(void) :
   _vsVal(-1),
   _vpVal(-1),
   _densityVal(-1),
+  _projectDownward(false),
   _pQuery(new cencalvm::query::VMQuery),
   _pCS(new spatialdata::geocoords::CSGeo)
 { // constructor
@@ -159,7 +160,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::query(double* pVals,
   if (storage::ErrorHandler::ERROR == pErrHandler->status())
     throw std::runtime_error(pErrHandler->message());
 
-  if (_vsVal >= 0) {
+  if (_vsVal >= 0 && _projectDownward) {
     double* pVs = &pVals[_vsVal];
     int iter = 1;
     while (*pVs < 0.0) {

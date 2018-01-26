@@ -54,9 +54,7 @@ class CenCalVMDB(SpatialDBObj, ModuleCenCalVMDB):
     import pyre.inventory
 
     queryType = pyre.inventory.str("query_type", default="maxres")
-    queryType.validator = pyre.inventory.choice(["maxres",
-                                                 "fixedres",
-                                                 "waveres"])
+    queryType.validator = pyre.inventory.choice(["maxres", "fixedres", "waveres"])
     queryType.meta['tip'] = "Type of query to perform."
 
     from pyre.units.length import m
@@ -79,10 +77,16 @@ class CenCalVMDB(SpatialDBObj, ModuleCenCalVMDB):
     squash.meta['tip'] = "Squash topography/bathymetry to sea level."
 
     from pyre.units.length import km
-    squashLimit = pyre.inventory.dimensional("squash_limit",
-                                             default=-2.0*km)
+    squashLimit = pyre.inventory.dimensional("squash_limit", default=-2.0*km)
     squashLimit.meta['tip'] = "Elevation above which topography is squashed."
 
+    from pyre.units.time import s
+    minVs = pyre.inventory.dimensional("min_vs", default=0.0*km/s)
+    minVs.meta['tip'] = "Minimum shear wave speed."
+    
+    projectDownward = pyre.inventory.bool("project_downward", default=False)
+    projectDownward.meta['tip'] = "Project points downward to fill voids at ground surface."
+    
 
   # PUBLIC METHODS /////////////////////////////////////////////////////
 
@@ -117,6 +121,8 @@ class CenCalVMDB(SpatialDBObj, ModuleCenCalVMDB):
     self.filenameExt(self.inventory.filenameExt)
     self.cacheSizeExt(self.inventory.cacheSizeExt)
     self.squash(self.inventory.squash, self.inventory.squashLimit.value)
+    self.minVs(self.inventory.minVs.value)
+    self.projectDownward(self.inventory.projectDownward)
     return
 
 

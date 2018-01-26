@@ -27,6 +27,14 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::minVs(const double vs) {
   _minVs = vs;
 }
   
+// Set flag for filling voids near the ground surface, likely
+// arising from different topographic surfaces.
+inline
+void
+cencalvm::extensions::cencalvmdb::CenCalVMDB::projectDownward(const bool value) {
+    _projectDownward = value;
+}
+  
 // Set the database filename.
 inline
 void

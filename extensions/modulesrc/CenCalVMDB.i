@@ -72,6 +72,13 @@ namespace cencalvm {
 	 */
 	void minVs(const double vs);
 	
+	/** Set flag for filling voids near the ground surface, likely
+	 * arising from different topographic surfaces.
+	 *
+	 * @param value True to drop points downward to fill voids.
+	 */
+	void projectDownward(const bool value);
+	  
 	/** Set values to be returned by queries.
 	 *
 	 * @pre Must call open() before queryVals()
