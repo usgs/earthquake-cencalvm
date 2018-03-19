@@ -61,11 +61,12 @@ public :
    * @param lon Longitude of location in degrees
    * @param lat Latitude of location in degrees
    * @param elev Elevation of location wrt MSL in meters
+   * @returns 1 on error, otherwise 0.
    */
-  void lonLatElevToAddr(etree_addr_t* pAddr,
-			const double lon,
-			const double lat,
-			const double elev);
+  int lonLatElevToAddr(etree_addr_t* pAddr,
+		       const double lon,
+		       const double lat,
+		       const double elev);
   
   /** Get global coordinates of octant centroid.
    *

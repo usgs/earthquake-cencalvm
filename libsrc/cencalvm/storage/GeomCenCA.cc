@@ -67,7 +67,7 @@ cencalvm::storage::GeomCenCA::clone(void) const
 
 // ----------------------------------------------------------------------
 // Map global coordinates xyz to etree address. 
-void
+int
 cencalvm::storage::GeomCenCA::lonLatElevToAddr(etree_addr_t* pAddr,
 					      const double lon,
 					      const double lat,
@@ -93,17 +93,11 @@ cencalvm::storage::GeomCenCA::lonLatElevToAddr(etree_addr_t* pAddr,
   if (p < 0.0 || p > _ROOTLEN ||
       q < 0.0 || q > _ROOTLEN ||
       r < 0.0 || r > _ROOTLEN) {
-    std::ostringstream msg;
-    msg
-      << std::resetiosflags(std::ios::fixed)
-      << std::setiosflags(std::ios::scientific)
-      << std::setprecision(6)
-      << "Location (" << lon << ", " << lat << ", " << elev << ")\n"
-      << "not in domain. Coordinates relative to root octant are:\n"
-      << "  p: " << p/_ROOTLEN << "\n"
-      << "  q: " << q/_ROOTLEN << "\n"
-      << "  r: " << r/_ROOTLEN << "\n";
-    throw std::runtime_error(msg.str());
+      pAddr->x = -1;
+      pAddr->y = -1;
+      pAddr->z = -1;
+      pAddr->t = 0;
+      return 1;
   } // if
 
   const double res = _ROOTLEN / ((etree_tick_t) 1 << pAddr->level);
@@ -113,6 +107,8 @@ cencalvm::storage::GeomCenCA::lonLatElevToAddr(etree_addr_t* pAddr,
   pAddr->y = tickLen*etree_tick_t(q / res);
   pAddr->z = tickLen*etree_tick_t(r / res);
   pAddr->t = 0;
+
+  return 0;
 } // lonLatElevToAddr
   
 // ----------------------------------------------------------------------

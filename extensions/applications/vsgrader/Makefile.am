@@ -13,8 +13,8 @@
 bin_PROGRAMS = gradecencalvm
 
 gradecencalvm_SOURCES = \
-	gradecencalvm.cc \
-	VsGrader.cc
+	VsGrader.cc \
+	gradecencalvm.cc
 
 AM_CPPFLAGS = -I$(top_srcdir)/libsrc
 
