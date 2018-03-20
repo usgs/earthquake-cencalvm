@@ -307,7 +307,7 @@ searchVs(cencalvm::query::VMQuery* query,
       elevVs = elevUpper;
       break;
     } else if (vsL < 0.0) {
-      elevVs = 9999.0;
+      elevVs = 1.0e+6;
       break;
     } else {
       std::cerr
@@ -394,8 +394,7 @@ main(int argc,
     const double elevTopo = queryElev(&query, lon, lat);
     double elevUpper = (squashOn) ? 0.0 : elevTopo;
     double elevLower = (squashOn) ? -elevTopo+elevMin : elevMin;
-    const double elevVs = searchVs(&query, vsTarget, 
-				   lon, lat, elevUpper, elevLower);
+    const double elevVs = searchVs(&query, vsTarget, lon, lat, elevUpper, elevLower);
 
     // If query generated a warning or error, dump message to std::cerr
     if (cencalvm::storage::ErrorHandler::OK != errHandler->status()) {
@@ -406,7 +405,7 @@ main(int argc,
       errHandler->resetStatus();
     } // if
 
-    const double distIsosurf = (elevVs != 9999.0) ? elevTopo - elevVs : -9999.0;
+    const double distIsosurf = (elevVs != 1.0e+6) ? elevTopo - elevVs : -999.0;
 
     // Write values returned by query to output file
     fileOut
