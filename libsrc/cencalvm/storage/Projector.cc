@@ -52,7 +52,7 @@ cencalvm::storage::Projector::Projector(void) :
     msg << "Error while initializing projection:\n"
 	<< "  " << pj_strerrno(pj_errno) << "\n"
 	<< "Projection parameters:\n"
-	<< "  " << args;
+	<< "  " << args.str();
     throw std::runtime_error(msg.str());
   } // if
 } // constructor
@@ -123,6 +123,6 @@ cencalvm::storage::Projector::invProject(double* pLon,
 } // invProject
 
 // version
-// $Id$
+// $Id: Projector.cc 2062 2005-12-23 02:43:23Z brad $
 
 // End of file 
