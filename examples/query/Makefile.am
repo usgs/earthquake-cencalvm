@@ -13,8 +13,11 @@
 SUBDIRS = \
 	data \
 	cpp \
-	c \
-	f77
+	c
+
+if ENABLE_FORTRAN
+SUBDIRS += f77
+endif
 
 
 # End of file 
