@@ -1,12 +1,9 @@
-# -*- autoconf -*-
-#
 # ----------------------------------------------------------------------
 #
 #                           Brad T. Aagaard
 #                        U.S. Geological Survey
 #
 # ----------------------------------------------------------------------
-#
 
 AC_PREREQ(2.59)
 AC_INIT([cencalvm], [1.0.0], [baagaard@usgs.gov])
@@ -34,17 +31,11 @@ AC_ARG_ENABLE([spatial],
 	[enable_spatial=yes],
 	[enable_spatial=no])
 
-# GRADER w/vsgrader extention
+# GRADER w/vsgrader extension
 AC_ARG_ENABLE([vsgrader],
 	[  --enable-vsgrader       Enable vsgrader extension [[default=no]]],
 	[enable_vsgrader=yes],
 	[enable_vsgrader=no])
-
-# DOCUMENTATION w/doxygen
-AC_ARG_ENABLE([documentation],
-	[  --enable-documentation  Enable buuilding html documentation (requires doxygen) [[default=no]]],
-	[enable_documentation=yes],
-	[enable_documentation=no])
 
 # ----------------------------------------------------------------------
 
@@ -147,18 +138,6 @@ fi
 # VSGRADER
 AM_CONDITIONAL([ENABLE_VSGRADER], [test "$enable_vsgrader" = yes])
 
-# DOXYGEN
-AM_CONDITIONAL([ENABLE_DOCUMENTATION], [test "$enable_documentation" = yes])
-if test "$enable_documentation" = "yes" ; then
-  AC_CHECK_PROG([have_doxygen],
-    [doxygen],
-    [yes],
-    [no])
-  if test "$have_doxygen" = "no"; then
-    AC_MSG_ERROR([Doxygen not found in current path.])
-  fi
-fi
-
 # ----------------------------------------------------------------------
 AC_CONFIG_FILES([Makefile
 	libsrc/Makefile
@@ -195,8 +174,7 @@ AC_CONFIG_FILES([Makefile
 	extensions/applications/vsgrader/Makefile
 	extensions/tests/Makefile
 	extensions/tests/vsgrader/Makefile
-	extensions/tests/vsgrader/data/Makefile
-	doc/Makefile])
+	extensions/tests/vsgrader/data/Makefile])
 
 AC_OUTPUT
 
