@@ -16,6 +16,12 @@ AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([foreign subdir-objects])
 
 # ----------------------------------------------------------------------
+# Fortran
+AC_ARG_ENABLE([fortran],
+	[  --enable-fortran        Enable building Fortran bindings [[default=no]]],
+	[enable_fortran=yes],
+	[enable_fortran=no])
+
 # TESTING w/cppunit
 AC_ARG_ENABLE([testing],
 	[  --enable-testing        Enable unit testing with cppunit (requires cppunit) [[default=no]]],
@@ -44,10 +50,6 @@ AC_ARG_ENABLE([documentation],
 
 AC_PROG_CXX
 AC_PROG_CC
-AC_PROG_FC
-F77 = FC
-AC_FC_WRAPPERS
-AC_FC_LIBRARY_LDFLAGS
 AC_PROG_LIBTOOL
 AC_PROG_INSTALL
 
@@ -77,6 +79,15 @@ AC_CHECK_LIB(proj, pj_init_plus, [
 ],[
   AC_MSG_ERROR([Proj4 library not found; try LDFLAGS="-L<Proj4 lib dir>"])
 ])
+
+# FORTRAN BINDINGS
+AM_CONDITIONAL([ENABLE_FORTRAN], [test "$enable_fortran" = yes])
+if test "$enable_fortran" = "yes" ; then
+  AC_PROG_FC
+  F77 = FC
+  AC_FC_WRAPPERS
+  AC_FC_LIBRARY_LDFLAGS
+fi
 
 # CPPUNIT
 AM_CONDITIONAL([ENABLE_TESTING], [test "$enable_testing" = yes])

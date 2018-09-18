@@ -30,10 +30,13 @@ libcencalvm_la_SOURCES = \
 	average/AvgEngine.cc \
 	query/VMQuery.cc \
 	query/cvmerror.cc \
-	query/cvmquery.cc \
+	query/cvmquery.cc
+
+if ENABLE_FORTRAN
+libcencalvm_la_SOURCES += \
 	query/f77vmerror.cc \
 	query/f77vmquery.cc
-
+endif
 
 libcencalvm_la_LDFLAGS =
 
