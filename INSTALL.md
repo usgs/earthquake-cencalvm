@@ -132,6 +132,8 @@ system (most Linux distributions have cppunit packages).
 ## cencalvm - USGS Central CA velocity model query software
 [https://github.com/baagaard-usgs/cencalvm](https://github.com/baagaard-usgs/cencalvm)
 
+1. Download the source code for the latest release from [GitHub]([https://github.com/baagaard-usgs/cencalvm](https://github.com/baagaard-usgs/cencalvm/releases)).
+
 1. Run `configure` and then `make` and `make install`.
 
 Use `configure --help` to see all of the arguments configure
