@@ -16,8 +16,8 @@ AM_INIT_AUTOMAKE([foreign subdir-objects])
 # Fortran
 AC_ARG_ENABLE([fortran],
 	[  --enable-fortran        Enable building Fortran bindings [[default=no]]],
-	[enable_fortran=no],
-	[enable_fortran=yes])
+	[enable_fortran=yes],
+	[enable_fortran=no])
 
 # TESTING w/cppunit
 AC_ARG_ENABLE([testing],
