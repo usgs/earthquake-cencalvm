@@ -67,7 +67,7 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${ETREE_LIBDIR}
 
 ### Proj.4 - Cartographic projections library
 
-[http://trac.osgeo.org/proj]
+[http://trac.osgeo.org/proj](http://trac.osgeo.org/proj)
 Versions 4.4.9 and later are known to work
 
 1. Download the Proj.4 source code from [http://trac.osgeo.org/proj](http://trac.osgeo.org/proj)
@@ -118,9 +118,9 @@ used for testing and skipping this step will not affect the
 functionality of the velocity model software.
 
 1. Download the cppunit source code from
-[https://freedesktop.org/wiki/Software/cppunit/](https://freedesktop.org/wiki/Software/cppunit/), or
-install the binary package for your operating system (most Linux
-distributions have cppunit packages).
+[https://freedesktop.org/wiki/Software/cppunit/](https://freedesktop.org/wiki/Software/cppunit/)
+via the link above, or install the binary package for your operating
+system (most Linux distributions have cppunit packages).
 
 2. Run `configure` and then `make` and `make install`.
 
@@ -180,7 +180,7 @@ you can run `make check` to run the unit tests.
 In the current configuration, the detailed model is required while the
 extended (regional) model is optional. Use of the extended model is
 disabled by default. See the
-[Online Documentation](https://baagaard-usgs.github.io/cencalvm/query.md)
+[online documentation](https://baagaard-usgs.github.io/cencalvm/query.md)
 for details on how to enable use of the extended model.
 
 Download the `MD5SUM` files and check to the integrity of the
@@ -194,8 +194,8 @@ should get output reporting that the file is OK.
 ## Run examples (OPTIONAL)
 
 Run the examples for the languages you are interested in. The examples
-are in the `examples/query` directory. See
-[examples/query/README](examples/query/README) for more information.
+are in the `examples/query` directory. See the
+[online documentation](https://baagaard-usgs.github.io/cencalvm/examples.md) for more information.
 
 Set environment variables to find libraries and executables that are
 in `PREFIX`. If the libraries and executables are not installed in

@@ -25,7 +25,7 @@ See [INSTALL.md](INSTALL.md).
 
 ## Release Notes
 
-See [CHANGES](CHANGES.md) for a complete list of changes for each
+See [CHANGES.md](CHANGES.md) for a complete list of changes for each
 release.
 
 ## Author
