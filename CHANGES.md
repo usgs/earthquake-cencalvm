@@ -2,6 +2,11 @@
 
 List of changes to query software for each release.
 
+## Version 1.0.1, 2018-09-19
+
+* Fix bug in default behavior for `--enable-fortran`. Update links for
+  releases.
+
 ## Version 1.0.0, 2018-09-18
 
 * Migrated from private subversion repository to GitHub.
