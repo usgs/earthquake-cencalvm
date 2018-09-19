@@ -1,12 +1,9 @@
-# -*- Makefile -*-
-#
 # ----------------------------------------------------------------------
 #
 #                           Brad T. Aagaard
 #                        U.S. Geological Survey
 #
 # ----------------------------------------------------------------------
-#
 
 # define subpackage dirs
 subpkgsysconfdir = $(pkgsysconfdir)/$(subpackage)
