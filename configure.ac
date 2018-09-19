@@ -6,18 +6,18 @@
 # ----------------------------------------------------------------------
 
 AC_PREREQ(2.59)
-AC_INIT([cencalvm], [1.0.0], [baagaard@usgs.gov])
+AC_INIT([cencalvm], [1.0.1], [baagaard@usgs.gov])
 AC_CONFIG_HEADER([portinfo])
 AC_CONFIG_AUX_DIR([./aux-config])
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([foreign subdir-objects])
+AM_INIT_AUTOMAKE([foreign subdir-objects tar-pax])
 
 # ----------------------------------------------------------------------
 # Fortran
 AC_ARG_ENABLE([fortran],
 	[  --enable-fortran        Enable building Fortran bindings [[default=no]]],
-	[enable_fortran=no],
-	[enable_fortran=yes])
+	[enable_fortran=yes],
+	[enable_fortran=no])
 
 # TESTING w/cppunit
 AC_ARG_ENABLE([testing],
