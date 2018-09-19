@@ -186,8 +186,9 @@ to created by default which is not the desired behavior.
 * Added error handler to allow queries to continue even when values
 cannnot be found for locations. Coordinates of locations where data
 was not found can be written to a log file. Values for locations not
-found are set to predefined value (see \link libsrc/query/README
-libsrc/query/README \endlink for details).
+found are set to predefined value (see the
+[Online Documentation](https://baagaard-usgs.github.io/cencalvm/query.md)
+for details).
 
 * Fixed bugs in C and C++ examples associated with setting values to
 be returned in a query.

@@ -1,6 +1,6 @@
 # Installation instructions
 
-See [libsrc/cencalvm/query/README.md](libsrc/cencalvm/query/README.md) for a description
+See [Online Documentation](https://baagaard-usgs.github.io/cencalvm) for a description
 of the velocity model querying software and how to use it.
 
 ## Software Prerequisites
@@ -14,10 +14,11 @@ tar ball. See [Known Issues] for more information.
 
 ### Euclid - Etree database library
 
-[http://www-2.cs.cmu.edu/~euclid/](http://www-2.cs.cmu.edu/~euclid/)
+[http://www.cs.cmu.edu/~euclid/euclid3-latest.tar.gz](http://www.cs.cmu.edu/~euclid/euclid3-latest.tar.gz)
 
 1. Download the euclid source code from
-[http://www-2.cs.cmu.edu/~euclid](http://www-2.cs.cmu.edu/~euclid/).
+[http://www.cs.cmu.edu/~euclid](http://www.cs.cmu.edu/~euclid) or use
+the link above.
 
 2. Edit the Makefile.
 
@@ -109,7 +110,7 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${PROJ4_LIBDIR}
 
 #### cppunit - C++ unit testing library
 
-[http://cppunit.sourceforge.net](http://cppunit.sourceforge.net)
+[http://dev-www.libreoffice.org/src/cppunit-1.14.0.tar.gz](http://dev-www.libreoffice.org/src/cppunit-1.14.0.tar.gz)
 versions 1.10.2 are known to work
 
 This library is used in the unit testing of the code. It is only
@@ -117,7 +118,7 @@ used for testing and skipping this step will not affect the
 functionality of the velocity model software.
 
 1. Download the cppunit source code from
-[http://cppunit.sourceforge.net](http://cppunit.sourceforge.net), or
+[https://freedesktop.org/wiki/Software/cppunit/](https://freedesktop.org/wiki/Software/cppunit/), or
 install the binary package for your operating system (most Linux
 distributions have cppunit packages).
 
@@ -178,9 +179,9 @@ you can run `make check` to run the unit tests.
 
 In the current configuration, the detailed model is required while the
 extended (regional) model is optional. Use of the extended model is
-disabled by default. See
-[libsrc/cencalvm/query/README.md](libsrc/cencalvm/query/README.md) for details on how to
-enable use of the extended model.
+disabled by default. See the
+[Online Documentation](https://baagaard-usgs.github.io/cencalvm/query.md)
+for details on how to enable use of the extended model.
 
 Download the `MD5SUM` files and check to the integrity of the
 downloaded file by running `md5sum -c MD5SUMS_GZIPPED` for the
