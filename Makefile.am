@@ -10,8 +10,7 @@ ACLOCAL_AMFLAGS = -I m4
 SUBDIRS = \
 	libsrc \
 	applications \
-	examples \
-	docs
+	examples
 
 if ENABLE_SPATIAL
   SUBDIRS += extensions
