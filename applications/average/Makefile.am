@@ -8,14 +8,14 @@
 # ----------------------------------------------------------------------
 #
 
-bin_PROGRAMS = avgcencalvm
+bin_PROGRAMS = cencalvmavg
 
-avgcencalvm_SOURCES = \
-	avgcencalvm.cc
+cencalvmavg_SOURCES = \
+	cencalvmavg.cc
 
 AM_CPPFLAGS = -I$(top_srcdir)/libsrc
 
-avgcencalvm_LDADD = \
+cencalvmavg_LDADD = \
 	$(top_builddir)/libsrc/cencalvm/libcencalvm.la
 
 
