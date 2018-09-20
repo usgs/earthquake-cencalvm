@@ -1,32 +1,27 @@
-# -*- Makefile -*-
-#
 # ----------------------------------------------------------------------
 #
 #                           Brad T. Aagaard
 #                        U.S. Geological Survey
 #
-# <LicenseText>
-#
 # ----------------------------------------------------------------------
-#
 
 bin_PROGRAMS = \
-	gencencalvm \
-	packcencalvm
+	cencalvmgen \
+	cencalvmpack
 
-gencencalvm_SOURCES = \
-	gencencalvm.cc
+cencalvmgen_SOURCES = \
+	cencalvmgen.cc
 
 AM_CPPFLAGS = -I$(top_srcdir)/libsrc
 
-gencencalvm_LDADD = \
+cencalvmgen_LDADD = \
 	-letree \
 	$(top_builddir)/libsrc/cencalvm/libcencalvm.la
 
-packcencalvm_SOURCES = \
-	packcencalvm.cc
+cencalvmpack_SOURCES = \
+	cencalvmpack.cc
 
-packcencalvm_LDADD = \
+cencalvmpack_LDADD = \
 	-letree \
 	$(top_builddir)/libsrc/cencalvm/libcencalvm.la
 

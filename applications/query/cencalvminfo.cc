@@ -1,16 +1,11 @@
-// -*- C++ -*-
-//
 // ======================================================================
 //
 //                           Brad T. Aagaard
 //                        U.S. Geological Survey
 //
-// {LicenseText}
-//
 // ======================================================================
 //
-
-// Application to dump database metadata and schema to stdout
+// C++ application to dump etree database metadata and schema to stdout.
 
 extern "C" {
 #include "etree.h"
@@ -86,9 +81,5 @@ main(int argc,
   return 0;
 } // main
 
-
-
-// version
-// $Id: cencalvminfo.cc 1988 2005-08-11 03:05:32Z brad $
 
 // End of file 

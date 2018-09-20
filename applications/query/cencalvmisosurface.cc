@@ -1,17 +1,13 @@
-// -*- C++ -*-
-//
 // ======================================================================
 //
 //                           Brad T. Aagaard
 //                        U.S. Geological Survey
 //
-// {LicenseText}
-//
 // ======================================================================
 //
-
-// Application to extract depth (in meters) of specified vs (in m/s)
-// at list of points.
+// C++ application to extract depth (in meters) of specified Vs (m/s)
+// in the San Francisco Bay Area seismic velocity model at a list of
+// points.
 
 #include "cencalvm/query/VMQuery.h" // USES VMQuery
 #include "cencalvm/storage/ErrorHandler.h" // USES ErrorHandler
