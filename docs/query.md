@@ -13,7 +13,8 @@ written to and then read from a file.
 
 ## Database
 
-By default the query software will return all values stored in the Etree database in the following order:
+By default the query software will return all values stored in the
+Etree database in the following order:
 
 * longitude (WGS84)
 
@@ -31,16 +32,28 @@ By default the query software will return all values stored in the Etree databas
 
 * Qs
 
-* Depth from free surface (m)
+* Depth from free surface (m) of centroid of database cell
 
 * Fault block id
 
 * Zone id
 
+* Elevation (m) of ground surface at longitude/latitude of centroid of
+  database cell
+
+Notes:
+
+1. Values are not interpolated from the Etree database. That is,
+queries for any point within a grid cell in the database will return
+the values for the grid cell that correspond to its centroid.
+
+2. The elevation for a given longitude/latitude can differ between
+database cells at different resolutions because the centroid will
+shift horizontally as the resolution changes.
 
 ## Units
 
-SI units are used in the database and its interface.
+SI units are for all values in the database and its interface.
 
 ## Enabling use of the extended (regional) model
 
