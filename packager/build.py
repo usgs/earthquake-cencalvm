@@ -423,7 +423,7 @@ class BinaryApp(object):
         os.chdir("..")
         os.rename(orig_name, base_name)
             
-        tarball = os.path.join(self.build_config.src_dir, "{package}-{version}.tgz".format(package=package, version=version))
+        tarball = os.path.join(self.build_config.src_dir, "{package}-{version}-{os}-{arch}.tgz".format(package=package, version=version, os=self.os, arch=self.arch))
         cmd = ("tar", "-zcf", tarball,
                    "--exclude={0}/lib/*.a".format(base_name),
                    "--exclude={0}/lib/*.la".format(base_name),
