@@ -51,7 +51,7 @@ def run():
         if lib.startswith("lib/libgcc_ext"):
             continue
 
-    update_deplibs(lib)
+        update_deplibs(lib)
     return
 
 

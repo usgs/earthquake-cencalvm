@@ -128,6 +128,66 @@ class Gcc(object):
 
 
 # ------------------------------------------------------------------------------
+class Proj(object):
+
+    def __init__(self, config, build_config):
+        self.config = config
+        self.build_config = build_config
+        return
+
+    def download(self):
+        os.chdir(self.build_config.build_dir)
+        url = self.config.get("proj", "url")
+        download(url, self._tarball_filename())
+        download(url, self._datum_filename())
+        return
+
+    def unpack(self):
+        top_build_dir = self.build_config.build_dir
+        os.chdir(top_build_dir)
+
+        cmd = ("tar", "-xf", self._tarball_filename(),)
+        run_cmd(cmd)
+        return
+
+    def build(self):
+        proj_build_dir = os.path.join(self.build_config.build_dir, "proj-build")        
+        if not os.path.isdir(proj_build_dir):
+            os.mkdir(proj_build_dir)
+        os.chdir(proj_build_dir)
+        
+        version = self.config.get("proj", "version")
+        dest_dir = self.build_config.dest_dir
+        cmd = (os.path.join(self.build_config.build_dir, "proj-{}".format(version), "configure"), "--prefix={}".format(dest_dir), "--with-jni=no",)
+        run_cmd(cmd)
+
+        cmd = ("make", "-j{}".format(self.build_config.num_threads),)
+        run_cmd(cmd)
+        return
+
+    def install(self):
+        proj_build_dir = os.path.join(self.build_config.build_dir, "proj-build")
+        os.chdir(proj_build_dir)
+
+        cmd = ("make", "install",)
+        run_cmd(cmd)
+
+        os.chdir(os.path.join(self.build_config.dest_dir, "share", "proj"))
+        cmd = ("unzip", os.path.join(self.build_config.build_dir, self._datum_filename()),)
+        run_cmd(cmd)
+        return
+
+    def _tarball_filename(self):
+        version = self.config.get("proj", "version")
+        suffix = self.config.get("proj", "suffix")
+        return "proj-{version}.tar.{suffix}".format(version=version, suffix=suffix)
+
+    def _datum_filename(self):
+        version = self.config.get("proj", "datum_version")
+        return "proj-datumgrid-{version}.zip".format(version=version)
+
+
+# ------------------------------------------------------------------------------
 class Euclid(object):
 
     def __init__(self, config, build_config):
@@ -175,16 +235,17 @@ class Euclid(object):
         
     def _tarball_filename(self):
         version = self.config.get("euclid", "version")
-        suffix = self.config.get("gcc", "suffix")
+        suffix = self.config.get("euclid", "suffix")
         return "euclid{version}.tar.{suffix}".format(version=version, suffix=suffix)
 
 
 # ------------------------------------------------------------------------------
 class Dependencies(object):
 
-    def __init__(self, config, build_config, gcc=True, euclid=True):
+    def __init__(self, config, build_config, gcc=True, euclid=True, proj=True):
         self.build_gcc = gcc
         self.build_euclid = euclid
+        self.build_proj = proj
         self.config = config
         self.build_config = build_config
         return
@@ -203,6 +264,13 @@ class Dependencies(object):
             euclid.unpack()
             euclid.build()
             euclid.install()
+
+        if self.build_proj:
+            proj = Proj(self.config, self.build_config)
+            proj.download()
+            proj.unpack()
+            proj.build()
+            proj.install()
         return
 
 
@@ -222,11 +290,6 @@ class Cencalvm(object):
         top_src_dir = os.path.join(self.build_config.src_dir, "..")
         dest_dir = self.build_config.dest_dir
         
-        # autoreconf
-        os.chdir(top_src_dir)
-        cmd = ("autoreconf", "--install", "--force", "--verbose")
-        run_cmd(cmd)
-
         # configure
         cppflags = "CPPFLAGS=-I{}".format(os.path.join(dest_dir, "include"))
         ldflags = "LDFLAGS=-L{}".format(os.path.join(dest_dir, "lib"))
@@ -300,9 +363,9 @@ class BinaryApp(object):
 
     def build_dependencies(self):
         if self.os == "Linux":
-            dependencies = Dependencies(self.config, self.build_config, gcc=True, euclid=True)
+            dependencies = Dependencies(self.config, self.build_config, gcc=True)
         elif self.os == "Darwin":
-            dependencies = Dependencies(self.config, self.build_config, gcc=False, euclid=True)
+            dependencies = Dependencies(self.config, self.build_config, gcc=False)
         else:
             raise ValueError("Unknown os '%s'." % self.os)
         dependencies.build()
