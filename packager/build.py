@@ -397,18 +397,24 @@ class BinaryApp(object):
         version = makefile["VERSION"]
                  
         os.chdir(self.build_config.dest_dir)
-        
-        # Strip binaries
-        cmd = ("strip", "bin/*", "lib/*.so",)
-        #run_cmd(cmd)
-        
+
         if self.os == "Darwin":
             self._update_darwinlinking()
 
+        orig_name = os.path.split(self.build_config.dest_dir)[1]
+        base_name = "{}-{}".format(package, version)
+        os.chdir("..")
+        os.rename(orig_name, base_name)
+            
         tarball = os.path.join(self.build_config.src_dir, "{package}-{version}.tgz".format(package=package, version=version))
-        cmd = ("tar", "-zcf", tarball, "--exclude=lib/*.a", "--exclude=lib/*.la", "--exclude=*tgz", "bin", "lib", "share", "setup.sh",)
+        cmd = ("tar", "-zcf", tarball,
+                   "--exclude={}/lib/*.a".format(base_name),
+                   "--exclude={}/lib/*.la".format(base_name),
+                   base_name,
+                   )
         run_cmd(cmd)
 
+        os.rename(base_name, orig_name)
         return
 
 
