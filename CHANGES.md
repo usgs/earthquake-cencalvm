@@ -2,6 +2,14 @@
 
 List of changes to query software for each release.
 
+## Version 1.1.0, 2018-09-21
+
+* Added binary packages for Linux and Darwin (Mac OS X) and
+  corresponding installation instructions.
+
+* Added `cencalvmquery` application for querying properties at a list
+  of points. Improved documentation for query output.
+
 ## Version 1.0.1, 2018-09-19
 
 * Fix bug in default behavior for `--enable-fortran`. Update links for

@@ -61,7 +61,7 @@ the cencalvm binary. By default the `setup.sh` script will prepend to
 the `PATH` (for Darwin and Linux) and `LD_LIBRARY_PATH` (for Linux)
 environment variables. This will prevent most conflicts.
 
-See the Applications section of the [Query Interface]{query.md} for
+See the Applications section of the [Query Interface](query.md) for
 how to use the applications provided in the cencalvm binary package.
 
 ### Windows 10
