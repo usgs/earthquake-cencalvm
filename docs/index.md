@@ -7,8 +7,7 @@ Geologic and Seismic Velocity Models of the San Francisco Bay
 Region](https://earthquake.usgs.gov/data/3dgeologic/) for information
 about the models and how to download the data files.
 
-* [Installation
-  instructions](https://github.com/baagaard-usgs/cencalvm/blob/master/INSTALL.md)
+* [Installation instructions](install.md)
 
 * [Querying the models](query.md)
 

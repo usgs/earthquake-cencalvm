@@ -3,6 +3,28 @@
 See [Online Documentation](https://baagaard-usgs.github.io/cencalvm) for a description
 of the velocity model querying software and how to use it.
 
+## Use Cases
+
+### Get elastic properties at a list of points
+
+We have prebuilt packages for the following systems:
+
+* Linux system x86_64 (GLIBC 2.12 or later)
+* Darwin Intel Mac OS X 10.10 or later
+* Windows 10
+
+See the [Installing binary package](https://baagaard-usgs.github.io/cencalvm/install.md) for
+detailed instructions.
+
+For other operating systems, you will need to build the cencalvm
+software from the source code using the instructions below.
+
+### Query the seismic velocity model for elastic properties from other software
+
+You will need to build the cencalvm software from the source code
+using the instructions below. The `examples` directory demonstrates
+how to query the model from C, C++, or Fortran.
+
 ## Software Prerequisites
 
 ### gzip software
