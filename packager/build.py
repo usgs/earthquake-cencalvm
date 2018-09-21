@@ -227,8 +227,6 @@ class Cencalvm(object):
         cmd = ("autoreconf", "--install", "--force", "--verbose")
         run_cmd(cmd)
 
-        self._setEnviron()
-
         # configure
         cppflags = "CPPFLAGS=-I{}".format(os.path.join(dest_dir, "include"))
         ldflags = "LDFLAGS=-L{}".format(os.path.join(dest_dir, "lib"))
@@ -266,24 +264,6 @@ class Cencalvm(object):
         run_cmd(cmd)
         return
     
-    def _setEnviron(self):
-        path = (os.path.join(self.build_config.dest_dir, "bin"),
-                os.path.join(os.environ["HOME"], "bin"), # utilities for building (e.g., updated version of git)
-                "/bin",
-                "/usr/bin",
-                "/sbin",
-                "/usr/sbin",
-        )
-        os.environ["PATH"] = ":".join(path)
-
-        if self.os == "Linux":
-            ldpath = (os.path.join(self.build_config.dest_dir, "lib"),)
-            if self.arch == "x86_64":
-                ldpath += (os.path.join(self.build_config.dest_dir, "lib64"),)
-            os.environ["LD_LIBRARY_PATH"] = ":".join(ldpath)
-        return
-
-
 # ------------------------------------------------------------------------------
 class BinaryApp(object):
 
@@ -294,6 +274,8 @@ class BinaryApp(object):
         sysname, hostname, release, version, machine = os.uname()
         self.os = sysname
         self.arch = machine
+
+        self._set_environ()
         return
 
 
@@ -364,6 +346,24 @@ class BinaryApp(object):
         cmd = ("tar", "-zcf", tarball, "--exclude=lib/*.a", "--exclude=lib/*.la", "--exclude=*tgz", "bin", "lib", "share", "setup.sh",)
         run_cmd(cmd)
 
+        return
+
+
+    def _set_environ(self):
+        path = (os.path.join(self.build_config.dest_dir, "bin"),
+                os.path.join(os.environ["HOME"], "bin"), # utilities for building (e.g., updated version of git)
+                "/bin",
+                "/usr/bin",
+                "/sbin",
+                "/usr/sbin",
+        )
+        os.environ["PATH"] = ":".join(path)
+
+        if self.os == "Linux":
+            ldpath = (os.path.join(self.build_config.dest_dir, "lib"),)
+            if self.arch == "x86_64":
+                ldpath += (os.path.join(self.build_config.dest_dir, "lib64"),)
+            os.environ["LD_LIBRARY_PATH"] = ":".join(ldpath)
         return
 
 
