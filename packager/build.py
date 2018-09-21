@@ -405,6 +405,7 @@ class BinaryApp(object):
             self._update_darwinlinking()
 
         # Strip symbols from binaries and libraries
+        strip = ("strip", "-x",) if self.os == "Darwin" else ("strip",)
         strip_list = glob.glob("bin/*")
         libs = glob.glob("lib/lib*")
         libs += glob.glob("lib64/lib*")
@@ -414,7 +415,7 @@ class BinaryApp(object):
         for lib in libs:
             if libsuffix in lib and not os.path.islink(lib) and not lib.endswith("_s.so") and not lib.endswith(".py"):
                 strip_list.append(lib)
-        cmd = ("strip",) + tuple(strip_list)
+        cmd = strip + tuple(strip_list)
         run_cmd(cmd)
             
         orig_name = os.path.split(self.build_config.dest_dir)[1]
