@@ -6,7 +6,7 @@
 # ----------------------------------------------------------------------
 
 AC_PREREQ(2.59)
-AC_INIT([cencalvm], [1.0.1], [baagaard@usgs.gov])
+AC_INIT([cencalvm], [1.1.0], [baagaard@usgs.gov])
 AC_CONFIG_HEADER([portinfo])
 AC_CONFIG_AUX_DIR([./aux-config])
 AC_CONFIG_MACRO_DIR([m4])

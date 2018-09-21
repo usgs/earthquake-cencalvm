@@ -3,7 +3,7 @@
 	"name": "cencalvm",
 	"organization": "U.S. Geological Survey",
 	"description": "This software package is used to create and query the seismic velocity model(s) covering the greater San Francisco Bay area (central California) developed by the United States Geological Survey.",
-	"version": "1.0.1",
+	"version": "1.1.0",
 	"status": "active",
 	
 	"permissions": {
@@ -17,7 +17,7 @@
 	},
 	
 	"homepageURL": "https://baagaard-usgs.github.io/cencalvm/",
-	"downloadURL": "https://github.com/baagaard-usgs/cencalvm/releases/download/v1.0.1/cencalvm-1.0.1.tgz",
+	"downloadURL": "https://github.com/baagaard-usgs/cencalvm/releases/download/v1.1.0/cencalvm-1.1.0.tgz",
 	"disclaimerURL": "https://github.com/baagaard-usgs/cencalvm/blob/master/DISCLAIMER.md",
 	"repositoryURL": "https://github.com/baagaard-usgs/cencalvm.git",
 	"vcs": "git",
@@ -43,7 +43,7 @@
 	},
 	
 	"date": {
-	    "metadataLastUpdated": "2018-09-19"
+	    "metadataLastUpdated": "2018-09-21"
 	}
     }
 ]
