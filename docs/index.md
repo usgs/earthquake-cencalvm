@@ -11,6 +11,6 @@ about the models and how to download the data files.
 
 * [Querying the models](query.md)
 
-* [Examples of querying the models](examples.md)
+* [Examples of querying the models using the API](examples.md)
 
 * [API](api.md)
