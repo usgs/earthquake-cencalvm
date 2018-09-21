@@ -44,6 +44,7 @@ script only works if you are using bash shell. If you are using a
 different shell, you will need to alter how the environment
 variables are set in `setup.sh`. 
 ```
+$ cd cencalvm-1.1.0
 $ source setup.sh
 ```
 
@@ -53,12 +54,15 @@ environment variables to your shell setup script (for example,
 `.bashrc`).
 
 **WARNING**: The binary distribution contains cencalvm and all of its
-dependencies. If you have any of this software already installed on
-your system, you need to be careful in setting up your environment so
-that preexisting software does not conflict with the cencalvm
-binary. By default the `setup.sh` script will prepend to the `PATH`
-(for Darwin and Linux) and `LD_LIBRARY_PATH` (for Linux) environment
-variables. This will prevent most conflicts.
+dependencies (Proj4 and Euclid). If you have any of this software
+already installed on your system, you need to be careful in setting up
+your environment so that preexisting software does not conflict with
+the cencalvm binary. By default the `setup.sh` script will prepend to
+the `PATH` (for Darwin and Linux) and `LD_LIBRARY_PATH` (for Linux)
+environment variables. This will prevent most conflicts.
+
+See the Applications section of the [Query Interface]{query.md} for
+how to use the applications provided in the cencalvm binary package.
 
 ### Windows 10
 
