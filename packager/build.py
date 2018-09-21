@@ -409,12 +409,12 @@ class BinaryApp(object):
         strip_list = glob.glob("bin/*")
         libs = glob.glob("lib/lib*")
         libs += glob.glob("lib64/lib*")
-        libs += [file for file in glob.glob("libexec/gcc/*/*/cc1*")]
-        libs += [file for file in glob.glob("libexec/gcc/*/*/lto1*")]
-        libs += [file for file in glob.glob("libexec/gcc/*/*/lt-wrapper*")]
         for lib in libs:
             if libsuffix in lib and not os.path.islink(lib) and not lib.endswith("_s.so") and not lib.endswith(".py"):
                 strip_list.append(lib)
+        strip_list += [file for file in glob.glob("libexec/gcc/*/*/cc1*")]
+        strip_list += [file for file in glob.glob("libexec/gcc/*/*/lto1*")]
+        strip_list += [file for file in glob.glob("libexec/gcc/*/*/lt-wrapper*")]
         cmd = strip + tuple(strip_list)
         run_cmd(cmd)
             
