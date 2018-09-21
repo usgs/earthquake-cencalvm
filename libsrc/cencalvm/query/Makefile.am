@@ -1,14 +1,9 @@
-# -*- Makefile -*-
-#
 # ----------------------------------------------------------------------
 #
 #                           Brad T. Aagaard
 #                        U.S. Geological Survey
 #
-# <LicenseText>
-#
 # ----------------------------------------------------------------------
-#
 
 subpackage = query
 include $(top_srcdir)/subpackage.am

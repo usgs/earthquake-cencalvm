@@ -1,12 +1,9 @@
-# -*- Makefile -*-
-#
 # ----------------------------------------------------------------------
 #
 #                           Brad T. Aagaard
 #                        U.S. Geological Survey
 #
 # ----------------------------------------------------------------------
-#
 
 subpackage = storage
 include $(top_srcdir)/subpackage.am
