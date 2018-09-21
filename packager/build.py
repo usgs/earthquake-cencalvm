@@ -9,6 +9,7 @@
 import os
 import shutil
 import subprocess
+import glob
 
 # ------------------------------------------------------------------------------
 def run_cmd(cmd):
@@ -383,8 +384,10 @@ class BinaryApp(object):
     def package(self):
         if self.os == "Darwin":
             filename = "setup_darwin.sh"
+            libsuffix = ".dylib"
         elif self.os == "Linux":
             filename = "setup_linux.sh"
+            libsuffix = ".so"
         else:
             raise ValueError("Unknown os '%s'." % self.os)
 
@@ -401,6 +404,19 @@ class BinaryApp(object):
         if self.os == "Darwin":
             self._update_darwinlinking()
 
+        # Strip symbols from binaries and libraries
+        strip_list = glob.glob("bin/*")
+        libs = glob.glob("lib/lib*")
+        libs += glob.glob("lib64/lib*")
+        libs += [file for file in glob.glob("libexec/gcc/*/*/cc1*")]
+        libs += [file for file in glob.glob("libexec/gcc/*/*/lto1*")]
+        libs += [file for file in glob.glob("libexec/gcc/*/*/lt-wrapper*")]
+        for lib in libs:
+            if libsuffix in lib and not os.path.islink(lib) and not lib.endswith("_s.so") and not lib.endswith(".py"):
+                strip_list.append(lib)
+        cmd = ("strip",) + tuple(strip_list)
+        run_cmd(cmd)
+            
         orig_name = os.path.split(self.build_config.dest_dir)[1]
         base_name = "{}-{}".format(package, version)
         os.chdir("..")
