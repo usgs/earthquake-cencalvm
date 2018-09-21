@@ -11,6 +11,6 @@ if test ! -f bin/cencalvmquery; then
     echo
 else
     export PATH="$cencalvm/bin:$PATH"
-    export LD_LIBRARY_PATH="$cencalvm/lib"
+    export LD_LIBRARY_PATH="$cencalvm/lib:$cencalvm/lib64"
     echo "Ready to run cencalvmquery."
 fi
