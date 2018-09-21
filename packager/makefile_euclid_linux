@@ -1,0 +1,28 @@
+CC = gcc
+LD = gcc
+TARGET = libetree.so 
+
+#
+# The -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64 flags are necessary
+# to enable large file system support
+CFLAGS = -O3 \
+	-Wall \
+	-fPIC \
+	-I.. \
+	-D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
+
+OBJECTS = dlink.o code.o buffer.o schema.o xplatform.o btree.o etree.o wrapper.o schemax.o
+
+all: $(TARGET)
+
+install:
+	cp *.h $(PREFIX)/include
+
+libetree.so: $(OBJECTS)
+	$(LD) -o $(PREFIX)/lib/$@ -shared $^
+
+clean:
+	rm -f $(OBJECTS) *~
+
+cleanall:
+	rm -f $(TARGET) $(OBJECTS) *~	
