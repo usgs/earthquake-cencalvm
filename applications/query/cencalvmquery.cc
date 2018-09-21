@@ -40,7 +40,7 @@ usage(void)
     << "  -d dbfile     Etree database file to query.\n"
     << "  -e dbextfile  Etree extended database file to query.\n"
     << "  -t queryType  Type of query {'maxres', 'fixedres', 'waveres'}\n"
-    << "  -r res        Resolution for query (not needed for maxres queries\n"
+    << "  -r res        Resolution for query (not needed for maxres queries)\n"
     << "  -c cacheSize  Size of cache in MB to use in query\n"
     << "  -s squashLim  Turn on squashing of topography and set limit\n"
     << "  -h            Display usage and exit.\n"
