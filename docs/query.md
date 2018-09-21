@@ -73,6 +73,77 @@ Fortran.
 This application dumps the metadata, database schema, and number of
 octants in an etree database to stdout.
 
+### cencalvmquery
+
+This application uses a list of points as input, queries the database
+at each point, and writes out the database values to a file.
+
+```
+usage: cencalvmquery [-h] -i fileIn -o fileOut -d dbfile
+       [-l logfile] [-t queryType] [-r res] [-e dbextfile]
+       [-c cacheSize] [-s squashLimit]
+
+  -h            Display usage and exit.
+  -i fileIn     File containing list of locations: 'lon lat elev'.
+  -o fileOut    Output file with locations and material properties.
+  -d dbfile     Etree database file to query.
+  -l logfile    Log file for warnings about no data for locations.
+  -t queryType  Type of query {'maxres', 'fixedres', 'waveres'}
+  -r res        Resolution for query (not needed for maxres queries)
+  -e dbextfile  Etree extended database file to query.
+  -c cacheSize  Size of cache in MB to use in query
+  -s squashLim  Turn on squashing of topography and set limit
+```
+Arguments in square brackets are optional.
+
+#### Input file
+
+Columns are:
+
+```
+0: longitude (WGS84)
+1: latitude (WGS84)
+2: elevation (m) with respect to mean sea level
+```
+
+Example input file
+
+```
+-122.7655 38.9735   1187.5
+-122.3684 38.6190     12.5
+-122.8102 38.5669     37.5
+-123.3883 37.9286  -2475.0
+```
+
+#### Output file
+
+Each line of the output file will have the following values:
+```
+ 0: longitude (WGS84)
+ 1: latitude (WGS84)
+ 2: elevation (m)
+ 3: Vp (m/s)
+ 4: Vs (m/s)
+ 5: density (kg/m**3)
+ 6: Qp
+ 7: Qs
+ 8: Depth from free surface (m) of centroid of database cell
+ 9: Fault block id
+10: Zone id
+11: Elevation (m) of ground surface at longitude/latitude of centroid of
+    database cell
+```
+
+Example output file
+
+```
+-122.76550 38.97350   1187.5  1880.0   530.0  2040.0     67.0     34.0     67.9    9   30   1255.4
+-122.36840 38.61900     12.5  2950.0  1360.0  2660.0    200.0    100.0    208.0    9   11    220.5
+-122.81020 38.56690     37.5  1220.0   120.0  1830.0     26.0     13.0     15.3   13   31     52.8
+-123.38830 37.92860  -2475.0  5560.0  3330.0  2670.0    709.0    355.0   2352.0   25   20   -123.0
+```
+
+
 ## Querying routines
 
 Documentation for the query routines for each language are contained

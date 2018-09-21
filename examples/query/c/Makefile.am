@@ -1,15 +1,10 @@
-# -*- Makefile -*-
-#
 # ----------------------------------------------------------------------
 #
 #                           Brad T. Aagaard
 #                        U.S. Geological Survey
 #
-# <LicenseText>
-#
 # ----------------------------------------------------------------------
 #
-
 # Link using C++ compiler to make sure we satisfy all of the C++
 # symbols in the C++ query library which this program uses
 CCLD = @CXX@

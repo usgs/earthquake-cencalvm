@@ -1,14 +1,9 @@
-# -*- Makefile -*-
-#
 # ----------------------------------------------------------------------
 #
 #                           Brad T. Aagaard
 #                        U.S. Geological Survey
 #
-# <LicenseText>
-#
 # ----------------------------------------------------------------------
-#
 
 bin_PROGRAMS = cencalvminfo cencalvmisosurface cencalvmquery
 

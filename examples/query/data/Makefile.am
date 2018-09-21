@@ -1,16 +1,11 @@
-# -*- Makefile -*-
-#
 # ----------------------------------------------------------------------
 #
 #                           Brad T. Aagaard
 #                        U.S. Geological Survey
 #
-# <LicenseText>
-#
 # ----------------------------------------------------------------------
-#
 
-data_DATA = \
+pkgdata_DATA = \
 	sample-05.0.0.out \
 	sample-05.0.1.out \
 	sample-05.0.1_fixedres.out \
