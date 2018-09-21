@@ -13,7 +13,7 @@ import glob
 
 # ------------------------------------------------------------------------------
 def run_cmd(cmd):
-    print("Running '{}'...".format(" ".join(cmd)))
+    print("Running '{0}'...".format(" ".join(cmd)))
     subprocess.check_call(cmd)
     return
 
@@ -21,10 +21,10 @@ def run_cmd(cmd):
 # ------------------------------------------------------------------------------
 def download(url, file):
     if os.path.isfile(file):
-        print("Using local copy of {}".format(file))
+        print("Using local copy of {0}".format(file))
     else:
-        print("Downloading '{}' from '{}'...".format(file, url))
-        cmd = ("curl", "-O", "{}/{}".format(url, file),)
+        print("Downloading '{0}' from '{1}'...".format(file, url))
+        cmd = ("curl", "-O", "{0}/{1}".format(url, file),)
         subprocess.check_call(cmd)
     return
 
@@ -95,7 +95,7 @@ class Gcc(object):
             os.chdir(top_build_dir)
             subpkg.download(self.config.get("gcc", "url"))
 
-            gcc_src_dir = os.path.join(top_build_dir, "gcc-{}".format(self.config.get("gcc", "version")))
+            gcc_src_dir = os.path.join(top_build_dir, "gcc-{0}".format(self.config.get("gcc", "version")))
             subpkg.unpack(gcc_src_dir, top_build_dir)
         return
 
@@ -107,10 +107,10 @@ class Gcc(object):
         
         version = self.config.get("gcc", "version")
         dest_dir = self.build_config.dest_dir
-        cmd = (os.path.join(self.build_config.build_dir, "gcc-{}".format(version), "configure"), "--prefix={}".format(dest_dir), "--disable-multilib", "--enable-languages=c,c++",)
+        cmd = (os.path.join(self.build_config.build_dir, "gcc-{0}".format(version), "configure"), "--prefix={0}".format(dest_dir), "--disable-multilib", "--enable-languages=c,c++",)
         run_cmd(cmd)
 
-        cmd = ("make", "-j{}".format(self.build_config.num_threads),)
+        cmd = ("make", "-j{0}".format(self.build_config.num_threads),)
         run_cmd(cmd)
         return
 
@@ -159,10 +159,10 @@ class Proj(object):
         
         version = self.config.get("proj", "version")
         dest_dir = self.build_config.dest_dir
-        cmd = (os.path.join(self.build_config.build_dir, "proj-{}".format(version), "configure"), "--prefix={}".format(dest_dir), "--with-jni=no",)
+        cmd = (os.path.join(self.build_config.build_dir, "proj-{0}".format(version), "configure"), "--prefix={0}".format(dest_dir), "--with-jni=no",)
         run_cmd(cmd)
 
-        cmd = ("make", "-j{}".format(self.build_config.num_threads),)
+        cmd = ("make", "-j{0}".format(self.build_config.num_threads),)
         run_cmd(cmd)
         return
 
@@ -210,12 +210,12 @@ class Euclid(object):
 
     def build(self):
         version = self.config.get("euclid", "version")
-        euclid_build_dir = os.path.join(self.build_config.build_dir, "euclid{}".format(version), "libsrc")
+        euclid_build_dir = os.path.join(self.build_config.build_dir, "euclid{0}".format(version), "libsrc")
         os.chdir(euclid_build_dir)
 
         sysname, hostname, release, version, machine = os.uname()
         if sysname in ["Linux", "Darwin"]:
-            shutil.copyfile(os.path.join(self.build_config.src_dir, "makefile_euclid_{}".format(sysname.lower())),
+            shutil.copyfile(os.path.join(self.build_config.src_dir, "makefile_euclid_{0}".format(sysname.lower())),
                             os.path.join(euclid_build_dir, "makefile.cencalvm"))
 
         os.environ["PREFIX"] = self.build_config.dest_dir
@@ -227,7 +227,7 @@ class Euclid(object):
         
     def install(self):
         version = self.config.get("euclid", "version")
-        euclid_build_dir = os.path.join(self.build_config.build_dir, "euclid{}".format(version), "libsrc")
+        euclid_build_dir = os.path.join(self.build_config.build_dir, "euclid{0}".format(version), "libsrc")
         os.chdir(euclid_build_dir)
 
         cmd = ("make", "install", "-f", "makefile.cencalvm",)
@@ -292,8 +292,8 @@ class Cencalvm(object):
         dest_dir = self.build_config.dest_dir
         
         # configure
-        cppflags = "CPPFLAGS=-I{}".format(os.path.join(dest_dir, "include"))
-        ldflags = "LDFLAGS=-L{}".format(os.path.join(dest_dir, "lib"))
+        cppflags = "CPPFLAGS=-I{0}".format(os.path.join(dest_dir, "include"))
+        ldflags = "LDFLAGS=-L{0}".format(os.path.join(dest_dir, "lib"))
         if self.os == "Linux":
             cc = "CC=gcc"
             cxx = "CXX=g++"
@@ -307,7 +307,7 @@ class Cencalvm(object):
         if not os.path.isdir(cencalvm_build_dir):
             os.mkdir(cencalvm_build_dir)
         os.chdir(cencalvm_build_dir)
-        cmd = (os.path.join(top_src_dir, "configure"), "--prefix={}".format(dest_dir),
+        cmd = (os.path.join(top_src_dir, "configure"), "--prefix={0}".format(dest_dir),
                cppflags, ldflags, cc, cxx,)
         run_cmd(cmd)
         return
@@ -316,7 +316,7 @@ class Cencalvm(object):
         cencalvm_build_dir = os.path.join(self.build_config.build_dir, "cencalvm-build")
         os.chdir(cencalvm_build_dir)
         
-        cmd = ("make", "-j{}".format(self.build_config.num_threads),)
+        cmd = ("make", "-j{0}".format(self.build_config.num_threads),)
         run_cmd(cmd)
         return
 
@@ -419,14 +419,14 @@ class BinaryApp(object):
         run_cmd(cmd)
             
         orig_name = os.path.split(self.build_config.dest_dir)[1]
-        base_name = "{}-{}".format(package, version)
+        base_name = "{0}-{1}".format(package, version)
         os.chdir("..")
         os.rename(orig_name, base_name)
             
         tarball = os.path.join(self.build_config.src_dir, "{package}-{version}.tgz".format(package=package, version=version))
         cmd = ("tar", "-zcf", tarball,
-                   "--exclude={}/lib/*.a".format(base_name),
-                   "--exclude={}/lib/*.la".format(base_name),
+                   "--exclude={0}/lib/*.a".format(base_name),
+                   "--exclude={0}/lib/*.la".format(base_name),
                    base_name,
                    )
         run_cmd(cmd)
