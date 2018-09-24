@@ -12,7 +12,7 @@ need to install from source.
 ## Installing from source
 
 See [Installation
-instructions](https://github.com/baagaard-usgs/cencalvm/blob/master/INSTALL.md)
+instructions](https://github.com/usgs/earthquake-cencalvm/blob/master/INSTALL.md)
 in the top-level directory for how to install from source.
 
 ## Installing the binary package
@@ -29,7 +29,7 @@ $ cd cencalvm
 ```
 
 2. Download the Linux or Mac OS X (Darwin) tarball from
-[GitHub](https://github.com/baagaard-usgs/cencalvm/releases) and save
+[GitHub](https://github.com/usgs/earthquake-cencalvm/releases) and save
 it to the desired location, e.g., `$HOME/cencalvm`.
 
 3. Unpack the tarball.
