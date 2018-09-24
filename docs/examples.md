@@ -1,12 +1,12 @@
 # Examples of Velocity Model Queries
 
 The `examples` directory contains sample query applications, input
-files, and output files. When wuerying with the provided input files,
+files, and output files. When querying with the provided input files,
 you can compare your output to the provided output files to make sure
 the example ran properly.
 
-The `cpp`, `c`, and `f77` directories contain examples the illustrate how to
-query the database from C++, C, and Fortran, respectively.
+The `cpp`, `c`, and `f77` directories contain examples that illustrate
+how to query the database from C++, C, and Fortran, respectively.
 
 ## Directories
 
@@ -66,16 +66,16 @@ sample_ext-08.3.0_waveres.out   Output for WAVERES query of 08.3.0
 
 Create a symbolic link from the database file to the example
 directory. For example, if the database is
-`/home/data/USGSBayAreaVM-05.1.0.etree` and you want to run the C++
+`/home/data/USGSBayAreaVM-08.3.0.etree` and you want to run the C++
 example in the cpp directory, type
 
 ```
-cd cpp
-ln -s /home/data/USGSBayAreaVM-05.1.0.etree .
+$ cd cpp
+$ ln -s /home/data/USGSBayAreaVM-08.3.0.etree .
 ```
 
 The examples are setup to dump warnings to the screen, so when it
-encounters the point in air where there is no data it will dump a
+encounters a point in air where there is no data it will dump a
 warning to the screen that can be ignored; the material property
 values will be -999 for this point in the output file. If a filename
 is given for the log file, then this point will appear in the log file

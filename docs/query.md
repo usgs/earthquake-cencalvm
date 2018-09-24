@@ -1,26 +1,9 @@
 # Interface for querying USGS central CA velocity model
 
-This software was designed with the assumption that users will want
-to query the velocity model from their own code. As a result, an
-API is provided for the query routines. Examples of how to use the
-query routines from C++, C, and Fortran are provided in
-examples/query with sample input and output in
-examples/query/data. Any of these examples could be used to get
-material property values for locations, but performance will be
-improved if you use the API because the data won't have to be
-written to and then read from a file.
-
-
 ## Database
 
 By default the query software will return all values stored in the
 Etree database in the following order:
-
-* longitude (WGS84)
-
-* latitude (WGS84)
-
-* elevation (m)
 
 * Vp (m/s)
 
@@ -65,6 +48,86 @@ Fortran. You can also change the size of the cache used in queries of
 the extended model using `cencalvm::query::VMQuery::cacheSizeExt()` in
 C++, `cencalvm_cacheSizeExt()` in C, or `cencalvm_cachesizeext_f()` in
 Fortran.
+
+## Query types
+
+The etree database is a fully populated tree, meaning data is stored
+at the leaves of the tree as well as in the interior. The different
+levels in the tree correspond to different spatial resolutions. The
+lower an octant is in the tree, the smaller the spatial volume
+associated with the octant.  In other words, values at the different
+levels of the tree correspond to material properties at different
+spatial resolutions, for example the P wave speed on a scale of 25
+meters versus the P wave speed on a scale of 400 meters. The values at
+the interior octants at each level are the arithmetic means of the
+values of its children. The queries for the elevation of topography
+and bathymetry are computed indirectly using the the depth from the
+free surface and the coordinates of the octant returned in a
+search. Thus, the resolution depends on the depth of the point used in
+the query and the type of query (`MAXRES`, `FIXEDRES`, or `WAVERES`).
+
+Because averaging fault block and zone values is not meaningful, the
+fault block and zone values are set to -999 in the interior octants.
+
+In the database, the value for Vs in water is -999. In order to
+prevent nonphysical values for solid material near the solid/water
+interface, mixing of solid and water material properties is not
+permitted and solid material properties take precedence. In other
+words, if an interior octant has both children with water properties
+and children with solid material properties, the solid material
+properties will be averaged and the water properties will be ignored.
+
+### Setting the query type
+
+The query routine assigns values from the Etree database for a given
+location depending on the query type.
+
+Resolution in the discussion that follows refers to the vertical
+resolution which is finer than the horizontal resolution.
+
+#### MAXRES query
+
+When the query type is set to `MAXRES`, then the query routines will
+use values at the maximum resolution available. The query values will
+be set to -999.0 if the etree was not populated with data at that
+location even if averaged values are available; this happens when one
+queries at locations above topography or the water surface. If you
+want averaged values, use one of the other query types.
+
+#### FIXEDRES query
+
+When the query type is set to `FIXEDRES`, values at the requested
+resolution will be used even if the database contains values at a
+higher resolution. This prevents aliasing the model for queries at a
+uniform spatial resolution.
+
+#### WAVERES query
+
+When the query type is set to `WAVERES`, the requested resolution is
+the wavelength for shear waves at a given minimum period. The query
+routine first finds the maximum resolution available and traverses up
+the tree until the resolution is no greater than the requested
+resolution. This prevents aliasing the model for queries at variable
+spatial resolution but uniform resolution with respect to the
+wavelength of shear waves at a given period. 
+
+#### Squashing topography/bathymetry
+
+There are two settings that permit the velocity structure to be
+adjusted so that the top surface is aligned with sea level. The
+default query behavior does NOT use squashing. Squashing, by default,
+is limited to elevations above -2 km. That is, the geometry of the
+model above an elevation of -2 km (2 km below sea level) is moved
+up/down so that that ground surface is at sea level. Below an
+elevation of -2 km, the geometry of the seismic velocity model is
+retained.
+
+The elevation of the ground surface used in squashing topography is
+found by performaing a `MAXRES` query for the elevation of topography at
+the location of the velocity model query. Thus, the resolution of the
+elevation used to squash topography is coarser for points deep in the
+model (provided the location lies above the depth extent of
+squashing).
 
 ## Applications
 
@@ -143,117 +206,3 @@ Example output file
 -123.38830 37.92860  -2475.0  5560.0  3330.0  2670.0    709.0    355.0   2352.0   25   20   -123.0
 ```
 
-
-## Querying routines
-
-Documentation for the query routines for each language are contained
-in the header files. Pay special attention to the default query
-parameters.
-
-### Query types
-
-The etree database is a fully populated etree, meaning data is
-stored at the leaves of the tree as well as in the interior. The
-different levels in the etree correspond to different spatial
-resolutions. The lower an octant is in the etree, the smaller the
-spatial volume associated with the octant.  In other words, values
-at the different levels of the etree correspond to material
-properties at different spatial resolutions, for example the P wave
-speed on a scale of 25 meters versus the P wave speed on a scale of
-400 meters. The values at the interior octants at each level are
-the arithmetic means of the values of its children. The queries for
-the elevation of topography and bathymetry are computed indirectly
-using the the depth from the free surface and the coordinates of
-the octant returned in a search. Thus, the resolution depends on
-the depth of the point used in the query and the type of query
-(`MAXRES`, `FIXEDRES`, or `WAVERES`).
-
-Because averaging fault block and zone values is not meaningful, the
-fault block and zone values are set to -999 in the interior octants.
-
-In the database, the value for Vs in water is -999. In order to
-prevent nonphysical values for solid material near the solid/water
-interface, mixing of solid and water material properties is not
-permitted and solid material properties take precedence. In other
-words, if an interior octant has both children with water properties
-and children wich solid material properties, the solid material
-properties will be averaged and the water properties will be ignored.
-
-### Setting the query type
-
-The query routine assigns values from the Etree database for a given
-location depending on the query type.
-
-Resolution in the discussion that follows refers to the vertical
-resolution which is finer than the horizontal resolution.
-
-#### MAXRES query
-
-When the query type is set to `MAXRES`, then the query routines will
-use values at the maximum resolution available. The query values will
-be set to -999.0 if the etree was not populated with data at that
-location even if averaged values are available; this happens when one
-queries at locations above topography or the water surface. If you
-want averaged values, use one of the other query types.
-
-#### FIXEDRES query
-
-When the query type is set to `FIXEDRES`, values at the requested
-resolution will be used even if the database contains values at a
-higher resolution. This prevents aliasing the model for queries at a
-uniform spatial resolution. The requested resolution is set with
-`cencalvm::query::VMQuery::queryRes()` in C++, `cencalvm_queryRes()` in C,
-and `cencalvm_queryres_f()` in Fortran.
-
-#### WAVERES query
-
-When the query type is set to `WAVERES`, the requested resolution is
-the wavelength for shear waves at a given minimum period. The query
-routine first finds the maximum resolution available and traverses up
-the tree until the resolution is no greater than the requested
-resolution. This prevents aliasing the model for queries at variable
-spatial resolution but uniform resolution with respect to the
-wavelength of shear waves at a given period. The requested resolution
-is set by passing the minimum period as an argument to
-`cencalvm::query::VMQuery::queryRes()` in C++, `cencalvm_queryRes()`
-in C, and `cencalvm_queryres_f()` in Fortran.
-
-#### Squashing topography/bathymetry
-
-There are two settings that permit the velocity structure to be
-adjusted so that the top surface is aligned with sea level. The
-default query behavior does NOT use squashing. Use
-`cencalvm::query:::VMQuery::squash()` to turn on squashing of
-topography. Squashing, by default, is limited to elevations above -2
-km. That is, the geometry of the model above an elevation of -2 km (2
-km below sea level) is moved up/down so that that ground surface is at
-sea level. Below an elevation of -2 km, the geometry of the seismic
-velocity model is retained. The elevation for this extent of squashing
-can be set using the second argument in
-`cencalvm::query::VMQuery::squash()`.
-
-The elevation of the ground surface used in squashing topography is
-found by performaing a `MAXRES` query for the elevation of topography at
-the location of the velocity model query. Thus, the resolution of the
-elevation used to squash topography is coarser for points deep in the
-model (provided the location lies above the depth extent of
-squashing).
-
-## Fortran 77 notes
-
-### `cencalvm_createquery_f()`
-
-The argument to `cencalvm_createquery_f()` is used to store the
-address of the handle to the underlying C++ object. It is
-ABSOLUTELY CRITICAL that the number of bytes associated with this
-variable match the size of a C/C++ pointer on the system where the
-routines are compiled. On 32-bit and 64-bit systems, the variables
-will generally be a 4 byte integer (integer*4) and an 8 byte
-integer (integer*8), respectively.
-
-### No Fortran 77 binding for `cencalvm_queryVals()`
-
-Because arrays of strings cannot be passed from Fortran to C++ in a
-standard manner, there is no Fortran 77 binding for
-`cencalvm_queryVals()`. Instead, you must accept the default behavior
-in which all values are returned.

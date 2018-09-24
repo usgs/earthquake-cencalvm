@@ -1,7 +1,8 @@
 # Installation instructions
 
-See [Online Documentation](https://baagaard-usgs.github.io/cencalvm) for a description
-of the velocity model querying software and how to use it.
+See the [online
+documentation](https://baagaard-usgs.github.io/cencalvm) for a
+description of the velocity model querying software and how to use it.
 
 ## Use Cases
 
@@ -13,8 +14,9 @@ We have prebuilt packages for the following systems:
 * Darwin Intel Mac OS X 10.10 or later
 * Windows 10
 
-See the [Installing binary package](https://baagaard-usgs.github.io/cencalvm/install.md) for
-detailed instructions.
+Detailed instructions for using these prebuild binary packages are in
+the [installation section of the online
+documentation](https://baagaard-usgs.github.io/cencalvm/install.md).
 
 For other operating systems, you will need to build the cencalvm
 software from the source code using the instructions below.
@@ -23,7 +25,7 @@ software from the source code using the instructions below.
 
 You will need to build the cencalvm software from the source code
 using the instructions below. The `examples` directory demonstrates
-how to query the model from C, C++, or Fortran.
+how to query the model from C, C++, and Fortran.
 
 ## Software Prerequisites
 

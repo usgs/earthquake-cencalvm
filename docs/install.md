@@ -35,9 +35,9 @@ it to the desired location, e.g., `$HOME/cencalvm`.
 3. Unpack the tarball.
 ```
 # Linux
-$ tar -xzf cencalvm-1.1.0-linux-x86_64.tgz
+$ tar -xzf cencalvm-1.1.0-Linux-x86_64.tgz
 # Mac OS X
-$ tar -xzf cencalvm-1.1.0-darwin-10.11.6.tgz
+$ tar -xzf cencalvm-1.1.0-Darwin-x86_64.tgz
 ```
 4. Set environment variables. The provided `setup.sh`
 script only works if you are using bash shell. If you are using a
@@ -48,7 +48,7 @@ $ cd cencalvm-1.1.0
 $ source setup.sh
 ```
 
-**IMPORTANT**: You will either need to source the `setup.sh` script
+**IMPORTANT**: You will need to either source the `setup.sh` script
 each time you open a new bash shell (terminal) window or add the
 environment variables to your shell setup script (for example,
 `.bashrc`).
@@ -91,3 +91,22 @@ Off`.
   following the instructions for installing the cencalvm binary for
   Linux. You will run the cencalvm software within the bash
   environment just like you would for a Linux operating system.
+
+## Download the velocity model(s)
+
+Download the velocity model database file(s) from [ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database](ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database).
+
+* [USGSBayAreaVM-08.3.0.etree.gz](ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database/USGSBayAreaVM-08.3.0.etree.gz) Database file for the San Francisco Bay area seismic velocity (**REQUIRED**)
+* [USGSBayAreaVMExt-08.3.0.etree.gz](ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database/USGSBayAreaVMExt-08.3.0.etree.gz) Database file for the extension of the San Francisco Bay area seismic velocity model to the surrounding region (**OPTIONAL**)
+* [MD5SUMS_GZIPPED](ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database/MD5SUMS_GZIPPED) Checksums to verify the integrity of the compressed files
+* [MD5SUMS](ftp://ehzftp.wr.usgs.gov/baagaard/cencalvm/database/MD5SUMS) Checksums to verify the integrity of the uncompressed files
+
+### Check the integrity of the database files:
+
+```
+# Before uncompressing the files
+$ md5sum -c MD5SUMS_GZIPPED
+
+# After uncompressing the files
+$ md5sum -c MD5SUMS
+```
