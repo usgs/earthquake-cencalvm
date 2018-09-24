@@ -1,4 +1,4 @@
-# cencalvm
+# earthquake-cencalvm
 
 [![CC0 License](https://img.shields.io/badge/license-CC0-blue.svg)](https://github.com/baagaard-usgs/cencalvm/blob/master/LICENSE.md)
 
@@ -24,7 +24,7 @@ See [INSTALL.md](INSTALL.md).
 		
 ## Documentation
 
-[Online Documentation](https://baagaard-usgs.github.io/cencalvm)
+[Online Documentation](https://usgs.github.io/earthquake-cencalvm)
 
 ## Release Notes
 

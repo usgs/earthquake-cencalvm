@@ -1,6 +1,6 @@
 # Installation instructions
 
-See [Online Documentation](https://baagaard-usgs.github.io/cencalvm) for a description
+See [Online Documentation](https://usgs.github.io/earthquake-cencalvm) for a description
 of the velocity model querying software and how to use it.
 
 ## Software Prerequisites
@@ -129,10 +129,10 @@ system (most Linux distributions have cppunit packages).
     accordingly, in the same manner as you did for the required
     software.
 
-## cencalvm - USGS Central CA velocity model query software
-[https://github.com/baagaard-usgs/cencalvm](https://github.com/baagaard-usgs/cencalvm)
+## earthquake-cencalvm - USGS Central CA velocity model query software
+[https://github.com/usgs/earthquake-cencalvm](https://github.com/usgs/earthquake-cencalvm)
 
-1. Download the source code for the latest release from [GitHub]([https://github.com/baagaard-usgs/cencalvm](https://github.com/baagaard-usgs/cencalvm/releases)).
+1. Download the source code for the latest release from [GitHub]([https://github.com/usgs/earthquake-cencalvm](https://github.com/usgs/earthquake-cencalvm/releases)).
 
 1. Run `configure` and then `make` and `make install`.
 
@@ -182,7 +182,7 @@ you can run `make check` to run the unit tests.
 In the current configuration, the detailed model is required while the
 extended (regional) model is optional. Use of the extended model is
 disabled by default. See the
-[online documentation](https://baagaard-usgs.github.io/cencalvm/query.md)
+[online documentation](https://usgs.github.io/earthquake-cencalvm/query.md)
 for details on how to enable use of the extended model.
 
 Download the `MD5SUM` files and check to the integrity of the
@@ -197,7 +197,7 @@ should get output reporting that the file is OK.
 
 Run the examples for the languages you are interested in. The examples
 are in the `examples/query` directory. See the
-[online documentation](https://baagaard-usgs.github.io/cencalvm/examples.md) for more information.
+[online documentation](https://usgs.github.io/earthquake-cencalvm/examples.md) for more information.
 
 Set environment variables to find libraries and executables that are
 in `PREFIX`. If the libraries and executables are not installed in

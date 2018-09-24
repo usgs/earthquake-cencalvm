@@ -8,7 +8,7 @@ Region](https://earthquake.usgs.gov/data/3dgeologic/) for information
 about the models and how to download the data files.
 
 * [Installation
-  instructions](https://github.com/baagaard-usgs/cencalvm/blob/master/INSTALL.md)
+  instructions](https://github.com/usgs/earthquake-cencalvm/blob/master/INSTALL.md)
 
 * [Querying the models](query.md)
 
