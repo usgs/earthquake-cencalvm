@@ -1,0 +1,49 @@
+[
+    {
+	"name": "earthquake-cencalvm",
+	"organization": "U.S. Geological Survey",
+	"description": "This software package is used to create and query the seismic velocity model(s) covering the greater San Francisco Bay area (central California) developed by the United States Geological Survey.",
+	"version": "1.1.0",
+	"status": "active",
+	
+	"permissions": {
+	    "usageType": "openSource",
+	    "licenses": [
+		{
+		    "name": "Public Domain, CC0-1.0",
+		    "URL": "https://github.com/usgs/earthquake-cencalvm/blob/master/LICENSE.md"
+		}
+	    ]
+	},
+	
+	"homepageURL": "https://usgs.github.io/earthquake-cencalvm/",
+	"downloadURL": "https://github.com/usgs/earthquake-cencalvm/releases/download/v1.1.0/cencalvm-1.1.0.tgz",
+	"disclaimerURL": "https://github.com/usgs/earthquake-cencalvm/blob/master/DISCLAIMER.md",
+	"repositoryURL": "https://github.com/usgs/earthquake-cencalvm.git",
+	"vcs": "git",
+	
+	"laborHours": 0,
+	
+	"tags": [
+	    "U.S. Geological Survey",
+	    "USGS",
+	    "seismic velocity model",
+	    "query"
+	],
+	
+	"languages": [
+	    "C",
+	    "C++",
+	    "Fortran"
+	],
+	
+	"contact": {
+	    "name": "Brad Aagaard",
+	    "email": "baagaard@usgs.gov"
+	},
+	
+	"date": {
+	    "metadataLastUpdated": "2018-09-24"
+	}
+    }
+]

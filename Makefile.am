@@ -28,6 +28,9 @@ EXTRA_DIST = \
 	CHANGES.md \
 	README.md \
 	INSTALL.md \
+	LICENSE.md \
+	DISCLAIMER.md \
+	code.json \
 	docs/index.md \
 	docs/query.md \
 	docs/examples.md
