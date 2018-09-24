@@ -16,7 +16,7 @@ We have prebuilt packages for the following systems:
 
 Detailed instructions for using these prebuild binary packages are in
 the [installation section of the online
-documentation](https://baagaard-usgs.github.io/cencalvm/install.md).
+documentation](https://usgs.github.io/earthquake-cencalvm/install.md).
 
 For other operating systems, you will need to build the cencalvm
 software from the source code using the instructions below.

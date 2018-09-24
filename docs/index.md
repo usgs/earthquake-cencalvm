@@ -1,4 +1,4 @@
-# cencalvm
+# earthquake-cencalvm
 
 This software package is used to create and query the seismic velocity
 model(s) covering the greater San Francisco Bay area and surrounding
