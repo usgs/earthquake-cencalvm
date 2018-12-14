@@ -206,23 +206,24 @@ cencalvm::query::VMQuery::query(double** ppVals,
   cencalvm::storage::PayloadStruct payload;
   try {
     double elevQuery = elev;
-    if (_squashTopo && elev > _squashLimit) {
-      elevRef = _queryElev(&addr, lon, lat, elev);
-      queriedElev = true;
-      if (cencalvm::storage::Payload::NODATAVAL != elevRef)
-	elevQuery = elev + elevRef;
-    } // if
     bool useAddr = false;
+    if (_squashTopo && elev > _squashLimit) {
+      bool allowAdjustment = true;
+      elevRef = _queryElev(&addr, lon, lat, elev, allowAdjustment);
+      queriedElev = true;
+      if (cencalvm::storage::Payload::NODATAVAL != elevRef) {
+        elevQuery = elev + elevRef;
+      } // if
+    } // if
     (this->*_queryFn)(&payload, &addr, _db, lon, lat, elevQuery, useAddr);
     useAddr = true;
 
     // If not found in detailed model, query the regional model
-    if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock &&
-	0 != _dbExt) {
+    if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock && 0 != _dbExt) {
       (this->*_queryFn)(&payload, &addr, _dbExt, lon, lat, elevQuery, useAddr);
     } // if
   } catch (const std::exception& err) {
-    _pErrHandler->error(err.what());
+      _pErrHandler->error(err.what());
   } catch (...) {
     _pErrHandler->error("Unknown C++ error");
   } // catch
@@ -450,7 +451,8 @@ double
 cencalvm::query::VMQuery::_queryElev(etree_addr_t* pAddr,
 				     const double lon,
 				     const double lat,
-				     const double elev)
+				     const double elev,
+				     const bool allowAdjustment)
 { // _queryElev
   assert(0 != _pGeom);
   assert(0 != pAddr);
@@ -465,17 +467,19 @@ cencalvm::query::VMQuery::_queryElev(etree_addr_t* pAddr,
   cencalvm::storage::PayloadStruct payload;
   etree_addr_t resAddr;
   int err = etree_search(_db, *pAddr, &resAddr, "*", &payload);
+  etree_t* dbElev = _db;
 
   // If not found in detailed model, query the regional model
   bool found = (0 == err && ETREE_INTERIOR != resAddr.type);
   if (!found && 0 != _dbExt) {
     err = etree_search(_dbExt, *pAddr, &resAddr, "*", &payload);
     found = 0 == err;
+    dbElev = _dbExt;
   } // if
 
   if (found) {
     // If found elevation for octant
-    const double depthO = payload.DepthFreeSurf;
+    double depthO = payload.DepthFreeSurf;
     double lonO = 0.0;
     double latO = 0.0;
     double elevO = 0.0;
@@ -483,8 +487,21 @@ cencalvm::query::VMQuery::_queryElev(etree_addr_t* pAddr,
     // elevation of query location.
     _pGeom->addrToLonLatElev(&lonO, &latO, &elevO, &resAddr);
     elevRef = elevO + depthO;
-  } else
+
+    // Check for case in which elevRef sits below centroid of desired
+    // octant (which will not exist in etree).
+    _pGeom->lonLatElevToAddr(pAddr, lon, lat, elevRef);
+    etree_addr_t resAddrElev;
+    err = etree_search(dbElev, *pAddr, &resAddrElev, "*", &payload);
+    if (err || payload.Vs == cencalvm::storage::Payload::NODATAVAL && allowAdjustment) {
+      const etree_tick_t tickLen = 0x80000000 >> resAddr.level;
+      resAddr.z -= tickLen;
+      _pGeom->addrToLonLatElev(&lonO, &latO, &elevO, &resAddr);
+      elevRef = elevO + depthO;
+    } // if
+  } else {
     elevRef = cencalvm::storage::Payload::NODATAVAL;
+  } // if/else
 
   return elevRef;
 } // _queryElev
