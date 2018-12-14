@@ -114,20 +114,19 @@ wavelength of shear waves at a given period.
 #### Squashing topography/bathymetry
 
 There are two settings that permit the velocity structure to be
-adjusted so that the top surface is aligned with sea level. The
-default query behavior does NOT use squashing. Squashing, by default,
-is limited to elevations above -2 km. That is, the geometry of the
-model above an elevation of -2 km (2 km below sea level) is moved
-up/down so that that ground surface is at sea level. Below an
-elevation of -2 km, the geometry of the seismic velocity model is
-retained.
+adjusted so that the top of the solid earth surface is aligned with
+sea level. That is, the topographic surface is pushed down to sea
+level and the ocean bathymetry is pulled up to sea level. Points below
+the squashing limit (as given by an elevation value) will not be
+translated up or down; this maintains the relative geometry of deeper
+structures, such as sedimentary basins.
 
-The elevation of the ground surface used in squashing topography is
-found by performaing a `MAXRES` query for the elevation of topography at
-the location of the velocity model query. Thus, the resolution of the
-elevation used to squash topography is coarser for points deep in the
-model (provided the location lies above the depth extent of
-squashing).
+The elevation of the solid earth surface used in squashing is found by
+performing a `MAXRES` query for the elevation of
+topography/bathymetry at the location of the velocity model
+query. Thus, the resolution of the elevation used to squash is coarser
+for points deep in the model (provided the location lies above the
+depth extent of squashing).
 
 ## Applications
 

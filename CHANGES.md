@@ -2,6 +2,12 @@
 
 List of changes to query software for each release.
 
+## Version 1.1.1, 2018-12-14
+
+* Improve the squashing algorithm to account for stair stepping in the
+  Etree. The Etree doesn't include octants in which the topography or
+  bathymetry is above their base but below their centroids.
+
 ## Version 1.1.0, 2018-09-21
 
 * Added binary packages for Linux and Darwin (Mac OS X) and

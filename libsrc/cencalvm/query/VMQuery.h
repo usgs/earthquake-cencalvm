@@ -266,13 +266,15 @@ private :
    * @param lon Longitude of location for query in degrees
    * @param lat Latitude of location for query in degrees
    * @param elev Elevation of location wrt MSL in meters
+   * @param allowAdjustment Allow adjusting elevation to insure queries are below topography.
    *
    * @returns Elevation of ground surface at location.
    */
   double _queryElev(etree_addr_t* pAddr,
 		    const double lon,
 		    const double lat,
-		    const double elev);
+		    const double elev,
+		    const bool allowAdjustment=false);
 
   /** Set payload to NODATA values.
    *
