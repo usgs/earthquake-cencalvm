@@ -200,7 +200,6 @@ cencalvm::query::VMQuery::query(double** ppVals,
   assert(0 != _pGeom);
   
   etree_addr_t addr;
-  bool queriedElev = false;
   double elevRef = 0.0;
 
   cencalvm::storage::PayloadStruct payload;
@@ -210,16 +209,15 @@ cencalvm::query::VMQuery::query(double** ppVals,
     if (_squashTopo && elev > _squashLimit) {
       bool allowAdjustment = true;
       elevRef = _queryElev(&addr, lon, lat, elev, allowAdjustment);
-      queriedElev = true;
       if (cencalvm::storage::Payload::NODATAVAL != elevRef) {
         elevQuery = elev + elevRef;
       } // if
     } // if
     (this->*_queryFn)(&payload, &addr, _db, lon, lat, elevQuery, useAddr);
-    useAddr = true;
 
     // If not found in detailed model, query the regional model
     if (cencalvm::storage::Payload::NODATABLOCK == payload.FaultBlock && 0 != _dbExt) {
+      useAddr = true;
       (this->*_queryFn)(&payload, &addr, _dbExt, lon, lat, elevQuery, useAddr);
     } // if
   } catch (const std::exception& err) {
@@ -276,16 +274,13 @@ cencalvm::query::VMQuery::query(double** ppVals,
 	(*ppVals)[i] = payload.Zone;
 	break;
       case 8 :
-	if (!queriedElev) {
 	  try {
 	    elevRef = _queryElev(&addr, lon, lat, elev);
-	    queriedElev = true;
 	  } catch (const std::exception& err) {
 	    _pErrHandler->error(err.what());
 	  } catch (...) {
 	    _pErrHandler->error("Unknown C++ error");
 	  } // catch
-	} // if
 	(*ppVals)[i] = elevRef;
 	break;
       default :
@@ -325,8 +320,7 @@ cencalvm::query::VMQuery::_queryMax(cencalvm::storage::PayloadStruct* pPayload,
   // instead of averaged values since query request is for maximum
   // resolution and we don't have a leaf octant (data) at that
   // location.
-  if (0 != err ||
-      ETREE_INTERIOR == resAddr.type)
+  if (err || ETREE_INTERIOR == resAddr.type)
     _setNoData(pPayload);
 } // _queryMax
 
@@ -363,8 +357,7 @@ cencalvm::query::VMQuery::_queryFixed(cencalvm::storage::PayloadStruct* pPayload
   // what we want, return no data instead of averaged octant since
   // query request was for a given resolution and we don't have a leaf
   // octant at that resolution or one higher.
-  if (0 != err ||
-      (ETREE_INTERIOR == resAddr.type && pAddr->level > resAddr.level))
+  if (err || (ETREE_INTERIOR == resAddr.type && pAddr->level > resAddr.level))
     _setNoData(pPayload);
 } // _queryFixed
 
@@ -403,8 +396,7 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
 
   // If search returned interior octant (averaged), return no data
   // instead of averaged values if interior octant is coarser than we want
-  if (0 != err ||
-      (ETREE_INTERIOR == resAddr.type &&
+  if (err || (ETREE_INTERIOR == resAddr.type &&
        _pGeom->edgeLen(resAddr.level) / pPayload->Vs > minPeriod)) {
     _setNoData(pPayload);
     return;
@@ -445,6 +437,7 @@ cencalvm::query::VMQuery::_queryWave(cencalvm::storage::PayloadStruct* pPayload,
     0.5 * (childPayload.DepthFreeSurf + pPayload->DepthFreeSurf);
 } // _queryWave
 
+#include <iostream>
 // ----------------------------------------------------------------------
 // Query to get elevation of ground surface at location.
 double
@@ -470,7 +463,7 @@ cencalvm::query::VMQuery::_queryElev(etree_addr_t* pAddr,
   etree_t* dbElev = _db;
 
   // If not found in detailed model, query the regional model
-  bool found = (0 == err && ETREE_INTERIOR != resAddr.type);
+  bool found = (!err && ETREE_INTERIOR != resAddr.type);
   if (!found && 0 != _dbExt) {
     err = etree_search(_dbExt, *pAddr, &resAddr, "*", &payload);
     found = 0 == err;
@@ -493,7 +486,7 @@ cencalvm::query::VMQuery::_queryElev(etree_addr_t* pAddr,
     _pGeom->lonLatElevToAddr(pAddr, lon, lat, elevRef);
     etree_addr_t resAddrElev;
     err = etree_search(dbElev, *pAddr, &resAddrElev, "*", &payload);
-    if (err || payload.Vs == cencalvm::storage::Payload::NODATAVAL && allowAdjustment) {
+    if ((err || ETREE_INTERIOR == resAddrElev.type || payload.Vs == cencalvm::storage::Payload::NODATAVAL) && allowAdjustment) {
       const etree_tick_t tickLen = 0x80000000 >> resAddr.level;
       resAddr.z -= tickLen;
       _pGeom->addrToLonLatElev(&lonO, &latO, &elevO, &resAddr);
