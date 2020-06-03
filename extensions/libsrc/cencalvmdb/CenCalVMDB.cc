@@ -38,12 +38,7 @@ cencalvm::extensions::cencalvmdb::CenCalVMDB::CenCalVMDB(void) :
   _pQuery(new cencalvm::query::VMQuery),
   _pCS(new spatialdata::geocoords::CSGeo)
 { // constructor
-  _pCS->ellipsoid("WGS84");
-  _pCS->datumHoriz("WGS84");
-  _pCS->datumVert("mean sea level");
-  _pCS->isGeocentric(false);
-  _pCS->toMeters(1.0);
-  _pCS->initialize();
+  _pCS->setString("EPSG:4326");
 } // constructor
 
 // ----------------------------------------------------------------------
