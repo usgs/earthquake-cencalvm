@@ -1,1 +1,12 @@
-theme: jekyll-theme-cayman
+remote_theme: pmarsceill/just-the-docs
+title: CenCalVM
+baseurl: /earthquake-cencalvm
+#search_enabled: true
+aux_links:
+    "GitHub repository":
+      - "//github.com/usgs/earthquake-cencalvm"
+
+plugins:
+  - jekyll-seo-tag
+
+software-version: 1.1.0
