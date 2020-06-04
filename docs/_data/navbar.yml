@@ -1,0 +1,13 @@
+toc:
+  - title: CenCalVM
+    subitems:
+      - page: Overview
+        url: /
+      - page: Installation
+        url: /install.html
+      - page: Querying
+        url: /query.html
+      - page: Examples
+        url: /examples.html
+      - page: API
+        url: /api.html
