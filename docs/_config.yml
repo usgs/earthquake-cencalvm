@@ -1,4 +1,4 @@
-remote_theme: pmarsceill/just-the-docs
+remote_theme: baagaard-usgs/just-the-docs
 title: CenCalVM
 baseurl: /earthquake-cencalvm
 #search_enabled: true
@@ -6,7 +6,9 @@ aux_links:
     "GitHub repository":
       - "//github.com/usgs/earthquake-cencalvm"
 
-plugins:
-  - jekyll-seo-tag
+color_scheme: usgs_lightbg
+heading_anchors: false
+search_enabled: true
 
-software-version: 1.1.0
+title_image: images/USGSsimple.png
+software_version: 1.1.0
