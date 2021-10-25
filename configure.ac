@@ -63,8 +63,8 @@ AC_CHECK_LIB(etree, etree_open, [
 ])
 
 # PROJ4
-AC_CHECK_LIB(proj, pj_init_plus, [
-  AC_CHECK_HEADER([proj_api.h], [], [
+AC_CHECK_LIB(proj, proj_create, [
+  AC_CHECK_HEADER([proj.h], [], [
     AC_MSG_ERROR([Proj4 header not found; try CPPFLAGS="-I<Proj4 include dir>"])
   ])
 ],[

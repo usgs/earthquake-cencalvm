@@ -19,7 +19,9 @@
 #if !defined(cencalvm_storage_projector_h)
 #define cencalvm_storage_projector_h
 
-#include "proj4fwd.h" // HOLDSA projPJ
+extern "C" {
+#include "proj.h" // HOLDSA PJ
+};
 
 namespace cencalvm {
   namespace storage {
@@ -74,7 +76,7 @@ private :
   // PRIVATE MEMBERS ////////////////////////////////////////////////////
 
   
-  projPJ _pProj; ///< Handle to Proj4 projection
+  PJ* _pProj; ///< Handle to Proj4 projection
 
   static const double _MERIDIAN; ///< Longitude of central meridian for proj
   static const double _LAT; ///< Latitude of origin for projection

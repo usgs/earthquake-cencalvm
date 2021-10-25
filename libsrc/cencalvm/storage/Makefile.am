@@ -16,8 +16,7 @@ subpkginclude_HEADERS = \
 	Geometry.h \
 	Payload.h \
 	Projector.h \
-	etreefwd.h \
-	proj4fwd.h
+	etreefwd.h
 
 noinst_HEADERS =
 
