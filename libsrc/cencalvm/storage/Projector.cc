@@ -14,10 +14,6 @@
 
 #include "ErrorHandler.h" // HOLDSA ErrorHandler
 
-extern "C" {
-#include "proj_api.h" // USES PROJ4
-};
-
 #include <stdexcept> // USES std::runtime_error
 #include <sstream> // USES std::ostringstream
 #include <iomanip> // USES setw(), setiosflags(), resetiosflags()
@@ -45,12 +41,12 @@ cencalvm::storage::Projector::Projector(void) :
     << " +datum=" << _DATUM
     << " +units=" << _UNITS;
   
-  pj_free(_pProj);
-  _pProj = pj_init_plus(args.str().c_str());
-  if (0 == _pProj) {
+  proj_destroy(_pProj);
+  _pProj = proj_create(NULL, args.str().c_str());
+  if (!_pProj) {
     std::ostringstream msg;
     msg << "Error while initializing projection:\n"
-	<< "  " << pj_strerrno(pj_errno) << "\n"
+	<< "  " << proj_errno_string(proj_errno(_pProj)) << "\n"
 	<< "Projection parameters:\n"
 	<< "  " << args.str();
     throw std::runtime_error(msg.str());
@@ -60,7 +56,7 @@ cencalvm::storage::Projector::Projector(void) :
 // ----------------------------------------------------------------------
 cencalvm::storage::Projector::~Projector(void)
 { // destructor
-  pj_free(_pProj);
+  proj_destroy(_pProj); _pProj = NULL;
 } // destructor
 
 // ----------------------------------------------------------------------
@@ -74,22 +70,18 @@ cencalvm::storage::Projector::project(double* pX,
   assert(0 != pY);
   assert(0 != _pProj);
 
-  const double degToRad = M_PI / 180.0;
-
-  projUV lonlat;
-  lonlat.u = lon * degToRad;
-  lonlat.v = lat * degToRad;
-  projUV xy = pj_fwd(lonlat, _pProj);
-  if (HUGE_VAL == xy.u) {
+  PJ_COORD src = proj_coord(proj_torad(lon), proj_torad(lat), 0.0, 0.0);
+  PJ_COORD dest = proj_trans(_pProj, PJ_FWD, src);
+  if (proj_errno(_pProj)) {
     std::ostringstream msg;
     msg << "Error while projecting location.\n"
-	<< "  " << pj_strerrno(pj_errno) << "\n"
+	<< "  " << proj_errno_string(proj_errno(_pProj)) << "\n"
 	<< "  longitude: " << lon << "\n"
 	<< "  latitude: " << lat << "\n";
     throw std::runtime_error(msg.str());
   } // if
-  *pX = xy.u;
-  *pY = xy.v;
+  *pX = dest.xyzt.x;
+  *pY = dest.xyzt.y;
 } // project
 
 // ----------------------------------------------------------------------
@@ -104,25 +96,18 @@ cencalvm::storage::Projector::invProject(double* pLon,
   assert(0 != pLat);
   assert(0 != _pProj);
 
-  const double radToDeg = 180.0 / M_PI;
-
-  projUV xy;
-  xy.u = x;
-  xy.v = y;
-  projUV lonlat = pj_inv(xy, _pProj);
-  if (HUGE_VAL == lonlat.u) {
+  PJ_COORD src = proj_coord(x, y, 0.0, 0.0);
+  PJ_COORD dest = proj_trans(_pProj, PJ_INV, src);
+  if (proj_errno(_pProj)) {
     std::ostringstream msg;
-    msg << "Error while projecting location.\n"
-	<< "  " << pj_strerrno(pj_errno) << "\n"
+    msg << "Error while inverse projecting location.\n"
+	<< "  " << proj_errno_string(proj_errno(_pProj)) << "\n"
 	<< "  x: " << x << "\n"
 	<< "  y: " << y << "\n";
     throw std::runtime_error(msg.str());
   } // if
-  *pLon = lonlat.u * radToDeg;
-  *pLat = lonlat.v * radToDeg;
+  *pLon = proj_todeg(dest.xyzt.x);
+  *pLat = proj_todeg(dest.xyzt.y);
 } // invProject
-
-// version
-// $Id: Projector.cc 2062 2005-12-23 02:43:23Z brad $
 
 // End of file 
