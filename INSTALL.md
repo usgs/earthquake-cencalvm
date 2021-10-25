@@ -91,10 +91,10 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${ETREE_LIBDIR}
 
 ### Proj.4 - Cartographic projections library
 
-[http://trac.osgeo.org/proj](http://trac.osgeo.org/proj)
-Versions 4.4.9 and later are known to work
+[https://proj.org](https://proj.org)
+Versions 6.0.0 and later are known to work
 
-1. Download the Proj.4 source code from [http://trac.osgeo.org/proj](http://trac.osgeo.org/proj)
+1. Download the Proj source code from [https://proj.org](https://proj.org)
 
 2. Run configure.  Helpful arguments include `--prefix=INSTALL_DIR`.
 
@@ -135,7 +135,7 @@ setenv LD_LIBRARY_PATH ${LD_LIBRARY_PATH}:${PROJ4_LIBDIR}
 #### cppunit - C++ unit testing library
 
 [http://dev-www.libreoffice.org/src/cppunit-1.14.0.tar.gz](http://dev-www.libreoffice.org/src/cppunit-1.14.0.tar.gz)
-versions 1.10.2 are known to work
+Versions 1.10.2 and later are known to work.
 
 This library is used in the unit testing of the code. It is only
 used for testing and skipping this step will not affect the
